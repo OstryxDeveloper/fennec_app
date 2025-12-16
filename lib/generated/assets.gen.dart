@@ -17,6 +17,15 @@ import 'package:vector_graphics/vector_graphics.dart' as _vg;
 class $AssetsAnimationsGen {
   const $AssetsAnimationsGen();
 
+  /// File path: assets/animations/Emojis---5s.json
+  String get emojis5s => 'assets/animations/Emojis---5s.json';
+
+  /// File path: assets/animations/Emojis---6s.json
+  String get emojis6s => 'assets/animations/Emojis---6s.json';
+
+  /// File path: assets/animations/Emojis---7s.json
+  String get emojis7s => 'assets/animations/Emojis---7s.json';
+
   /// File path: assets/animations/Fennec-Logo-Animation.json
   String get fennecLogoAnimation =>
       'assets/animations/Fennec-Logo-Animation.json';
@@ -25,29 +34,64 @@ class $AssetsAnimationsGen {
   String get rotatingGroupAnimation1 =>
       'assets/animations/Rotating-Group-Animation (1).json';
 
+  /// File path: assets/animations/Rotating-Group-Animation---No-Shadow.json
+  String get rotatingGroupAnimationNoShadow =>
+      'assets/animations/Rotating-Group-Animation---No-Shadow.json';
+
   /// File path: assets/animations/Rotating-Group-Animation.json
   String get rotatingGroupAnimation =>
       'assets/animations/Rotating-Group-Animation.json';
 
+  /// File path: assets/animations/Scrolling-Messages---Top-Opacity.json
+  String get scrollingMessagesTopOpacity =>
+      'assets/animations/Scrolling-Messages---Top-Opacity.json';
+
   /// File path: assets/animations/Scrolling-Messages.json
   String get scrollingMessages => 'assets/animations/Scrolling-Messages.json';
+
+  /// File path: assets/animations/Welcome-Screen-Animation---No-Shadow.json
+  String get welcomeScreenAnimationNoShadow =>
+      'assets/animations/Welcome-Screen-Animation---No-Shadow.json';
 
   /// File path: assets/animations/Welcome-Screen-Animation.json
   String get welcomeScreenAnimation =>
       'assets/animations/Welcome-Screen-Animation.json';
 
+  /// File path: assets/animations/countries.json
+  String get countries => 'assets/animations/countries.json';
+
+  /// File path: assets/animations/countries_phone_codes.json
+  String get countriesPhoneCodes =>
+      'assets/animations/countries_phone_codes.json';
+
   /// List of all assets
   List<String> get values => [
+    emojis5s,
+    emojis6s,
+    emojis7s,
     fennecLogoAnimation,
     rotatingGroupAnimation1,
+    rotatingGroupAnimationNoShadow,
     rotatingGroupAnimation,
+    scrollingMessagesTopOpacity,
     scrollingMessages,
+    welcomeScreenAnimationNoShadow,
     welcomeScreenAnimation,
+    countries,
+    countriesPhoneCodes,
   ];
 }
 
 class $AssetsIconsGen {
   const $AssetsIconsGen();
+
+  /// File path: assets/icons/Fennec_logo_text.svg
+  SvgGenImage get fennecLogoText =>
+      const SvgGenImage('assets/icons/Fennec_logo_text.svg');
+
+  /// File path: assets/icons/Fennec_logo_with_text.svg
+  SvgGenImage get fennecLogoWithText =>
+      const SvgGenImage('assets/icons/Fennec_logo_with_text.svg');
 
   /// File path: assets/icons/Group Users Icon-2.svg
   SvgGenImage get groupUsersIcon2 =>
@@ -150,6 +194,9 @@ class $AssetsIconsGen {
   SvgGenImage get alertTriangle =>
       const SvgGenImage('assets/icons/alert-triangle.svg');
 
+  /// File path: assets/icons/apple.svg
+  SvgGenImage get apple => const SvgGenImage('assets/icons/apple.svg');
+
   /// File path: assets/icons/arrow-left.svg
   SvgGenImage get arrowLeft => const SvgGenImage('assets/icons/arrow-left.svg');
 
@@ -202,6 +249,12 @@ class $AssetsIconsGen {
 
   /// File path: assets/icons/eye.svg
   SvgGenImage get eye => const SvgGenImage('assets/icons/eye.svg');
+
+  /// File path: assets/icons/facebook.svg
+  SvgGenImage get facebook => const SvgGenImage('assets/icons/facebook.svg');
+
+  /// File path: assets/icons/google.svg
+  SvgGenImage get google => const SvgGenImage('assets/icons/google.svg');
 
   /// File path: assets/icons/heart_broken.svg
   SvgGenImage get heartBroken =>
@@ -274,6 +327,8 @@ class $AssetsIconsGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
+    fennecLogoText,
+    fennecLogoWithText,
     groupUsersIcon2,
     groupUsersIcon3,
     groupUsersIcon4,
@@ -303,6 +358,7 @@ class $AssetsIconsGen {
     vector,
     verified,
     alertTriangle,
+    apple,
     arrowLeft,
     arrowRight,
     arrowUpRight,
@@ -318,6 +374,8 @@ class $AssetsIconsGen {
     edit,
     error,
     eye,
+    facebook,
+    google,
     heartBroken,
     home,
     info,

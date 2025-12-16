@@ -1,34 +1,18 @@
+import 'package:fennac_app/app/app.dart';
+import 'package:fennac_app/core/initialization/app_initalization.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'features/background/controllers/bg_controller.dart';
-import 'routes.dart';
-import 'generated/fonts.gen.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // Create controller once — global background animation stays alive
-  Get.put(BackgroundController(), permanent: true);
-
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Fennac App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-        fontFamily: FontFamily.sFPro,
-        textTheme: const TextTheme().apply(fontFamily: FontFamily.sFPro),
+void main() async {
+  try {
+    await AppInitalizer.init();
+    runApp(const MyApp());
+  } catch (error, stackTrace) {
+    debugPrint('Initialization failed: $error');
+    debugPrint('Stack trace: $stackTrace');
+    runApp(
+      const MaterialApp(
+        home: Scaffold(body: Center(child: Text('Initialization error'))),
       ),
-      initialRoute: "/",
-      getPages: routes,
     );
   }
 }
