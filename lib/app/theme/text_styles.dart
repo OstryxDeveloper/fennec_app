@@ -6,8 +6,7 @@ class AppTextStyles {
   AppTextStyles._();
 
   // Base text style with SF Pro font
-  static TextStyle _sfProTextStyle() =>
-      const TextStyle(fontFamily: 'SF Pro Display');
+  static TextStyle _sfProTextStyle() => const TextStyle(fontFamily: 'SFPro');
 
   static TextStyle h1Large(BuildContext context) => _sfProTextStyle().copyWith(
     fontSize: getWidth(context) > 1000 ? 40 : 28,

@@ -113,22 +113,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             },
                           ),
 
-                        CustomSizedBox(height: 24),
-
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () {},
-                            child: AppText(
-                              text: 'Forgot Password?',
-                              style: AppTextStyles.bodyLarge(context).copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ),
-
                         CustomSizedBox(height: 40),
 
                         CustomElevatedButton(

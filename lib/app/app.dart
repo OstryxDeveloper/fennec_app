@@ -20,7 +20,7 @@ class _MyAppState extends State<MyApp> {
       splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp.router(
-          title: 'The Id Game',
+          title: 'Fennac App',
           debugShowCheckedModeBanner: false,
           routerConfig: _appRouter.config(),
         );
