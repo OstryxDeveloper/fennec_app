@@ -15,8 +15,10 @@ class AppRouter extends RootStackRouter {
     CustomRoute(
       page: OnBoardingRoute.page,
       transitionsBuilder: TransitionsBuilders.fadeIn,
-      durationInMilliseconds: 600,
+      duration: const Duration(milliseconds: 600),
     ),
+    AutoRoute(page: VerifyPhoneNumberRoute.page),
+    AutoRoute(page: OnBoardingRoute1.page),
   ];
 
   @override

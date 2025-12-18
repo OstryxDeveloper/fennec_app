@@ -28,10 +28,12 @@ class CustomBottomSheet extends StatelessWidget {
     required String buttonText,
     required VoidCallback onButtonPressed,
     Widget? icon,
+    Color? barrierColor,
   }) {
     return showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
+      barrierColor: barrierColor,
       isScrollControlled: true,
       builder: (context) => CustomBottomSheet(
         title: title,

@@ -42,12 +42,12 @@ Future<List<Country>> loadCountries() async {
   }).toList();
 }
 
-class UnderlineCountryPickerField extends StatefulWidget {
+class PhoneNumberField extends StatefulWidget {
   final String? label;
   final String? hintText;
-  final void Function(Country) onChanged;
+  final void Function(String completePhoneNumber) onChanged;
 
-  const UnderlineCountryPickerField({
+  const PhoneNumberField({
     super.key,
     this.label,
     this.hintText,
@@ -55,12 +55,10 @@ class UnderlineCountryPickerField extends StatefulWidget {
   });
 
   @override
-  State<UnderlineCountryPickerField> createState() =>
-      _UnderlineCountryPickerFieldState();
+  State<PhoneNumberField> createState() => _PhoneNumberFieldState();
 }
 
-class _UnderlineCountryPickerFieldState
-    extends State<UnderlineCountryPickerField> {
+class _PhoneNumberFieldState extends State<PhoneNumberField> {
   Country? _selected;
   late Future<List<Country>> _future;
 
@@ -69,19 +67,29 @@ class _UnderlineCountryPickerFieldState
   bool _open = false;
 
   final TextEditingController _search = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   List<Country> _filtered = [];
 
   @override
   void initState() {
     super.initState();
     _future = loadCountries();
+    _phoneController.addListener(_notifyChange);
   }
 
   @override
   void dispose() {
     _close();
     _search.dispose();
+    _phoneController.dispose();
     super.dispose();
+  }
+
+  void _notifyChange() {
+    if (_selected != null && _phoneController.text.isNotEmpty) {
+      final completeNumber = '${_selected!.phoneCode}${_phoneController.text}';
+      widget.onChanged(completeNumber);
+    }
   }
 
   @override
@@ -103,40 +111,46 @@ class _UnderlineCountryPickerFieldState
           builder: (_, snap) {
             if (!snap.hasData) {
               return _underline(
-                child: const SizedBox(
+                child: SizedBox(
                   height: 18,
                   width: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white70,
+                  ),
                 ),
               );
             }
 
-            return InkWell(
-              key: _key,
-              onTap: () => _toggle(snap.data!),
-              child: _underline(
-                child: Row(
-                  children: [
-                    _flagBox(),
-                    const SizedBox(width: 12),
+            return _underline(
+              child: Row(
+                children: [
+                  InkWell(
+                    key: _key,
+                    onTap: () => _toggle(snap.data!),
+                    child: _flagBox(),
+                  ),
+                  const SizedBox(width: 12),
 
-                    Expanded(
-                      child: AppText(
-                        text:
-                            _selected?.name ??
-                            widget.hintText ??
-                            'Phone number',
-                        style: _selected != null
-                            ? AppTextStyles.bodyLarge(
-                                context,
-                              ).copyWith(color: Colors.white)
-                            : AppTextStyles.bodyLarge(
-                                context,
-                              ).copyWith(color: Colors.white.withOpacity(0.5)),
+                  Expanded(
+                    child: TextField(
+                      controller: _phoneController,
+                      keyboardType: TextInputType.phone,
+                      style: AppTextStyles.bodyLarge(
+                        context,
+                      ).copyWith(color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: widget.hintText ?? 'Enter phone number',
+                        hintStyle: AppTextStyles.bodyLarge(
+                          context,
+                        ).copyWith(color: Colors.white.withOpacity(0.5)),
+                        border: InputBorder.none,
+                        isDense: true,
+                        contentPadding: EdgeInsets.zero,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
           },
@@ -155,6 +169,11 @@ class _UnderlineCountryPickerFieldState
       child: Row(
         children: [
           Text(_selected?.flag ?? '🇺🇸', style: const TextStyle(fontSize: 16)),
+          const SizedBox(width: 4),
+          Text(
+            _selected?.phoneCode != null ? '${_selected!.phoneCode}' : '+1',
+            style: const TextStyle(color: Colors.white, fontSize: 14),
+          ),
           const SizedBox(width: 4),
           const Icon(
             Icons.keyboard_arrow_down,
@@ -189,8 +208,19 @@ class _UnderlineCountryPickerFieldState
     _search.clear();
 
     final box = _key.currentContext!.findRenderObject() as RenderBox;
-    final size = box.size;
     final offset = box.localToGlobal(Offset.zero);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    // Calculate dropdown width (80% of screen or max 400px)
+    final dropdownWidth = (screenWidth * 0.8).clamp(280.0, 400.0);
+
+    // Calculate left position to center the dropdown
+    final leftPosition = (screenWidth - dropdownWidth) / 2;
+
+    // Calculate if dropdown should appear above or below
+    final spaceBelow = screenHeight - (offset.dy + box.size.height);
+    final showAbove = spaceBelow < 380 && offset.dy > 380;
 
     _overlay = OverlayEntry(
       builder: (_) => GestureDetector(
@@ -200,9 +230,11 @@ class _UnderlineCountryPickerFieldState
           children: [
             Positioned.fill(child: Container()),
             Positioned(
-              left: offset.dx,
-              top: offset.dy + size.height + 6,
-              width: size.width,
+              left: leftPosition,
+              top: showAbove
+                  ? offset.dy - 370
+                  : offset.dy + box.size.height + 6,
+              width: dropdownWidth,
               child: _dropdown(list),
             ),
           ],
@@ -218,16 +250,18 @@ class _UnderlineCountryPickerFieldState
     return Material(
       elevation: 10,
       borderRadius: BorderRadius.circular(14),
+      color: const Color(0xFF1E1E1E),
       child: Container(
         constraints: const BoxConstraints(maxHeight: 360),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: const Color(0xFF1E1E1E),
           borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: Colors.white.withOpacity(0.1)),
         ),
         child: Column(
           children: [
             _searchField(list),
-            const Divider(height: 1),
+            Divider(height: 1, color: Colors.white.withOpacity(0.1)),
             Expanded(child: _list()),
           ],
         ),
@@ -240,10 +274,25 @@ class _UnderlineCountryPickerFieldState
       padding: const EdgeInsets.all(12),
       child: TextField(
         controller: _search,
-        decoration: const InputDecoration(
+        style: const TextStyle(color: Colors.white),
+        decoration: InputDecoration(
           hintText: 'Search country',
-          border: OutlineInputBorder(),
+          hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white.withOpacity(0.2)),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white.withOpacity(0.2)),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white.withOpacity(0.4)),
+            borderRadius: BorderRadius.circular(8),
+          ),
           isDense: true,
+          filled: true,
+          fillColor: Colors.white.withOpacity(0.05),
         ),
         onChanged: (v) {
           _filtered = list
@@ -258,14 +307,16 @@ class _UnderlineCountryPickerFieldState
   Widget _list() {
     return ListView.separated(
       itemCount: _filtered.length,
-      separatorBuilder: (_, __) => const Divider(height: 1),
+      separatorBuilder: (_, __) =>
+          Divider(height: 1, color: Colors.white.withOpacity(0.1)),
       itemBuilder: (_, i) {
         final c = _filtered[i];
         final selected = _selected?.iso == c.iso;
 
         return InkWell(
           onTap: () => _select(c),
-          child: Padding(
+          child: Container(
+            color: Colors.transparent,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
               children: [
@@ -276,12 +327,22 @@ class _UnderlineCountryPickerFieldState
                     c.name,
                     style: TextStyle(
                       fontSize: 16,
+                      color: Colors.white,
                       fontWeight: selected
                           ? FontWeight.w600
                           : FontWeight.normal,
                     ),
                   ),
                 ),
+                if (c.phoneCode != null)
+                  Text(
+                    '+${c.phoneCode}',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white.withOpacity(0.6),
+                    ),
+                  ),
+                const SizedBox(width: 8),
                 if (selected) Icon(Icons.check, color: ColorPalette.primary),
               ],
             ),
@@ -294,7 +355,7 @@ class _UnderlineCountryPickerFieldState
   void _select(Country c) {
     _close();
     setState(() => _selected = c);
-    widget.onChanged(c);
+    _notifyChange();
   }
 
   void _close() {

@@ -8,6 +8,7 @@ class CustomOtpField extends StatefulWidget {
   final TextEditingController controller;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onCompleted;
+  final Color? color;
 
   const CustomOtpField({
     super.key,
@@ -15,6 +16,7 @@ class CustomOtpField extends StatefulWidget {
     required this.controller,
     this.onChanged,
     this.onCompleted,
+    this.color,
   });
 
   @override
@@ -104,12 +106,12 @@ class _CustomOtpFieldState extends State<CustomOtpField> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: List.generate(widget.length, (index) {
         return Container(
-          width: 48, // Adjust width as needed
-          height: 56, // Adjust height as needed
+          width: 48,
+          height: 56,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: ColorPalette.white.withOpacity(0.2),
+              color: widget.color ?? ColorPalette.white.withOpacity(0.2),
               width: 1,
             ),
             color: Colors.transparent,

@@ -1,3 +1,5 @@
+import 'package:fennac_app/app/theme/app_colors.dart';
+import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class CustomOutlinedButton extends StatelessWidget {
@@ -63,10 +65,10 @@ class CustomOutlinedButton extends StatelessWidget {
               text,
               style:
                   textStyle ??
-                  TextStyle(
-                    fontSize: fontSize ?? 16,
-                    color: textColor ?? Colors.white,
-                    fontWeight: fontWeight,
+                  AppTextStyles.bodyLarge(context).copyWith(
+                    color: textColor ?? ColorPalette.white,
+                    fontSize: fontSize,
+                    fontWeight: fontWeight ?? FontWeight.w600,
                   ),
             ),
           ],

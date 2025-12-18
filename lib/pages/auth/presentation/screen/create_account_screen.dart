@@ -169,65 +169,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               ),
                             ),
                             CustomSizedBox(height: 8),
-                            Row(
-                              children: [
-                                // Country Flag Picker (Simplified)
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 12,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.1),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        _selectedCountry?.flag ?? '🇺🇸',
-                                        style: const TextStyle(fontSize: 20),
-                                      ),
-                                      const SizedBox(width: 4),
-                                      const Icon(
-                                        Icons.keyboard_arrow_down,
-                                        size: 18,
-                                        color: Colors.white70,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                // Phone Input
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: _phoneController,
-                                    keyboardType: TextInputType.phone,
-                                    style: const TextStyle(color: Colors.white),
-                                    decoration: InputDecoration(
-                                      hintText: '(234) 222 345',
-                                      hintStyle: TextStyle(
-                                        color: Colors.white.withOpacity(0.5),
-                                      ),
-                                      enabledBorder: const UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: Colors.white24,
-                                        ),
-                                      ),
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: ColorPalette.primary,
-                                        ),
-                                      ),
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                            vertical: 12,
-                                          ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                            PhoneNumberField(
+                              label: 'Country',
+                              hintText: 'Enter Your Number',
+
+                              onChanged: (country) {},
                             ),
-                            // Error text placeholder if needed
                           ],
                         ),
                         CustomSizedBox(height: 24),
@@ -324,17 +271,17 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         // Sign Up Button
                         CustomElevatedButton(
                           onTap: () {
-                            if (_formKey.currentState!.validate()) {
-                              // Handle sign up
-                              AutoRouter.of(
-                                context,
-                              ).replace(const DashboardRoute());
-                            }
+                            AutoRouter.of(
+                              context,
+                            ).replace(const VerifyPhoneNumberRoute());
+                            // if (_formKey.currentState!.validate()) {
+                            //   // Handle sign up
+                            //   AutoRouter.of(
+                            //     context,
+                            //   ).replace(const DashboardRoute());
+                            // }
                           },
-                          text:
-                              'Sign Up', // Or "Create Account" ? Design doesn't show button text but "Create Your Account" title implies it.
-                          // Login screen had "Login". I'll use "Sign Up" or "Create Account".
-                          // Screenshot cuts off the button but usually it's "Sign Up".
+                          text: 'Sign Up',
                           width: double.infinity,
                         ),
                         CustomSizedBox(height: 40),

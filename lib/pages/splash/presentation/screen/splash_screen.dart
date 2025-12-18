@@ -18,6 +18,7 @@ class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   late final AnimationController _logoController;
   late final Animation<double> _logoScaleAnimation;
+  // ignore: unused_field
   late final Animation<double> _logoFadeAnimation;
 
   @override

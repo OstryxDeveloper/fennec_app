@@ -50,7 +50,8 @@ class DashboardScreen extends StatelessWidget {
                     width: 0.9.sw,
                     text: 'Create your Account',
                     onTap: () {
-                      AutoRouter.of(context).push(const CreateAccountRoute());
+                      // AutoRouter.of(context).push(const CreateAccountRoute());
+                      AutoRouter.of(context).push(const OnBoardingRoute1());
                     },
                   ),
 

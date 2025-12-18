@@ -250,11 +250,22 @@ class $AssetsIconsGen {
   /// File path: assets/icons/eye.svg
   SvgGenImage get eye => const SvgGenImage('assets/icons/eye.svg');
 
+  /// File path: assets/icons/eye_emoji.png
+  AssetGenImage get eyeEmoji =>
+      const AssetGenImage('assets/icons/eye_emoji.png');
+
   /// File path: assets/icons/facebook.svg
   SvgGenImage get facebook => const SvgGenImage('assets/icons/facebook.svg');
 
   /// File path: assets/icons/google.svg
   SvgGenImage get google => const SvgGenImage('assets/icons/google.svg');
+
+  /// File path: assets/icons/handshake.png
+  AssetGenImage get handshake =>
+      const AssetGenImage('assets/icons/handshake.png');
+
+  /// File path: assets/icons/heart.svg
+  SvgGenImage get heart => const SvgGenImage('assets/icons/heart.svg');
 
   /// File path: assets/icons/heart_broken.svg
   SvgGenImage get heartBroken =>
@@ -280,6 +291,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/navigation.svg
   SvgGenImage get navigation =>
       const SvgGenImage('assets/icons/navigation.svg');
+
+  /// File path: assets/icons/people.png
+  AssetGenImage get people => const AssetGenImage('assets/icons/people.png');
 
   /// File path: assets/icons/phone.svg
   SvgGenImage get phone => const SvgGenImage('assets/icons/phone.svg');
@@ -319,6 +333,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/user.svg
   SvgGenImage get user => const SvgGenImage('assets/icons/user.svg');
 
+  /// File path: assets/icons/verified_badge.png
+  AssetGenImage get verifiedBadge =>
+      const AssetGenImage('assets/icons/verified_badge.png');
+
   /// File path: assets/icons/video.svg
   SvgGenImage get video => const SvgGenImage('assets/icons/video.svg');
 
@@ -326,7 +344,7 @@ class $AssetsIconsGen {
   SvgGenImage get volumeX => const SvgGenImage('assets/icons/volume-x.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values => [
+  List<dynamic> get values => [
     fennecLogoText,
     fennecLogoWithText,
     groupUsersIcon2,
@@ -374,8 +392,11 @@ class $AssetsIconsGen {
     edit,
     error,
     eye,
+    eyeEmoji,
     facebook,
     google,
+    handshake,
+    heart,
     heartBroken,
     home,
     info,
@@ -383,6 +404,7 @@ class $AssetsIconsGen {
     mic,
     moreVertical,
     navigation,
+    people,
     phone,
     play,
     plus,
@@ -395,6 +417,7 @@ class $AssetsIconsGen {
     trash,
     userPlus,
     user,
+    verifiedBadge,
     video,
     volumeX,
   ];
@@ -406,6 +429,20 @@ class $AssetsImagesGen {
   /// Directory path: assets/images/background
   $AssetsImagesBackgroundGen get background =>
       const $AssetsImagesBackgroundGen();
+
+  /// File path: assets/images/boys_group.png
+  AssetGenImage get boysGroup =>
+      const AssetGenImage('assets/images/boys_group.png');
+
+  /// File path: assets/images/girls_group.png
+  AssetGenImage get girlsGroup =>
+      const AssetGenImage('assets/images/girls_group.png');
+
+  /// File path: assets/images/mobile.png
+  AssetGenImage get mobile => const AssetGenImage('assets/images/mobile.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [boysGroup, girlsGroup, mobile];
 }
 
 class $AssetsImagesBackgroundGen {
