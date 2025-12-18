@@ -82,7 +82,7 @@ class CustomBottomSheet extends StatelessWidget {
           ),
           const CustomSizedBox(height: 32),
           CustomElevatedButton(text: buttonText, onTap: onButtonPressed),
-          const CustomSizedBox(height: 16), // Safety padding for bottom
+          const CustomSizedBox(height: 16),
         ],
       ),
     );

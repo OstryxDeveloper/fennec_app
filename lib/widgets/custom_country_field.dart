@@ -5,7 +5,8 @@ import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:fennac_app/widgets/custom_sized_box.dart';
 import 'package:fennac_app/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart'
+    show rootBundle, FilteringTextInputFormatter;
 
 class Country {
   final String iso;
@@ -46,12 +47,16 @@ class PhoneNumberField extends StatefulWidget {
   final String? label;
   final String? hintText;
   final void Function(String completePhoneNumber) onChanged;
+  final String? Function(String?)? validator;
+  final Country? initialCountry;
 
   const PhoneNumberField({
     super.key,
     this.label,
     this.hintText,
     required this.onChanged,
+    this.validator,
+    this.initialCountry,
   });
 
   @override
@@ -62,12 +67,18 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
   Country? _selected;
   late Future<List<Country>> _future;
   final TextEditingController _phoneController = TextEditingController();
+  String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
     _future = loadCountries();
     _phoneController.addListener(_notifyChange);
+
+    // Set initial country if provided
+    if (widget.initialCountry != null) {
+      _selected = widget.initialCountry;
+    }
   }
 
   @override
@@ -81,6 +92,42 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
       final completeNumber = '${_selected!.phoneCode}${_phoneController.text}';
       widget.onChanged(completeNumber);
     }
+
+    // Clear error when user types
+    if (_errorMessage != null) {
+      setState(() {
+        _errorMessage = null;
+      });
+    }
+  }
+
+  String? validate() {
+    if (_selected == null) {
+      return 'Please select a country';
+    }
+
+    if (_phoneController.text.isEmpty) {
+      return 'Phone number is required';
+    }
+
+    // Remove any non-digit characters for validation
+    final digitsOnly = _phoneController.text.replaceAll(RegExp(r'[^0-9]'), '');
+
+    if (digitsOnly.length < 7) {
+      return 'Phone number must be at least 7 digits';
+    }
+
+    if (digitsOnly.length > 15) {
+      return 'Phone number is too long';
+    }
+
+    // Use custom validator if provided
+    if (widget.validator != null) {
+      final completeNumber = '${_selected?.phoneCode}$digitsOnly';
+      return widget.validator!(completeNumber);
+    }
+
+    return null;
   }
 
   @override
@@ -114,34 +161,85 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
               );
             }
 
-            return _underline(
-              child: Row(
-                children: [
-                  InkWell(
-                    onTap: () => _showCountryBottomSheet(context, snap.data!),
-                    child: _flagBox(),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: TextField(
-                      controller: _phoneController,
-                      keyboardType: TextInputType.phone,
-                      style: AppTextStyles.bodyLarge(
-                        context,
-                      ).copyWith(color: Colors.white),
-                      decoration: InputDecoration(
-                        hintText: widget.hintText ?? 'Enter phone number',
-                        hintStyle: AppTextStyles.bodyLarge(
-                          context,
-                        ).copyWith(color: Colors.white.withOpacity(0.5)),
-                        border: InputBorder.none,
-                        isDense: true,
-                        contentPadding: EdgeInsets.zero,
+            // Set default country if not selected and initial country not provided
+            if (_selected == null &&
+                widget.initialCountry == null &&
+                snap.hasData) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                final defaultCountry = snap.data!.firstWhere(
+                  (c) => c.iso == 'US',
+                  orElse: () => snap.data!.first,
+                );
+                setState(() {
+                  _selected = defaultCountry;
+                });
+              });
+            }
+
+            return FormField<String>(
+              validator: (_) {
+                final error = validate();
+                if (error != null) {
+                  setState(() => _errorMessage = error);
+                }
+                return error;
+              },
+              builder: (field) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _underline(
+                      child: Row(
+                        children: [
+                          InkWell(
+                            onTap: () =>
+                                _showCountryBottomSheet(context, snap.data!),
+                            child: _flagBox(),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: TextField(
+                              controller: _phoneController,
+                              keyboardType: TextInputType.phone,
+                              style: AppTextStyles.bodyLarge(
+                                context,
+                              ).copyWith(color: Colors.white),
+                              decoration: InputDecoration(
+                                hintText:
+                                    widget.hintText ?? 'Enter phone number',
+                                hintStyle: AppTextStyles.bodyLarge(context)
+                                    .copyWith(
+                                      color: Colors.white.withOpacity(0.5),
+                                    ),
+                                border: InputBorder.none,
+                                isDense: true,
+                                contentPadding: EdgeInsets.zero,
+                              ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              onChanged: (_) {
+                                field.didChange(_phoneController.text);
+                              },
+                            ),
+                          ),
+                        ],
                       ),
+                      hasError: _errorMessage != null,
                     ),
-                  ),
-                ],
-              ),
+
+                    if (_errorMessage != null) ...[
+                      const SizedBox(height: 8),
+                      AppText(
+                        text: _errorMessage!,
+                        style: AppTextStyles.bodyRegular(
+                          context,
+                        ).copyWith(color: Colors.red, fontSize: 12),
+                      ),
+                    ],
+                  ],
+                );
+              },
             );
           },
         ),
@@ -176,11 +274,16 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
     );
   }
 
-  Widget _underline({required Widget child}) {
+  Widget _underline({required Widget child, bool hasError = false}) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.white24)),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: hasError ? Colors.red : Colors.white24,
+            width: hasError ? 1.5 : 1,
+          ),
+        ),
       ),
       child: child,
     );
@@ -202,6 +305,18 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
         },
       ),
     );
+  }
+
+  // Expose validate method to parent
+  String? getValidationError() {
+    return validate();
+  }
+
+  // Method to trigger validation from parent
+  void triggerValidation() {
+    setState(() {
+      _errorMessage = validate();
+    });
   }
 }
 

@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottie/lottie.dart';
 
 @RoutePage()
 class VerifyPhoneNumberScreen extends StatefulWidget {
@@ -143,20 +144,24 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
                         child: CustomBackButton(),
                       ),
                       CustomSizedBox(height: 40),
-                      Container(
+                      SizedBox(
                         width: 100,
                         height: 100,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: ColorPalette.primary,
-                            width: 2,
-                          ),
-                        ),
-                        child: Icon(
-                          Icons.lock_outline,
-                          size: 40,
-                          color: ColorPalette.white,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Lottie.asset(
+                              Assets.animations.iconBg,
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
+                            SvgPicture.asset(
+                              Assets.icons.vector.path,
+                              height: 40,
+                              width: 40,
+                            ),
+                          ],
                         ),
                       ),
                       CustomSizedBox(height: 40),

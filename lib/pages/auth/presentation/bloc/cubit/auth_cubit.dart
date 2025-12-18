@@ -1,4 +1,6 @@
 import 'package:fennac_app/pages/auth/presentation/bloc/state/auth_state.dart';
+import 'package:fennac_app/widgets/custom_country_field.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AuthCubit extends Cubit<AuthState> {
@@ -6,6 +8,15 @@ class AuthCubit extends Cubit<AuthState> {
 
   bool obscurePassword = true;
   bool isEmail = true;
+
+  final formKey = GlobalKey<FormState>();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+  final emailController = TextEditingController();
+  final phoneController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+  Country? selectedCountry;
 
   void isObsecure() {
     emit(AuthLoading());
@@ -40,6 +51,24 @@ class AuthCubit extends Cubit<AuthState> {
     return null;
   }
 
+  String? validatePhoneNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Phone number is required';
+    }
+
+    final digitsOnly = value.replaceAll(RegExp(r'[^0-9]'), '');
+
+    if (digitsOnly.length < 10) {
+      return 'Phone number must be at least 10 digits';
+    }
+
+    if (digitsOnly.length > 15) {
+      return 'Phone number is too long';
+    }
+
+    return null;
+  }
+
   bool obscureConfirmPassword = true;
 
   void isObsecureConfirm() {
@@ -63,6 +92,17 @@ class AuthCubit extends Cubit<AuthState> {
       return 'Passwords do not match';
     }
     return null;
+  }
+
+  void loadCountry() {
+    emit(AuthLoading());
+    loadCountries().then((countries) {
+      selectedCountry = countries.firstWhere(
+        (c) => c.iso == 'US',
+        orElse: () => countries.first,
+      );
+      emit(AuthLoaded());
+    });
   }
 
   int a = 3;

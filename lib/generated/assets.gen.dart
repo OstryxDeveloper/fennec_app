@@ -230,6 +230,10 @@ class $AssetsIconsGen {
   SvgGenImage get checkCircle =>
       const SvgGenImage('assets/icons/check-circle.svg');
 
+  /// File path: assets/icons/check_green.png
+  AssetGenImage get checkGreen =>
+      const AssetGenImage('assets/icons/check_green.png');
+
   /// File path: assets/icons/comma_inverted.svg
   SvgGenImage get commaInverted =>
       const SvgGenImage('assets/icons/comma_inverted.svg');
@@ -389,6 +393,7 @@ class $AssetsIconsGen {
     checkCircle1,
     checkCircle2,
     checkCircle,
+    checkGreen,
     commaInverted,
     diamondStone1,
     diamondStone,

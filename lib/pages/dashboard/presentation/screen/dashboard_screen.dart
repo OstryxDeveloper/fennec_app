@@ -28,16 +28,20 @@ class _DashboardScreenState extends State<DashboardScreen>
   late Animation<Offset> _slide;
   late Animation<double> _scale;
 
-  void cacheImages(BuildContext context) {
-    precacheImage(AssetImage(Assets.images.boysGroup.path), context);
-    precacheImage(AssetImage(Assets.images.girlsGroup.path), context);
-    precacheImage(AssetImage(Assets.images.mobile.path), context);
-    precacheImage(AssetImage(Assets.icons.group.path), context);
-    precacheImage(AssetImage(Assets.icons.groupUsersIcon2.path), context);
-    precacheImage(AssetImage(Assets.icons.groupUsersIcon2.path), context);
-    precacheImage(AssetImage(Assets.icons.groupUsersIcon3.path), context);
-    precacheImage(AssetImage(Assets.icons.groupUsersIcon4.path), context);
-    precacheImage(AssetImage(Assets.icons.groupUsersIcon5.path), context);
+  Future<void> cacheImages(BuildContext context) async {
+    final imageAssets = [
+      Assets.images.boysGroup.path,
+      Assets.images.girlsGroup.path,
+      Assets.images.mobile.path,
+    ];
+
+    for (final assetPath in imageAssets) {
+      try {
+        await precacheImage(AssetImage(assetPath), context);
+      } catch (e) {
+        debugPrint('Failed to precache image: $assetPath - $e');
+      }
+    }
   }
 
   @override
@@ -73,7 +77,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _controller.forward();
-      cacheImages(context);
+      cacheImages(context); // Now async, won't block
     });
   }
 

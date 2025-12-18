@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:fennac_app/widgets/custom_back_button.dart';
 import 'package:fennac_app/widgets/custom_elevated_button.dart';
 import 'package:fennac_app/widgets/custom_otp_field.dart';
@@ -8,6 +9,8 @@ import 'package:fennac_app/widgets/movable_background.dart';
 import 'package:flutter/material.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottie/lottie.dart';
 
 @RoutePage()
 class OtpVerificationScreen extends StatefulWidget {
@@ -44,17 +47,24 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     child: CustomBackButton(),
                   ),
                   CustomSizedBox(height: 40),
-                  Container(
+                  SizedBox(
                     width: 100,
                     height: 100,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: ColorPalette.primary, width: 2),
-                    ),
-                    child: Icon(
-                      Icons.lock_outline,
-                      size: 40,
-                      color: ColorPalette.white,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Lottie.asset(
+                          Assets.animations.iconBg,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ),
+                        SvgPicture.asset(
+                          Assets.icons.vector4.path,
+                          height: 40,
+                          width: 40,
+                        ),
+                      ],
                     ),
                   ),
                   CustomSizedBox(height: 40),

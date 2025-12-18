@@ -14,6 +14,7 @@ import 'package:fennac_app/widgets/custom_elevated_button.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../../routes/routes_imports.gr.dart';
 import '../../../../widgets/custom_bottom_sheet.dart';
@@ -65,10 +66,25 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
                             CustomSizedBox(height: 40),
 
-                            SvgPicture.asset(
-                              Assets.icons.logoAnimation.path,
+                            SizedBox(
                               width: 100,
                               height: 100,
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Lottie.asset(
+                                    Assets.animations.iconBg,
+                                    width: 100,
+                                    height: 100,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  SvgPicture.asset(
+                                    Assets.icons.vector3.path,
+                                    height: 40,
+                                    width: 40,
+                                  ),
+                                ],
+                              ),
                             ),
 
                             CustomSizedBox(height: 40),
@@ -137,20 +153,24 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                         context,
                                       ).push(OtpVerificationRoute());
                                     },
-                                    icon: Container(
+                                    icon: SizedBox(
                                       width: 100,
                                       height: 100,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: Colors.green,
-                                          width: 2,
-                                        ),
-                                      ),
-                                      child: Icon(
-                                        Icons.check,
-                                        color: Colors.green,
-                                        size: 50,
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          Lottie.asset(
+                                            Assets.animations.iconBg,
+                                            width: 100,
+                                            height: 100,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          Image.asset(
+                                            Assets.icons.checkGreen.path,
+                                            height: 72,
+                                            width: 72,
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   );
