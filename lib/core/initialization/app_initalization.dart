@@ -5,6 +5,6 @@ import '../di_container.dart';
 class AppInitalizer {
   static Future init() async {
     WidgetsFlutterBinding.ensureInitialized();
-    Di().init();
+    await Di().init();
   }
 }

@@ -135,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         CustomElevatedButton(
                           onTap: () {
                             if (_formKey.currentState!.validate()) {
-                              AutoRouter.of(context).pop();
+                              AutoRouter.of(context).push(KycRoute());
                             }
                           },
                           text: 'Login',

@@ -8,7 +8,6 @@ import 'package:fennac_app/widgets/custom_text.dart';
 import 'package:fennac_app/widgets/movable_background.dart';
 import 'package:flutter/material.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
-import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 

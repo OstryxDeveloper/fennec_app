@@ -86,6 +86,44 @@ class $AssetsAnimationsGen {
   ];
 }
 
+class $AssetsDummyGen {
+  const $AssetsDummyGen();
+
+  /// File path: assets/dummy/portrait.png
+  AssetGenImage get portrait =>
+      const AssetGenImage('assets/dummy/portrait.png');
+
+  /// File path: assets/dummy/portrait1.png
+  AssetGenImage get portrait1 =>
+      const AssetGenImage('assets/dummy/portrait1.png');
+
+  /// File path: assets/dummy/portrait2.png
+  AssetGenImage get portrait2 =>
+      const AssetGenImage('assets/dummy/portrait2.png');
+
+  /// File path: assets/dummy/portrait3.png
+  AssetGenImage get portrait3 =>
+      const AssetGenImage('assets/dummy/portrait3.png');
+
+  /// File path: assets/dummy/portrait4.png
+  AssetGenImage get portrait4 =>
+      const AssetGenImage('assets/dummy/portrait4.png');
+
+  /// File path: assets/dummy/portrait5.png
+  AssetGenImage get portrait5 =>
+      const AssetGenImage('assets/dummy/portrait5.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+    portrait,
+    portrait1,
+    portrait2,
+    portrait3,
+    portrait4,
+    portrait5,
+  ];
+}
+
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
@@ -477,6 +515,7 @@ class Assets {
   const Assets._();
 
   static const $AssetsAnimationsGen animations = $AssetsAnimationsGen();
+  static const $AssetsDummyGen dummy = $AssetsDummyGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
 }
