@@ -206,7 +206,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                   ),
                                   InkWell(
                                     onTap: () {
-                                      _authCubit.isEmailOrPhone();
+                                      _authCubit.toggleEmailOrPhone();
                                     },
                                     child: AppText(
                                       text: _authCubit.isEmail

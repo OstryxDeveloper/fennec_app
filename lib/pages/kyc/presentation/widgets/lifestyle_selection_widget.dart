@@ -35,7 +35,7 @@ class LifestyleSelectionWidget extends StatelessWidget {
                   color: isSelected
                       ? ColorPalette.primary
                       : ColorPalette.secondry.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(48),
                   border: Border.all(
                     color: isSelected
                         ? ColorPalette.primary

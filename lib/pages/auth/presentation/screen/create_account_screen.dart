@@ -101,7 +101,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                   CustomLabelTextField(
                                     label: 'First Name',
                                     controller: _authCubit.firstNameController,
-                                    hintText: 'John',
+                                    hintText: 'Enter your first name',
                                     labelColor: Colors.white,
                                     filled: false,
                                     onChanged: _authCubit.onFirstNameChanged,
@@ -142,7 +142,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                   CustomLabelTextField(
                                     label: 'Last Name',
                                     controller: _authCubit.lastNameController,
-                                    hintText: 'Doe',
+                                    hintText: 'Enter your last name',
                                     labelColor: Colors.white,
                                     filled: false,
                                     onChanged: _authCubit.onLastNameChanged,
@@ -186,7 +186,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               label: 'Email',
                               controller: _authCubit.emailController,
                               keyboardType: TextInputType.emailAddress,
-                              hintText: 'jhon@gmail.com',
+                              hintText: 'example@gmail.com',
                               labelColor: Colors.white,
                               filled: false,
                               onChanged: _authCubit.onEmailChanged,
@@ -265,7 +265,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               filled: false,
                               suffixIcon: IconButton(
                                 onPressed: () {
-                                  _authCubit.isObsecure();
+                                  _authCubit.togglePasswordVisibility();
                                 },
                                 icon: Icon(
                                   _authCubit.obscurePassword
@@ -311,7 +311,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               filled: false,
                               suffixIcon: IconButton(
                                 onPressed: () {
-                                  _authCubit.isObsecureConfirm();
+                                  _authCubit.toggleConfirmPasswordVisibility();
                                 },
                                 icon: Icon(
                                   _authCubit.obscureConfirmPassword
@@ -389,69 +389,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         // Sign Up Button
                         CustomElevatedButton(
                           onTap: () {
-                            // Validate all fields individually
-                            final firstNameError = _authCubit.validateName(
-                              _authCubit.firstNameController.text,
-                            );
-                            final lastNameError = _authCubit.validateName(
-                              _authCubit.lastNameController.text,
-                            );
-                            final emailError = _authCubit.validateEmail(
-                              _authCubit.emailController.text,
-                            );
-                            final phoneError = _authCubit.validatePhoneNumber(
-                              _authCubit.phoneController.text,
-                            );
-                            final passwordError = _authCubit.validatePassword(
-                              _authCubit.passwordController.text,
-                            );
-                            final confirmPasswordError = _authCubit
-                                .validateConfirmPassword(
-                                  _authCubit.confirmPasswordController.text,
-                                  _authCubit.passwordController.text,
-                                );
+                            _authCubit.submit();
 
-                            if (firstNameError == null &&
-                                lastNameError == null &&
-                                emailError == null &&
-                                phoneError == null &&
-                                passwordError == null &&
-                                confirmPasswordError == null) {
+                            if (_authCubit.isFormValid()) {
                               AutoRouter.of(
                                 context,
                               ).replace(const VerifyPhoneNumberRoute());
-                            } else {
-                              // Mark all fields as touched to show validation errors
-                              if (firstNameError != null) {
-                                _authCubit.onFirstNameChanged(
-                                  _authCubit.firstNameController.text,
-                                );
-                              }
-                              if (lastNameError != null) {
-                                _authCubit.onLastNameChanged(
-                                  _authCubit.lastNameController.text,
-                                );
-                              }
-                              if (emailError != null) {
-                                _authCubit.onEmailChanged(
-                                  _authCubit.emailController.text,
-                                );
-                              }
-                              if (phoneError != null) {
-                                _authCubit.onPhoneChanged(
-                                  _authCubit.phoneController.text,
-                                );
-                              }
-                              if (passwordError != null) {
-                                _authCubit.onPasswordChanged(
-                                  _authCubit.passwordController.text,
-                                );
-                              }
-                              if (confirmPasswordError != null) {
-                                _authCubit.onConfirmPasswordChanged(
-                                  _authCubit.confirmPasswordController.text,
-                                );
-                              }
                             }
                           },
                           text: 'Sign Up',

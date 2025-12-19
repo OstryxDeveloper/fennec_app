@@ -2,6 +2,7 @@ import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottie/lottie.dart';
 
 class OnBoardingWidget1 extends StatefulWidget {
   const OnBoardingWidget1({super.key});
@@ -98,44 +99,27 @@ class _OnBoardingWidget1State extends State<OnBoardingWidget1> {
   }
 
   Widget _buildCircularImage(String imagePath, {required bool isTop}) {
-    return Container(
+    return SizedBox(
       width: 280,
       height: 280,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: LinearGradient(
-          colors: [
-            ColorPalette.secondry,
-            ColorPalette.primary,
-            ColorPalette.secondry,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: ColorPalette.primary.withOpacity(0.4),
-            blurRadius: 30,
-            spreadRadius: 5,
-            offset: Offset(0, 10),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Lottie.asset(
+            Assets.animations.iconBg,
+            width: 268,
+            height: 268,
+            fit: BoxFit.cover,
+          ),
+          ClipOval(
+            child: Image.asset(
+              imagePath,
+              fit: BoxFit.cover,
+              width: 260,
+              height: 260,
+            ),
           ),
         ],
-      ),
-      padding: const EdgeInsets.all(4),
-      child: Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Color(0xFF1E1E2E),
-        ),
-        padding: const EdgeInsets.all(4),
-        child: ClipOval(
-          child: Image.asset(
-            imagePath,
-            fit: BoxFit.cover,
-            width: 260,
-            height: 260,
-          ),
-        ),
       ),
     );
   }

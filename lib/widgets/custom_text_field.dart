@@ -80,7 +80,7 @@ class CustomLabelTextField extends StatelessWidget {
                 labelStyle ??
                 AppTextStyles.bodyLarge(context).copyWith(
                   color: labelColor ?? ColorPalette.primary,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.bold,
                 ),
           ),
         if (label != null) CustomSizedBox(height: 8),

@@ -106,5 +106,11 @@ class AppRouter extends RootStackRouter {
       transitionsBuilder: TransitionsBuilders.fadeIn,
       duration: const Duration(milliseconds: 300),
     ),
+    CustomRoute(
+      page: KycMatchRoute.page,
+      barrierColor: Colors.transparent,
+      transitionsBuilder: TransitionsBuilders.fadeIn,
+      duration: const Duration(milliseconds: 300),
+    ),
   ];
 }

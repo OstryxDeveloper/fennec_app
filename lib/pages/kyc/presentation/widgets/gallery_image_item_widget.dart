@@ -55,8 +55,8 @@ class GalleryImageItemWidget extends StatelessWidget {
         ),
       ),
       child: DragTarget<int>(
-        onAccept: (draggedIndex) {
-          cubit.reorderImages(draggedIndex, index);
+        onAcceptWithDetails: (details) {
+          cubit.reorderImages(details.data, index);
         },
         builder: (context, candidateData, rejectedData) {
           return Container(

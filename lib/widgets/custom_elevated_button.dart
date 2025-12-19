@@ -30,7 +30,7 @@ class CustomElevatedButton extends StatelessWidget {
           shadowColor: ColorPalette.primary,
           textStyle: AppTextStyles.bodyLarge(
             context,
-          ).copyWith(color: ColorPalette.white, fontWeight: FontWeight.w600),
+          ).copyWith(color: ColorPalette.white, fontWeight: FontWeight.bold),
 
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(52),
@@ -45,7 +45,7 @@ class CustomElevatedButton extends StatelessWidget {
               text: text,
               style: AppTextStyles.bodyLarge(context).copyWith(
                 color: ColorPalette.white,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.bold,
               ),
             ),
             CustomSizedBox(width: 10),

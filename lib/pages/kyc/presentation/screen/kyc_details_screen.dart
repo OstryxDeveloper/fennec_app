@@ -36,12 +36,8 @@ class KycDetailsScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CustomSizedBox(height: 20),
-                      // Back Button
                       CustomBackButton(),
-                      CustomSizedBox(height: 32),
-
-                      // Header
+                      CustomSizedBox(height: 24),
                       AppText(
                         text: 'Add a few details so people get a sense of you.',
                         style: AppTextStyles.h1(context).copyWith(
@@ -50,7 +46,7 @@ class KycDetailsScreen extends StatelessWidget {
                           fontSize: 24,
                         ),
                       ),
-                      CustomSizedBox(height: 40),
+                      CustomSizedBox(height: 34),
 
                       // Short Bio
                       CustomLabelTextField(
@@ -60,7 +56,7 @@ class KycDetailsScreen extends StatelessWidget {
                         labelColor: Colors.white,
                         filled: false,
                         maxLines: 4,
-                        minLines: 4,
+                        minLines: 3,
                       ),
                       CustomSizedBox(height: 32),
 
@@ -69,67 +65,69 @@ class KycDetailsScreen extends StatelessWidget {
                         text: "What's your lifestyle like?",
                         style: AppTextStyles.bodyLarge(context).copyWith(
                           color: Colors.white,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       CustomSizedBox(height: 16),
                       LifestyleSelectionWidget(),
-                      CustomSizedBox(height: 32),
-
-                      // Job Title / Occupation
+                      CustomSizedBox(height: 24),
                       CustomLabelTextField(
                         label: 'Job Title / Occupation',
+                        labelStyle: AppTextStyles.bodyLarge(context).copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
                         controller: _kycCubit.jobTitleController,
                         hintText: 'What do you do?',
                         labelColor: Colors.white,
                         filled: false,
                       ),
-                      CustomSizedBox(height: 24),
+                      CustomSizedBox(height: 16),
 
-                      // Education / School
                       CustomLabelTextField(
                         label: 'Education / School',
+                        labelStyle: AppTextStyles.bodyLarge(context).copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
                         controller: _kycCubit.educationController,
                         hintText: 'Where did you studied?',
                         labelColor: Colors.white,
                         filled: false,
                       ),
-                      CustomSizedBox(height: 40),
-
-                      // Bottom Buttons
-                      Row(
-                        children: [
-                          Expanded(
-                            child: CustomOutlinedButton(
-                              onPressed: () {
-                                // Handle skip action
-                                AutoRouter.of(context).pop();
-                              },
-                              text: 'Skip',
-                              width: double.infinity,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: CustomElevatedButton(
-                              onTap: () {
-                                AutoRouter.of(
-                                  context,
-                                ).push(const KycGalleryRoute());
-                              },
-                              text: 'Continue',
-                              width: double.infinity,
-                            ),
-                          ),
-                        ],
-                      ),
-                      CustomSizedBox(height: 40),
                     ],
                   ),
                 ),
               );
             },
           ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Row(
+          children: [
+            Expanded(
+              child: CustomOutlinedButton(
+                onPressed: () {
+                  AutoRouter.of(context).push(KycGalleryRoute());
+                },
+                text: 'Skip',
+                width: double.infinity,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: CustomElevatedButton(
+                onTap: () {
+                  AutoRouter.of(context).push(const KycGalleryRoute());
+                },
+                text: 'Continue',
+                width: double.infinity,
+              ),
+            ),
+          ],
         ),
       ),
     );

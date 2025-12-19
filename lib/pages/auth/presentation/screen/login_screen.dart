@@ -24,15 +24,13 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
 
   final _authCubit = Di().sl<AuthCubit>();
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
+    _authCubit.emailController.dispose();
+    _authCubit.passwordController.dispose();
     super.dispose();
   }
 
@@ -57,21 +55,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         CustomBackButton(),
 
-                        CustomSizedBox(height: 40),
-
                         SvgPicture.asset(
                           Assets.icons.logoAnimation.path,
                           width: 100,
                           height: 100,
                         ),
 
-                        CustomSizedBox(height: 40),
+                        CustomSizedBox(height: 30),
 
                         AppText(
                           text: 'Login to your account',
                           style: AppTextStyles.h1(context).copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
+                            fontSize: 32,
                           ),
                         ),
 
@@ -79,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         CustomLabelTextField(
                           label: 'Email',
-                          controller: _emailController,
+                          controller: _authCubit.emailController,
                           validator: _authCubit.validateEmail,
                           keyboardType: TextInputType.emailAddress,
                           hintText: 'johndoe@email.com',
@@ -91,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         CustomLabelTextField(
                           label: 'Password',
-                          controller: _passwordController,
+                          controller: _authCubit.passwordController,
                           validator: _authCubit.validatePassword,
                           obscureText: _authCubit.obscurePassword,
                           hintText: '••••••••••',
@@ -99,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           filled: false,
                           suffixIcon: IconButton(
                             onPressed: () {
-                              _authCubit.isObsecure();
+                              _authCubit.togglePasswordVisibility();
                             },
                             icon: Icon(
                               _authCubit.obscurePassword

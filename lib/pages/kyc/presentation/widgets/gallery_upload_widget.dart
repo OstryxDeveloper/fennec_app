@@ -34,19 +34,45 @@ class GalleryUploadWidget extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
               child: (cubit.selectedImage?.path.isNotEmpty ?? false)
-                  ? Image.file(
-                      File(cubit.selectedImage!.path),
-                      width: double.infinity,
-                      height: 260,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Center(
-                          child: SvgPicture.asset(
-                            Assets.icons.camera.path,
-                            fit: BoxFit.scaleDown,
+                  ? Stack(
+                      children: [
+                        Image.file(
+                          File(cubit.selectedImage?.path ?? ''),
+                          width: double.infinity,
+                          height: 260,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Center(
+                              child: SvgPicture.asset(
+                                Assets.icons.camera.path,
+                                fit: BoxFit.scaleDown,
+                              ),
+                            );
+                          },
+                        ),
+                        Positioned(
+                          top: 6,
+                          right: 6,
+                          child: GestureDetector(
+                            onTap: () => cubit.removeImage(0),
+                            child: Container(
+                              alignment: Alignment.center,
+                              width: 24,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: ColorPalette.error,
+                              ),
+                              child: SvgPicture.asset(
+                                Assets.icons.trash.path,
+                                color: Colors.white,
+                                width: 10,
+                                height: 10,
+                              ),
+                            ),
                           ),
-                        );
-                      },
+                        ),
+                      ],
                     )
                   : Center(
                       child: SvgPicture.asset(

@@ -10,6 +10,14 @@ class OnBoardingWidget4 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final screenHeight = size.height;
+    final screenWidth = size.width;
+    final topIconsTop = screenHeight * 0.02;
+    final bottomIconsBottom = screenHeight * 0.52;
+    final mobileImageTopPadding = screenHeight * 0.17;
+    final textContainerHeight = screenHeight * 0.3;
+
     return Stack(
       children: [
         Column(
@@ -19,34 +27,43 @@ class OnBoardingWidget4 extends StatelessWidget {
                 children: [
                   // Top icons row
                   Positioned(
-                    top: 40,
+                    top: topIconsTop,
                     left: 0,
                     right: 0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _AnimatedFloatingIcon(
-                          assetPath: Assets.icons.eyeEmoji.path,
-                          delay: 0,
-                          color: Colors.white,
-                        ),
-                        SizedBox(width: 80),
-                        _AnimatedFloatingIcon(
-                          assetPath: Assets.icons.handshake.path,
-                          delay: 150,
-                          color: Colors.white,
-                        ),
-                      ],
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.1,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _AnimatedFloatingIcon(
+                            assetPath: Assets.icons.eyeEmoji.path,
+                            delay: 0,
+                            color: Colors.white,
+                            size: screenWidth * 0.18,
+                          ),
+                          SizedBox(width: screenWidth * 0.2),
+                          _AnimatedFloatingIcon(
+                            assetPath: Assets.icons.handshake.path,
+                            delay: 150,
+                            color: Colors.white,
+                            size: screenWidth * 0.18,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
 
                   // Bottom icons row
                   Positioned(
-                    bottom: 520,
+                    bottom: bottomIconsBottom,
                     left: 0,
                     right: 0,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.08,
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -54,11 +71,13 @@ class OnBoardingWidget4 extends StatelessWidget {
                             assetPath: Assets.icons.verifiedBadge.path,
                             delay: 300,
                             color: ColorPalette.green,
+                            size: screenWidth * 0.18,
                           ),
                           _AnimatedFloatingIcon(
                             assetPath: Assets.icons.people.path,
                             delay: 450,
                             color: Colors.white,
+                            size: screenWidth * 0.18,
                           ),
                         ],
                       ),
@@ -68,10 +87,11 @@ class OnBoardingWidget4 extends StatelessWidget {
                   // Center mobile image
                   Center(
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 180),
+                      padding: EdgeInsets.only(top: mobileImageTopPadding),
                       child: Image.asset(
                         Assets.images.mobile.path,
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
+                        height: screenHeight * 0.6,
                       ),
                     ),
                   ),
@@ -80,20 +100,18 @@ class OnBoardingWidget4 extends StatelessWidget {
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: SizedBox(
-                      height: 240,
+                      height: textContainerHeight,
                       width: double.infinity,
                       child: Stack(
                         children: [
                           LayoutBuilder(
                             builder: (context, constraints) {
-                              int steps = 60; // more steps → smoother
+                              int steps = 60;
                               return Stack(
                                 children: List.generate(steps, (index) {
-                                  double fraction = index / (steps - 1);
-                                  double sigmaY =
-                                      1 + fraction * 30; // sigmaY from 1 → 10
-                                  double sigmaX =
-                                      0.5 + fraction * 1; // sigmaX small
+                                  double fraction = index / steps;
+                                  double sigmaY = 1 + fraction * 30;
+                                  double sigmaX = 0.5 + fraction * 1;
                                   return Positioned(
                                     top: constraints.maxHeight * fraction,
                                     left: 0,
@@ -116,10 +134,10 @@ class OnBoardingWidget4 extends StatelessWidget {
                             },
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 20,
-                              horizontal: 24,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: screenWidth * 0.06,
                             ),
+                            margin: EdgeInsets.only(top: screenHeight * 0.04),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -131,7 +149,7 @@ class OnBoardingWidget4 extends StatelessWidget {
                                     context,
                                   ).copyWith(color: Colors.white, fontSize: 32),
                                 ),
-                                const SizedBox(height: 16),
+                                SizedBox(height: screenHeight * 0.02),
                                 Text(
                                   'Customize your groups\' profile to match your energy',
                                   textAlign: TextAlign.center,
@@ -139,7 +157,6 @@ class OnBoardingWidget4 extends StatelessWidget {
                                     context,
                                   ).copyWith(color: Colors.white, fontSize: 16),
                                 ),
-                                SizedBox(height: 40),
                                 Spacer(),
                               ],
                             ),
@@ -158,16 +175,17 @@ class OnBoardingWidget4 extends StatelessWidget {
   }
 }
 
-// Animated floating icon widget with smooth pop animation every 2 seconds
 class _AnimatedFloatingIcon extends StatefulWidget {
   final String assetPath;
   final int delay;
   final Color color;
+  final double size;
 
   const _AnimatedFloatingIcon({
     required this.assetPath,
     required this.delay,
     required this.color,
+    required this.size,
   });
 
   @override
@@ -231,8 +249,8 @@ class _AnimatedFloatingIconState extends State<_AnimatedFloatingIcon>
           child: Opacity(
             opacity: _fadeAnimation.value,
             child: Container(
-              width: 72,
-              height: 72,
+              width: widget.size,
+              height: widget.size,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 boxShadow: [
@@ -250,11 +268,7 @@ class _AnimatedFloatingIconState extends State<_AnimatedFloatingIcon>
                   ),
                 ],
               ),
-              child: Image.asset(
-                widget.assetPath,
-                fit: BoxFit.contain,
-                height: 72,
-              ),
+              child: Image.asset(widget.assetPath, fit: BoxFit.contain),
             ),
           ),
         );
