@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
-import 'package:fennac_app/helpers/toast_helper.dart';
 import 'package:fennac_app/pages/auth/presentation/bloc/cubit/auth_cubit.dart';
+import 'package:fennac_app/pages/auth/presentation/bloc/state/auth_state.dart';
 import 'package:fennac_app/routes/routes_imports.gr.dart';
 import 'package:fennac_app/widgets/custom_back_button.dart';
 import 'package:fennac_app/widgets/custom_country_field.dart';
@@ -34,32 +34,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   void initState() {
     super.initState();
     _authCubit.loadCountry();
-    _authCubit.firstNameController.addListener(_validateAllFields);
-    _authCubit.lastNameController.addListener(_validateAllFields);
-    _authCubit.emailController.addListener(_validateAllFields);
-    _authCubit.phoneController.addListener(_validateAllFields);
-    _authCubit.passwordController.addListener(_validateAllFields);
-    _authCubit.confirmPasswordController.addListener(_validateAllFields);
   }
 
   @override
   void dispose() {
-    _authCubit.firstNameController.removeListener(_validateAllFields);
-    _authCubit.lastNameController.removeListener(_validateAllFields);
-    _authCubit.emailController.removeListener(_validateAllFields);
-    _authCubit.phoneController.removeListener(_validateAllFields);
-    _authCubit.passwordController.removeListener(_validateAllFields);
-    _authCubit.confirmPasswordController.removeListener(_validateAllFields);
     super.dispose();
-  }
-
-  void _validateAllFields() {
-    if (_authCubit.formKey.currentState != null) {
-      _authCubit.formKey.currentState!.validate();
-    }
-    if (mounted) {
-      setState(() {});
-    }
   }
 
   @override
@@ -76,7 +55,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 builder: (context, state) {
                   return Form(
                     key: _authCubit.formKey,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    autovalidateMode: AutovalidateMode.disabled,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -116,41 +95,123 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         Row(
                           children: [
                             Expanded(
-                              child: CustomLabelTextField(
-                                label: 'First Name',
-                                controller: _authCubit.firstNameController,
-                                validator: _authCubit.validateName,
-                                hintText: 'John',
-                                labelColor: Colors.white,
-                                filled: false,
-                                onChanged: (_) => _validateAllFields(),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CustomLabelTextField(
+                                    label: 'First Name',
+                                    controller: _authCubit.firstNameController,
+                                    hintText: 'John',
+                                    labelColor: Colors.white,
+                                    filled: false,
+                                    onChanged: _authCubit.onFirstNameChanged,
+                                  ),
+                                  BlocBuilder<AuthCubit, AuthState>(
+                                    bloc: _authCubit,
+                                    builder: (context, state) {
+                                      final error = _authCubit
+                                          .getFirstNameError();
+                                      if (error != null) {
+                                        return Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: 8,
+                                          ),
+                                          child: AppText(
+                                            text: error,
+                                            style:
+                                                AppTextStyles.bodyRegular(
+                                                  context,
+                                                ).copyWith(
+                                                  color: Colors.red,
+                                                  fontSize: 12,
+                                                ),
+                                          ),
+                                        );
+                                      }
+                                      return const SizedBox.shrink();
+                                    },
+                                  ),
+                                ],
                               ),
                             ),
                             const SizedBox(width: 16),
                             Expanded(
-                              child: CustomLabelTextField(
-                                label: 'Last Name',
-                                controller: _authCubit.lastNameController,
-                                validator: _authCubit.validateName,
-                                hintText: 'Doe',
-                                labelColor: Colors.white,
-                                filled: false,
-                                onChanged: (_) => _validateAllFields(),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CustomLabelTextField(
+                                    label: 'Last Name',
+                                    controller: _authCubit.lastNameController,
+                                    hintText: 'Doe',
+                                    labelColor: Colors.white,
+                                    filled: false,
+                                    onChanged: _authCubit.onLastNameChanged,
+                                  ),
+                                  BlocBuilder<AuthCubit, AuthState>(
+                                    bloc: _authCubit,
+                                    builder: (context, state) {
+                                      final error = _authCubit
+                                          .getLastNameError();
+                                      if (error != null) {
+                                        return Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: 8,
+                                          ),
+                                          child: AppText(
+                                            text: error,
+                                            style:
+                                                AppTextStyles.bodyRegular(
+                                                  context,
+                                                ).copyWith(
+                                                  color: Colors.red,
+                                                  fontSize: 12,
+                                                ),
+                                          ),
+                                        );
+                                      }
+                                      return const SizedBox.shrink();
+                                    },
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
                         CustomSizedBox(height: 24),
 
-                        CustomLabelTextField(
-                          label: 'Email',
-                          controller: _authCubit.emailController,
-                          validator: _authCubit.validateEmail,
-                          keyboardType: TextInputType.emailAddress,
-                          hintText: 'jhon@gmail.com',
-                          labelColor: Colors.white,
-                          filled: false,
-                          onChanged: (_) => _validateAllFields(),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomLabelTextField(
+                              label: 'Email',
+                              controller: _authCubit.emailController,
+                              keyboardType: TextInputType.emailAddress,
+                              hintText: 'jhon@gmail.com',
+                              labelColor: Colors.white,
+                              filled: false,
+                              onChanged: _authCubit.onEmailChanged,
+                            ),
+                            BlocBuilder<AuthCubit, AuthState>(
+                              bloc: _authCubit,
+                              builder: (context, state) {
+                                final error = _authCubit.getEmailError();
+                                if (error != null) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 8),
+                                    child: AppText(
+                                      text: error,
+                                      style: AppTextStyles.bodyRegular(context)
+                                          .copyWith(
+                                            color: Colors.red,
+                                            fontSize: 12,
+                                          ),
+                                    ),
+                                  );
+                                }
+                                return const SizedBox.shrink();
+                              },
+                            ),
+                          ],
                         ),
                         CustomSizedBox(height: 24),
 
@@ -164,22 +225,15 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               onChanged: (completePhoneNumber) {
                                 _authCubit.phoneController.text =
                                     completePhoneNumber;
-                                _validateAllFields();
+                                _authCubit.onPhoneChanged(completePhoneNumber);
                               },
-                              validator: _authCubit.validatePhoneNumber,
                             ),
                             // Show phone validation error
-                            Builder(
-                              builder: (context) {
-                                final phoneError = _authCubit
-                                    .validatePhoneNumber(
-                                      _authCubit.phoneController.text,
-                                    );
-                                if (phoneError != null &&
-                                    _authCubit
-                                        .phoneController
-                                        .text
-                                        .isNotEmpty) {
+                            BlocBuilder<AuthCubit, AuthState>(
+                              bloc: _authCubit,
+                              builder: (context, state) {
+                                final phoneError = _authCubit.getPhoneError();
+                                if (phoneError != null) {
                                   return Padding(
                                     padding: const EdgeInsets.only(top: 8),
                                     child: AppText(
@@ -199,52 +253,97 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         ),
                         CustomSizedBox(height: 24),
 
-                        CustomLabelTextField(
-                          label: 'Password',
-                          controller: _authCubit.passwordController,
-                          validator: _authCubit.validatePassword,
-                          obscureText: _authCubit.obscurePassword,
-                          hintText: '•••••',
-                          labelColor: Colors.white,
-                          filled: false,
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              _authCubit.isObsecure();
-                            },
-                            icon: Icon(
-                              _authCubit.obscurePassword
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined,
-                              color: Colors.white,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomLabelTextField(
+                              label: 'Password',
+                              controller: _authCubit.passwordController,
+                              obscureText: _authCubit.obscurePassword,
+                              hintText: '•••••',
+                              labelColor: Colors.white,
+                              filled: false,
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  _authCubit.isObsecure();
+                                },
+                                icon: Icon(
+                                  _authCubit.obscurePassword
+                                      ? Icons.visibility_outlined
+                                      : Icons.visibility_off_outlined,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              onChanged: _authCubit.onPasswordChanged,
                             ),
-                          ),
-                          onChanged: (_) => _validateAllFields(),
+                            BlocBuilder<AuthCubit, AuthState>(
+                              bloc: _authCubit,
+                              builder: (context, state) {
+                                final error = _authCubit.getPasswordError();
+                                if (error != null) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 8),
+                                    child: AppText(
+                                      text: error,
+                                      style: AppTextStyles.bodyRegular(context)
+                                          .copyWith(
+                                            color: Colors.red,
+                                            fontSize: 12,
+                                          ),
+                                    ),
+                                  );
+                                }
+                                return const SizedBox.shrink();
+                              },
+                            ),
+                          ],
                         ),
                         CustomSizedBox(height: 24),
-                        CustomLabelTextField(
-                          label: 'Confirm Password',
-                          controller: _authCubit.confirmPasswordController,
-                          validator: (val) =>
-                              _authCubit.validateConfirmPassword(
-                                val,
-                                _authCubit.passwordController.text,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomLabelTextField(
+                              label: 'Confirm Password',
+                              controller: _authCubit.confirmPasswordController,
+                              obscureText: _authCubit.obscureConfirmPassword,
+                              hintText: '•••••••••••••',
+                              labelColor: Colors.white,
+                              filled: false,
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  _authCubit.isObsecureConfirm();
+                                },
+                                icon: Icon(
+                                  _authCubit.obscureConfirmPassword
+                                      ? Icons.visibility_outlined
+                                      : Icons.visibility_off_outlined,
+                                  color: Colors.white,
+                                ),
                               ),
-                          obscureText: _authCubit.obscureConfirmPassword,
-                          hintText: '•••••••••••••',
-                          labelColor: Colors.white,
-                          filled: false,
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              _authCubit.isObsecureConfirm();
-                            },
-                            icon: Icon(
-                              _authCubit.obscureConfirmPassword
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined,
-                              color: Colors.white,
+                              onChanged: _authCubit.onConfirmPasswordChanged,
                             ),
-                          ),
-                          onChanged: (_) => _validateAllFields(),
+                            BlocBuilder<AuthCubit, AuthState>(
+                              bloc: _authCubit,
+                              builder: (context, state) {
+                                final error = _authCubit
+                                    .getConfirmPasswordError();
+                                if (error != null) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 8),
+                                    child: AppText(
+                                      text: error,
+                                      style: AppTextStyles.bodyRegular(context)
+                                          .copyWith(
+                                            color: Colors.red,
+                                            fontSize: 12,
+                                          ),
+                                    ),
+                                  );
+                                }
+                                return const SizedBox.shrink();
+                              },
+                            ),
+                          ],
                         ),
                         CustomSizedBox(height: 40),
 
@@ -290,23 +389,69 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         // Sign Up Button
                         CustomElevatedButton(
                           onTap: () {
-                            if (_authCubit.formKey.currentState?.validate() ??
-                                false) {
-                              final phoneError = _authCubit.validatePhoneNumber(
-                                _authCubit.phoneController.text,
-                              );
-                              if (phoneError != null) {
-                                VxToast.show(
-                                  msg: phoneError,
-                                  bgColor: Colors.red,
+                            // Validate all fields individually
+                            final firstNameError = _authCubit.validateName(
+                              _authCubit.firstNameController.text,
+                            );
+                            final lastNameError = _authCubit.validateName(
+                              _authCubit.lastNameController.text,
+                            );
+                            final emailError = _authCubit.validateEmail(
+                              _authCubit.emailController.text,
+                            );
+                            final phoneError = _authCubit.validatePhoneNumber(
+                              _authCubit.phoneController.text,
+                            );
+                            final passwordError = _authCubit.validatePassword(
+                              _authCubit.passwordController.text,
+                            );
+                            final confirmPasswordError = _authCubit
+                                .validateConfirmPassword(
+                                  _authCubit.confirmPasswordController.text,
+                                  _authCubit.passwordController.text,
                                 );
 
-                                return;
-                              }
-
+                            if (firstNameError == null &&
+                                lastNameError == null &&
+                                emailError == null &&
+                                phoneError == null &&
+                                passwordError == null &&
+                                confirmPasswordError == null) {
                               AutoRouter.of(
                                 context,
                               ).replace(const VerifyPhoneNumberRoute());
+                            } else {
+                              // Mark all fields as touched to show validation errors
+                              if (firstNameError != null) {
+                                _authCubit.onFirstNameChanged(
+                                  _authCubit.firstNameController.text,
+                                );
+                              }
+                              if (lastNameError != null) {
+                                _authCubit.onLastNameChanged(
+                                  _authCubit.lastNameController.text,
+                                );
+                              }
+                              if (emailError != null) {
+                                _authCubit.onEmailChanged(
+                                  _authCubit.emailController.text,
+                                );
+                              }
+                              if (phoneError != null) {
+                                _authCubit.onPhoneChanged(
+                                  _authCubit.phoneController.text,
+                                );
+                              }
+                              if (passwordError != null) {
+                                _authCubit.onPasswordChanged(
+                                  _authCubit.passwordController.text,
+                                );
+                              }
+                              if (confirmPasswordError != null) {
+                                _authCubit.onConfirmPasswordChanged(
+                                  _authCubit.confirmPasswordController.text,
+                                );
+                              }
                             }
                           },
                           text: 'Sign Up',

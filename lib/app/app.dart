@@ -27,10 +27,13 @@ class _MyAppState extends State<MyApp> {
             statusBarBrightness: Brightness.dark,
             statusBarColor: Colors.transparent,
           ),
-          child: MaterialApp.router(
-            title: 'Fennac App',
-            debugShowCheckedModeBanner: false,
-            routerConfig: _appRouter.config(),
+          child: GestureDetector(
+            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+            child: MaterialApp.router(
+              title: 'Fennac App',
+              debugShowCheckedModeBanner: false,
+              routerConfig: _appRouter.config(),
+            ),
           ),
         );
       },

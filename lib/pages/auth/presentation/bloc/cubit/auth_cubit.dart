@@ -18,6 +18,14 @@ class AuthCubit extends Cubit<AuthState> {
   final confirmPasswordController = TextEditingController();
   Country? selectedCountry;
 
+  // Individual field validation states
+  bool _firstNameTouched = false;
+  bool _lastNameTouched = false;
+  bool _emailTouched = false;
+  bool _phoneTouched = false;
+  bool _passwordTouched = false;
+  bool _confirmPasswordTouched = false;
+
   void isObsecure() {
     emit(AuthLoading());
     obscurePassword = !obscurePassword;
@@ -92,6 +100,79 @@ class AuthCubit extends Cubit<AuthState> {
       return 'Passwords do not match';
     }
     return null;
+  }
+
+  // Individual field validation methods
+  void onFirstNameChanged(String value) {
+    if (!_firstNameTouched && value.isNotEmpty) {
+      _firstNameTouched = true;
+      emit(AuthLoaded());
+    }
+  }
+
+  void onLastNameChanged(String value) {
+    if (!_lastNameTouched && value.isNotEmpty) {
+      _lastNameTouched = true;
+      emit(AuthLoaded());
+    }
+  }
+
+  void onEmailChanged(String value) {
+    if (!_emailTouched && value.isNotEmpty) {
+      _emailTouched = true;
+      emit(AuthLoaded());
+    }
+  }
+
+  void onPhoneChanged(String value) {
+    if (!_phoneTouched && value.isNotEmpty) {
+      _phoneTouched = true;
+      emit(AuthLoaded());
+    }
+  }
+
+  void onPasswordChanged(String value) {
+    if (!_passwordTouched && value.isNotEmpty) {
+      _passwordTouched = true;
+      emit(AuthLoaded());
+    }
+  }
+
+  void onConfirmPasswordChanged(String value) {
+    if (!_confirmPasswordTouched && value.isNotEmpty) {
+      _confirmPasswordTouched = true;
+      emit(AuthLoaded());
+    }
+  }
+
+  // Get validation error for individual fields (only if touched)
+  String? getFirstNameError() {
+    return _firstNameTouched ? validateName(firstNameController.text) : null;
+  }
+
+  String? getLastNameError() {
+    return _lastNameTouched ? validateName(lastNameController.text) : null;
+  }
+
+  String? getEmailError() {
+    return _emailTouched ? validateEmail(emailController.text) : null;
+  }
+
+  String? getPhoneError() {
+    return _phoneTouched ? validatePhoneNumber(phoneController.text) : null;
+  }
+
+  String? getPasswordError() {
+    return _passwordTouched ? validatePassword(passwordController.text) : null;
+  }
+
+  String? getConfirmPasswordError() {
+    return _confirmPasswordTouched
+        ? validateConfirmPassword(
+            confirmPasswordController.text,
+            passwordController.text,
+          )
+        : null;
   }
 
   void loadCountry() {
