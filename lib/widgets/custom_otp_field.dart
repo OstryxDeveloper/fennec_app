@@ -28,26 +28,21 @@ class _CustomOtpFieldState extends State<CustomOtpField> {
   @override
   Widget build(BuildContext context) {
     final defaultPinTheme = PinTheme(
-      width: 48,
+      width: 56,
       height: 56,
       textStyle: AppTextStyles.h2(
         context,
       ).copyWith(color: ColorPalette.white, fontWeight: FontWeight.bold),
       decoration: BoxDecoration(
-        border: Border.all(
-          color: widget.color ?? ColorPalette.white.withOpacity(0.2),
-          width: 1,
-        ),
-        borderRadius: BorderRadius.circular(12),
+        color: ColorPalette.black.withOpacity(.3),
+        border: Border.all(color: widget.color ?? Colors.white70, width: 1),
+        borderRadius: BorderRadius.circular(16),
       ),
     );
 
     final focusedPinTheme = defaultPinTheme.copyDecorationWith(
-      border: Border.all(
-        color: widget.color ?? ColorPalette.white.withOpacity(0.2),
-        width: 1,
-      ),
-      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: widget.color ?? Colors.white70, width: 1),
+      borderRadius: BorderRadius.circular(16),
     );
 
     final submittedPinTheme = defaultPinTheme.copyWith(

@@ -32,6 +32,8 @@ dependencies:
   camera: ^0.11.2
   permission_handler: ^11.3.1
   geolocator: ^13.0.1
+  audio_waveforms: ^2.0.1
+  path_provider: ^2.1.4
 
   freezed_annotation: ^3.0.0
   json_annotation: ^4.9.0

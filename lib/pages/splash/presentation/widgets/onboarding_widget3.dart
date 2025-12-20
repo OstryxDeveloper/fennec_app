@@ -23,7 +23,7 @@ class _OnboardingWidget3State extends State<OnboardingWidget3> {
             alignment: Alignment.center,
             children: [
               Lottie.asset(
-                Assets.animations.rotatingGroupAnimationNoShadow,
+                Assets.animations.rotatingGroupAnimationEdgesNoBG,
                 repeat: true,
                 fit: BoxFit.fill,
               ),
@@ -46,7 +46,7 @@ class _OnboardingWidget3State extends State<OnboardingWidget3> {
               ),
               const SizedBox(height: 24),
               AppText(
-                text: 'Find other groups that match your vibe ',
+                text: 'Find other groups that match your vibe',
                 textAlign: TextAlign.center,
                 style: AppTextStyles.bodyLarge(
                   context,

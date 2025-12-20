@@ -1,5 +1,6 @@
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
+import 'package:fennac_app/widgets/custom_sized_box.dart';
 import 'package:fennac_app/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -37,7 +38,7 @@ class OnboardingWidget2 extends StatelessWidget {
                       context,
                     ).copyWith(color: Colors.white, fontSize: 32),
                   ),
-                  const SizedBox(height: 24),
+                  const CustomSizedBox(height: 24),
                   AppText(
                     text:
                         'Dive into a shared chat room, Have fun with your friends',

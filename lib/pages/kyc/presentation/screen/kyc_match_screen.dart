@@ -60,8 +60,6 @@ class KycMatchScreen extends StatelessWidget {
 
                       InterestSelectionWidget(),
                       CustomSizedBox(height: 40),
-
-                      CustomSizedBox(height: 40),
                     ],
                   ),
                 ),
@@ -82,7 +80,7 @@ class KycMatchScreen extends StatelessWidget {
                 Expanded(
                   child: CustomOutlinedButton(
                     onPressed: () {
-                      AutoRouter.of(context).pop();
+                      AutoRouter.of(context).push(KycPromptRoute());
                     },
                     text: 'Skip',
                     width: double.infinity,
@@ -92,8 +90,7 @@ class KycMatchScreen extends StatelessWidget {
                 Expanded(
                   child: CustomElevatedButton(
                     onTap: () {
-                      // Handle continue action
-                      AutoRouter.of(context).push(const DashboardRoute());
+                      AutoRouter.of(context).push(KycPromptRoute());
                     },
                     text: 'Continue',
                     width: double.infinity,

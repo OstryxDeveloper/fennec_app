@@ -11,7 +11,6 @@ class KycCubit extends Cubit<KycState> {
   DateTime? selectedDate;
   String? selectedGender;
   List<String> selectedSexualOrientations = [];
-  String? selectedPronouns;
   final genders = ['Male', 'Female', 'Non-binary', 'Prefer not to say'];
   final sexualOrientations = [
     'Straight',
@@ -113,6 +112,12 @@ class KycCubit extends Cubit<KycState> {
     emit(KycLoaded());
   }
 
+  void selectSexualOrientations(List<String> orientations) {
+    emit(KycLoading());
+    selectedSexualOrientations = List.from(orientations);
+    emit(KycLoaded());
+  }
+
   void toggleInterest(String interest) {
     emit(KycLoading());
     if (selectedInterests.contains(interest)) {
@@ -126,9 +131,15 @@ class KycCubit extends Cubit<KycState> {
     emit(KycLoaded());
   }
 
-  void selectGender(String gender){
+  void selectGender(String gender) {
     emit(KycLoading());
     selectedGender = gender;
+    emit(KycLoaded());
+  }
+
+  void selectPronouns(String pronouns) {
+    emit(KycLoading());
+    selectedPronoun = pronouns;
     emit(KycLoaded());
   }
 

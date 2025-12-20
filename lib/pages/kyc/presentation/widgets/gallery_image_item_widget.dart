@@ -25,8 +25,8 @@ class GalleryImageItemWidget extends StatelessWidget {
         elevation: 4,
         borderRadius: BorderRadius.circular(12),
         child: Container(
-          width: 80,
-          height: 90,
+          width: 124,
+          height: 124,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
@@ -61,7 +61,8 @@ class GalleryImageItemWidget extends StatelessWidget {
         builder: (context, candidateData, rejectedData) {
           return Container(
             key: ValueKey('image_$index'),
-            height: 90,
+            height: 124,
+            width: 124,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
@@ -77,6 +78,8 @@ class GalleryImageItemWidget extends StatelessWidget {
                   Image.asset(
                     imagePath,
                     fit: BoxFit.cover,
+                    height: 124,
+                    width: 124,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
                         color: ColorPalette.secondry.withOpacity(0.5),

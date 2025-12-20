@@ -21,7 +21,7 @@ class GalleryUploadWidget extends StatelessWidget {
         return GestureDetector(
           onTap: () => _showImageSourceDialog(context, cubit),
           child: Container(
-            width: double.infinity,
+            width: 258,
             height: 260,
             decoration: BoxDecoration(
               color: ColorPalette.secondry.withOpacity(0.5),

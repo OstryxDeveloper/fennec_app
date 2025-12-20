@@ -30,17 +30,9 @@ class ResetPasswordScreen extends StatefulWidget {
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
-  final _countryCodeController = TextEditingController();
   bool _isBackgroundBlurred = false;
 
   final _authCubit = Di().sl<AuthCubit>();
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _countryCodeController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,8 +55,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             CustomSizedBox(height: 20),
 
                             CustomBackButton(),
-
-                            CustomSizedBox(height: 40),
 
                             SizedBox(
                               width: 100,
@@ -119,7 +109,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                 controller: _emailController,
                                 validator: _authCubit.validateEmail,
                                 keyboardType: TextInputType.emailAddress,
-                                hintText: 'johndoe@email.com',
+                                hintText: 'example@gmail.com',
                                 labelColor: Colors.white,
                                 filled: false,
                               ),

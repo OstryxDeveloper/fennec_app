@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:fennac_app/app/constants/media_query_constants.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/core/di_container.dart';
@@ -96,7 +97,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
     final days = List.generate(daysInMonth, (i) => i + 1);
 
     return Container(
-      height: 250,
+      height: getWidth(context) > 500 ? 250 : 200,
       decoration: BoxDecoration(
         color: Colors.black.withOpacity(0.3),
         borderRadius: BorderRadius.circular(20),
@@ -206,7 +207,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
       bottom: isTop ? null : 0,
       left: 0,
       right: 0,
-      height: 90,
+      height: getWidth(context) > 500 ? 90 : 70,
       child: IgnorePointer(
         child: LayoutBuilder(
           builder: (context, constraints) {

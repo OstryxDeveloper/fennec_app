@@ -105,7 +105,18 @@ class _OnBoardingScreen1State extends State<OnBoardingScreen1>
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: BackButton(color: Colors.white),
+                child: BackButton(
+                  color: Colors.white,
+                  onPressed: () {
+                    if (_pageController.hasClients &&
+                        _backgroundCubit.selectedIndex > 0) {
+                      _pageController.previousPage(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    }
+                  },
+                ),
               ),
               Expanded(
                 child: PageView(

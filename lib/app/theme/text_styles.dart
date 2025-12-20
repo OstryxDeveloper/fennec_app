@@ -28,9 +28,10 @@ class AppTextStyles {
 
   static TextStyle bodyLarge(BuildContext context) =>
       _sfProTextStyle().copyWith(
-        fontSize: getWidth(context) > 600 ? 16 : 12,
-        height: getWidth(context) > 600 ? 17 / 16 : null,
-        fontWeight: FontWeight.w400,
+        fontSize: 16,
+        height: 24 / 16,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0,
       );
 
   static TextStyle bodyRegular(BuildContext context) =>

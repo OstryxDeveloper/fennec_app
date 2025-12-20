@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
+import 'package:fennac_app/widgets/custom_sized_box.dart';
 import 'package:flutter/material.dart';
 
 class OnBoardingWidget4 extends StatelessWidget {
@@ -145,17 +146,21 @@ class OnBoardingWidget4 extends StatelessWidget {
                                 Text(
                                   'Your Group,\nYour Rules',
                                   textAlign: TextAlign.center,
-                                  style: AppTextStyles.h1(
-                                    context,
-                                  ).copyWith(color: Colors.white, fontSize: 32),
+                                  style: AppTextStyles.h1(context).copyWith(
+                                    color: Colors.white,
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                                SizedBox(height: screenHeight * 0.02),
+                                CustomSizedBox(height: 16),
                                 Text(
                                   'Customize your groups\' profile to match your energy',
                                   textAlign: TextAlign.center,
-                                  style: AppTextStyles.bodyLarge(
-                                    context,
-                                  ).copyWith(color: Colors.white, fontSize: 16),
+                                  style: AppTextStyles.bodyLarge(context)
+                                      .copyWith(
+                                        color: Colors.white54,
+                                        fontSize: 16,
+                                      ),
                                 ),
                                 Spacer(),
                               ],

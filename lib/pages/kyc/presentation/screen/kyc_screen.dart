@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fennac_app/app/constants/media_query_constants.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/cubit/kyc_cubit.dart';
@@ -59,7 +60,7 @@ class _KycScreenState extends State<KycScreen> {
                           fontSize: 20,
                         ),
                       ),
-                      CustomSizedBox(height: 30),
+                      CustomSizedBox(height: getWidth(context) > 500 ? 30 : 16),
 
                       // Date of Birth
                       AppText(
@@ -103,7 +104,7 @@ class _KycScreenState extends State<KycScreen> {
                         options: _kycCubit.sexualOrientations,
                         selectionType: SelectionType.multiple,
                         onMultipleSelected: (values) {
-                          _kycCubit.selectedSexualOrientations = values;
+                          _kycCubit.selectSexualOrientations(values);
                         },
                       ),
                       CustomSizedBox(height: 20),
@@ -116,7 +117,7 @@ class _KycScreenState extends State<KycScreen> {
                         options: _kycCubit.pronouns,
                         selectionType: SelectionType.single,
                         onSelected: (value) {
-                          _kycCubit.selectedPronoun = value;
+                          _kycCubit.selectPronouns(value);
                         },
                       ),
                       CustomSizedBox(height: 40),

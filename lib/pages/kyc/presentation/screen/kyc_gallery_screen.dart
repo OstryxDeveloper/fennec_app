@@ -40,12 +40,10 @@ class KycGalleryScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CustomSizedBox(height: 20),
-                      // Back Button
+                      CustomSizedBox(height: 24),
                       CustomBackButton(),
                       CustomSizedBox(height: 32),
 
-                      // Header
                       AppText(
                         text: 'Upload your best shots and short clips.',
                         style: AppTextStyles.h1(context).copyWith(
@@ -56,57 +54,72 @@ class KycGalleryScreen extends StatelessWidget {
                       ),
                       CustomSizedBox(height: 32),
 
-                      // Media Upload Section
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Upload Placeholder
-                          Expanded(flex: 2, child: GalleryUploadWidget()),
-                          const SizedBox(width: 12),
-                          // Gallery Grid
-                          Expanded(flex: 1, child: GalleryGridWidget()),
+                          Flexible(
+                            child: SizedBox(
+                              height: 258,
+                              width: 258,
+
+                              child: GalleryUploadWidget(),
+                            ),
+                          ),
+                          const CustomSizedBox(width: 12),
+                          SizedBox(
+                            height: 258,
+                            width: 124,
+                            child: GalleryGridWidget(),
+                          ),
                         ],
                       ),
-                      // Additional Image Items
                       CustomSizedBox(height: 12),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Upload Placeholder or Image at index 2
-                          Expanded(
-                            flex: 2,
-                            child:
-                                _imagePickerCubit.selectedImagePaths.length > 2
-                                ? GalleryImageItemWidget(
-                                    imagePath:
-                                        _imagePickerCubit.selectedImagePaths[2],
-                                    index: 2,
-                                  )
-                                : _buildUploadPlaceholder(2),
+                          Flexible(
+                            child: SizedBox(
+                              height: 124,
+                              width: 124,
+                              child:
+                                  _imagePickerCubit.selectedImagePaths.length >
+                                      2
+                                  ? GalleryImageItemWidget(
+                                      imagePath: _imagePickerCubit
+                                          .selectedImagePaths[2],
+                                      index: 2,
+                                    )
+                                  : _buildUploadPlaceholder(2),
+                            ),
                           ),
-                          const SizedBox(width: 12),
-                          // Image at index 3 or Empty slot
-                          Expanded(
-                            flex: 1,
-                            child:
-                                _imagePickerCubit.selectedImagePaths.length > 3
-                                ? GalleryImageItemWidget(
-                                    imagePath:
-                                        _imagePickerCubit.selectedImagePaths[3],
-                                    index: 3,
-                                  )
-                                : _buildUploadPlaceholder(3),
+                          const CustomSizedBox(width: 12),
+                          Flexible(
+                            child: SizedBox(
+                              height: 124,
+                              width: 124,
+                              child:
+                                  _imagePickerCubit.selectedImagePaths.length >
+                                      3
+                                  ? GalleryImageItemWidget(
+                                      imagePath: _imagePickerCubit
+                                          .selectedImagePaths[3],
+                                      index: 3,
+                                    )
+                                  : _buildUploadPlaceholder(3),
+                            ),
                           ),
-                          // Image at index 4 if exists
                           if (_imagePickerCubit.selectedImagePaths.length >
                               4) ...[
-                            const SizedBox(width: 12),
-                            Expanded(
-                              flex: 1,
-                              child: GalleryImageItemWidget(
-                                imagePath:
-                                    _imagePickerCubit.selectedImagePaths[4],
-                                index: 4,
+                            const CustomSizedBox(width: 12),
+                            Flexible(
+                              child: SizedBox(
+                                height: 124,
+                                width: 124,
+                                child: GalleryImageItemWidget(
+                                  imagePath:
+                                      _imagePickerCubit.selectedImagePaths[4],
+                                  index: 4,
+                                ),
                               ),
                             ),
                           ],
@@ -141,14 +154,13 @@ class KycGalleryScreen extends StatelessWidget {
             Expanded(
               child: CustomOutlinedButton(
                 onPressed: () {
-                  // Handle skip action
-                  AutoRouter.of(context).pop();
+                  AutoRouter.of(context).push(const KycPromptRoute());
                 },
                 text: 'Skip',
                 width: double.infinity,
               ),
             ),
-            const SizedBox(width: 16),
+            const CustomSizedBox(width: 16),
             Expanded(
               child: CustomElevatedButton(
                 onTap: () {
@@ -168,7 +180,8 @@ class KycGalleryScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () => _imagePickerCubit.pickMultipleImagesFromGallery(),
       child: Container(
-        height: 90,
+        height: 124,
+        width: 124,
         decoration: BoxDecoration(
           color: ColorPalette.secondry.withOpacity(0.5),
           borderRadius: BorderRadius.circular(16),

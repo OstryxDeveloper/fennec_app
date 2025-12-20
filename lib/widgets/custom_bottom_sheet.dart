@@ -67,9 +67,11 @@ class CustomBottomSheet extends StatelessWidget {
           if (icon != null) ...[icon!, const CustomSizedBox(height: 24)],
           AppText(
             text: title,
-            style: AppTextStyles.h1(
-              context,
-            ).copyWith(color: ColorPalette.white, fontWeight: FontWeight.w600),
+            style: AppTextStyles.h1(context).copyWith(
+              color: ColorPalette.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 32,
+            ),
             textAlign: TextAlign.center,
           ),
           const CustomSizedBox(height: 16),

@@ -29,16 +29,12 @@ class CreateAccountScreen extends StatefulWidget {
 
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final _authCubit = Di().sl<AuthCubit>();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
     _authCubit.loadCountry();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
@@ -50,21 +46,19 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: BlocBuilder(
+              child: BlocBuilder<AuthCubit, AuthState>(
                 bloc: _authCubit,
                 builder: (context, state) {
                   return Form(
-                    key: _authCubit.formKey,
+                    key: _formKey,
                     autovalidateMode: AutovalidateMode.disabled,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        CustomSizedBox(height: 20),
                         Align(
                           alignment: Alignment.centerLeft,
                           child: CustomBackButton(),
                         ),
-                        CustomSizedBox(height: 20),
                         SvgPicture.asset(
                           Assets.icons.logoAnimation.path,
                           width: 80,
@@ -104,33 +98,28 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                     hintText: 'Enter your first name',
                                     labelColor: Colors.white,
                                     filled: false,
-                                    onChanged: _authCubit.onFirstNameChanged,
-                                  ),
-                                  BlocBuilder<AuthCubit, AuthState>(
-                                    bloc: _authCubit,
-                                    builder: (context, state) {
-                                      final error = _authCubit
-                                          .getFirstNameError();
-                                      if (error != null) {
-                                        return Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 8,
-                                          ),
-                                          child: AppText(
-                                            text: error,
-                                            style:
-                                                AppTextStyles.bodyRegular(
-                                                  context,
-                                                ).copyWith(
-                                                  color: Colors.red,
-                                                  fontSize: 12,
-                                                ),
-                                          ),
-                                        );
+                                    onChanged: (value) {
+                                      if (mounted) {
+                                        _authCubit.onFirstNameChanged(value);
                                       }
-                                      return const SizedBox.shrink();
                                     },
                                   ),
+                                  if (_authCubit.getFirstNameError() != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8),
+                                      child: AppText(
+                                        text:
+                                            _authCubit.getFirstNameError() ??
+                                            "",
+                                        style:
+                                            AppTextStyles.bodyRegular(
+                                              context,
+                                            ).copyWith(
+                                              color: Colors.red,
+                                              fontSize: 12,
+                                            ),
+                                      ),
+                                    ),
                                 ],
                               ),
                             ),
@@ -145,33 +134,27 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                     hintText: 'Enter your last name',
                                     labelColor: Colors.white,
                                     filled: false,
-                                    onChanged: _authCubit.onLastNameChanged,
-                                  ),
-                                  BlocBuilder<AuthCubit, AuthState>(
-                                    bloc: _authCubit,
-                                    builder: (context, state) {
-                                      final error = _authCubit
-                                          .getLastNameError();
-                                      if (error != null) {
-                                        return Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 8,
-                                          ),
-                                          child: AppText(
-                                            text: error,
-                                            style:
-                                                AppTextStyles.bodyRegular(
-                                                  context,
-                                                ).copyWith(
-                                                  color: Colors.red,
-                                                  fontSize: 12,
-                                                ),
-                                          ),
-                                        );
+                                    onChanged: (value) {
+                                      if (mounted) {
+                                        _authCubit.onLastNameChanged(value);
                                       }
-                                      return const SizedBox.shrink();
                                     },
                                   ),
+                                  if (_authCubit.getLastNameError() != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8),
+                                      child: AppText(
+                                        text:
+                                            _authCubit.getLastNameError() ?? "",
+                                        style:
+                                            AppTextStyles.bodyRegular(
+                                              context,
+                                            ).copyWith(
+                                              color: Colors.red,
+                                              fontSize: 12,
+                                            ),
+                                      ),
+                                    ),
                                 ],
                               ),
                             ),
@@ -189,28 +172,22 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               hintText: 'example@gmail.com',
                               labelColor: Colors.white,
                               filled: false,
-                              onChanged: _authCubit.onEmailChanged,
-                            ),
-                            BlocBuilder<AuthCubit, AuthState>(
-                              bloc: _authCubit,
-                              builder: (context, state) {
-                                final error = _authCubit.getEmailError();
-                                if (error != null) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(top: 8),
-                                    child: AppText(
-                                      text: error,
-                                      style: AppTextStyles.bodyRegular(context)
-                                          .copyWith(
-                                            color: Colors.red,
-                                            fontSize: 12,
-                                          ),
-                                    ),
-                                  );
+                              onChanged: (value) {
+                                if (mounted) {
+                                  _authCubit.onEmailChanged(value);
                                 }
-                                return const SizedBox.shrink();
                               },
                             ),
+                            if (_authCubit.getEmailError() != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: AppText(
+                                  text: _authCubit.getEmailError() ?? "",
+                                  style: AppTextStyles.bodyRegular(
+                                    context,
+                                  ).copyWith(color: Colors.red, fontSize: 12),
+                                ),
+                              ),
                           ],
                         ),
                         CustomSizedBox(height: 24),
@@ -223,32 +200,25 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               hintText: 'Enter Your Number',
                               initialCountry: _authCubit.selectedCountry,
                               onChanged: (completePhoneNumber) {
-                                _authCubit.phoneController.text =
-                                    completePhoneNumber;
-                                _authCubit.onPhoneChanged(completePhoneNumber);
-                              },
-                            ),
-                            // Show phone validation error
-                            BlocBuilder<AuthCubit, AuthState>(
-                              bloc: _authCubit,
-                              builder: (context, state) {
-                                final phoneError = _authCubit.getPhoneError();
-                                if (phoneError != null) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(top: 8),
-                                    child: AppText(
-                                      text: phoneError,
-                                      style: AppTextStyles.bodyRegular(context)
-                                          .copyWith(
-                                            color: Colors.red,
-                                            fontSize: 12,
-                                          ),
-                                    ),
+                                if (mounted) {
+                                  _authCubit.phoneController.text =
+                                      completePhoneNumber;
+                                  _authCubit.onPhoneChanged(
+                                    completePhoneNumber,
                                   );
                                 }
-                                return const SizedBox.shrink();
                               },
                             ),
+                            if (_authCubit.getPhoneError() != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: AppText(
+                                  text: _authCubit.getPhoneError() ?? "",
+                                  style: AppTextStyles.bodyRegular(
+                                    context,
+                                  ).copyWith(color: Colors.red, fontSize: 12),
+                                ),
+                              ),
                           ],
                         ),
                         CustomSizedBox(height: 24),
@@ -265,7 +235,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               filled: false,
                               suffixIcon: IconButton(
                                 onPressed: () {
-                                  _authCubit.togglePasswordVisibility();
+                                  if (mounted) {
+                                    _authCubit.togglePasswordVisibility();
+                                  }
                                 },
                                 icon: Icon(
                                   _authCubit.obscurePassword
@@ -274,28 +246,22 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                   color: Colors.white,
                                 ),
                               ),
-                              onChanged: _authCubit.onPasswordChanged,
-                            ),
-                            BlocBuilder<AuthCubit, AuthState>(
-                              bloc: _authCubit,
-                              builder: (context, state) {
-                                final error = _authCubit.getPasswordError();
-                                if (error != null) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(top: 8),
-                                    child: AppText(
-                                      text: error,
-                                      style: AppTextStyles.bodyRegular(context)
-                                          .copyWith(
-                                            color: Colors.red,
-                                            fontSize: 12,
-                                          ),
-                                    ),
-                                  );
+                              onChanged: (value) {
+                                if (mounted) {
+                                  _authCubit.onPasswordChanged(value);
                                 }
-                                return const SizedBox.shrink();
                               },
                             ),
+                            if (_authCubit.getPasswordError() != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: AppText(
+                                  text: _authCubit.getPasswordError() ?? "",
+                                  style: AppTextStyles.bodyRegular(
+                                    context,
+                                  ).copyWith(color: Colors.red, fontSize: 12),
+                                ),
+                              ),
                           ],
                         ),
                         CustomSizedBox(height: 24),
@@ -311,7 +277,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               filled: false,
                               suffixIcon: IconButton(
                                 onPressed: () {
-                                  _authCubit.toggleConfirmPasswordVisibility();
+                                  if (mounted) {
+                                    _authCubit
+                                        .toggleConfirmPasswordVisibility();
+                                  }
                                 },
                                 icon: Icon(
                                   _authCubit.obscureConfirmPassword
@@ -320,29 +289,24 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                   color: Colors.white,
                                 ),
                               ),
-                              onChanged: _authCubit.onConfirmPasswordChanged,
-                            ),
-                            BlocBuilder<AuthCubit, AuthState>(
-                              bloc: _authCubit,
-                              builder: (context, state) {
-                                final error = _authCubit
-                                    .getConfirmPasswordError();
-                                if (error != null) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(top: 8),
-                                    child: AppText(
-                                      text: error,
-                                      style: AppTextStyles.bodyRegular(context)
-                                          .copyWith(
-                                            color: Colors.red,
-                                            fontSize: 12,
-                                          ),
-                                    ),
-                                  );
+                              onChanged: (value) {
+                                if (mounted) {
+                                  _authCubit.onConfirmPasswordChanged(value);
                                 }
-                                return const SizedBox.shrink();
                               },
                             ),
+                            if (_authCubit.getConfirmPasswordError() != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: AppText(
+                                  text:
+                                      _authCubit.getConfirmPasswordError() ??
+                                      "",
+                                  style: AppTextStyles.bodyRegular(
+                                    context,
+                                  ).copyWith(color: Colors.red, fontSize: 12),
+                                ),
+                              ),
                           ],
                         ),
                         CustomSizedBox(height: 40),
@@ -389,12 +353,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         // Sign Up Button
                         CustomElevatedButton(
                           onTap: () {
-                            _authCubit.submit();
+                            if (mounted) {
+                              _authCubit.submit();
 
-                            if (_authCubit.isFormValid()) {
-                              AutoRouter.of(
-                                context,
-                              ).replace(const VerifyPhoneNumberRoute());
+                              if (_authCubit.isFormValid()) {
+                                AutoRouter.of(
+                                  context,
+                                ).replace(const VerifyPhoneNumberRoute());
+                              }
                             }
                           },
                           text: 'Sign Up',

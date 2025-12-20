@@ -97,14 +97,21 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
         onButtonPressed: () {
           AutoRouter.of(context).push(OnBoardingRoute());
         },
-        icon: Container(
+        icon: SizedBox(
           width: 100,
           height: 100,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.green, width: 2),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Lottie.asset(
+                Assets.animations.iconBg,
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+              ),
+              Image.asset(Assets.icons.checkGreen.path, height: 60, width: 60),
+            ],
           ),
-          child: Icon(Icons.check, color: Colors.green, size: 50),
         ),
       );
       _isBlurNotifier.value = false;
@@ -170,6 +177,7 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
                         style: AppTextStyles.h1(context).copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
+                          fontSize: 26,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -178,8 +186,8 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
                         text:
                             "We've sent you a 6-digit code, enter it below to verify your account.",
                         style: AppTextStyles.bodyLarge(context).copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
+                          color: Colors.white60,
+                          fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
                       ),

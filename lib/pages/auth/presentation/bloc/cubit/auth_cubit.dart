@@ -9,10 +9,9 @@ class AuthCubit extends Cubit<AuthState> {
   // UI states
   bool obscurePassword = true;
   bool obscureConfirmPassword = true;
+  bool obscureNewPassword = true;
+  bool obscureConfirmNewPassword = true;
   bool isEmail = true;
-
-  // Form
-  final formKey = GlobalKey<FormState>();
 
   // Controllers
   final firstNameController = TextEditingController();
@@ -21,6 +20,8 @@ class AuthCubit extends Cubit<AuthState> {
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  final newPasswordController = TextEditingController();
+  final confirmNewPasswordController = TextEditingController();
 
   Country? selectedCountry;
 
@@ -30,6 +31,8 @@ class AuthCubit extends Cubit<AuthState> {
   bool _phoneTouched = false;
   bool _passwordTouched = false;
   bool _confirmPasswordTouched = false;
+  bool _newPasswordTouched = false;
+  bool _confirmNewPasswordTouched = false;
 
   int _validationCounter = 0;
 
@@ -45,7 +48,20 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthValidation(validationCounter: _validationCounter));
   }
 
+  void toggleNewPasswordVisibility() {
+    emit(AuthValidationLoading());
+    obscureNewPassword = !obscureNewPassword;
+    emit(AuthValidation(validationCounter: _validationCounter));
+  }
+
+  void toggleConfirmNewPasswordVisibility() {
+    emit(AuthValidationLoading());
+    obscureConfirmNewPassword = !obscureConfirmNewPassword;
+    emit(AuthValidation(validationCounter: _validationCounter));
+  }
+
   void toggleEmailOrPhone() {
+    emit(AuthValidationLoading());
     isEmail = !isEmail;
     emit(AuthValidation(validationCounter: _validationCounter));
   }
@@ -104,6 +120,26 @@ class AuthCubit extends Cubit<AuthState> {
     return null;
   }
 
+  String? validateNewPassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password must be at least 8 characters';
+    }
+    if (value.length < 8) {
+      return 'Password must be at least 8 characters';
+    }
+    return null;
+  }
+
+  String? validateConfirmNewPassword(String? value, String password) {
+    if (value == null || value.isEmpty) {
+      return 'Passwords don\'t match';
+    }
+    if (value != password) {
+      return 'Passwords don\'t match';
+    }
+    return null;
+  }
+
   void onFirstNameChanged(String value) {
     _firstNameTouched = true;
     emit(AuthValidation(validationCounter: _validationCounter));
@@ -134,33 +170,92 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthValidation(validationCounter: _validationCounter));
   }
 
+  void onNewPasswordChanged(String value) {
+    _newPasswordTouched = true;
+    emit(AuthValidation(validationCounter: _validationCounter));
+  }
+
+  void onConfirmNewPasswordChanged(String value) {
+    _confirmNewPasswordTouched = true;
+    emit(AuthValidation(validationCounter: _validationCounter));
+  }
+
   String? getFirstNameError() {
-    return _firstNameTouched ? validateName(firstNameController.text) : null;
+    try {
+      return _firstNameTouched ? validateName(firstNameController.text) : null;
+    } catch (e) {
+      return null;
+    }
   }
 
   String? getLastNameError() {
-    return _lastNameTouched ? validateName(lastNameController.text) : null;
+    try {
+      return _lastNameTouched ? validateName(lastNameController.text) : null;
+    } catch (e) {
+      return null;
+    }
   }
 
   String? getEmailError() {
-    return _emailTouched ? validateEmail(emailController.text) : null;
+    try {
+      return _emailTouched ? validateEmail(emailController.text) : null;
+    } catch (e) {
+      return null;
+    }
   }
 
   String? getPhoneError() {
-    return _phoneTouched ? validatePhoneNumber(phoneController.text) : null;
+    try {
+      return _phoneTouched ? validatePhoneNumber(phoneController.text) : null;
+    } catch (e) {
+      return null;
+    }
   }
 
   String? getPasswordError() {
-    return _passwordTouched ? validatePassword(passwordController.text) : null;
+    try {
+      return _passwordTouched
+          ? validatePassword(passwordController.text)
+          : null;
+    } catch (e) {
+      return null;
+    }
   }
 
   String? getConfirmPasswordError() {
-    return _confirmPasswordTouched
-        ? validateConfirmPassword(
-            confirmPasswordController.text,
-            passwordController.text,
-          )
-        : null;
+    try {
+      return _confirmPasswordTouched
+          ? validateConfirmPassword(
+              confirmPasswordController.text,
+              passwordController.text,
+            )
+          : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  String? getNewPasswordError() {
+    try {
+      return _newPasswordTouched
+          ? validateNewPassword(newPasswordController.text)
+          : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  String? getConfirmNewPasswordError() {
+    try {
+      return _confirmNewPasswordTouched
+          ? validateConfirmNewPassword(
+              confirmNewPasswordController.text,
+              newPasswordController.text,
+            )
+          : null;
+    } catch (e) {
+      return null;
+    }
   }
 
   void submit() {
@@ -193,14 +288,16 @@ class AuthCubit extends Cubit<AuthState> {
     });
   }
 
-  @override
-  Future<void> close() {
-    firstNameController.dispose();
-    lastNameController.dispose();
-    emailController.dispose();
-    phoneController.dispose();
-    passwordController.dispose();
-    confirmPasswordController.dispose();
-    return super.close();
+  void submitNewPassword() {
+    _newPasswordTouched = true;
+    _confirmNewPasswordTouched = true;
+    _validationCounter++;
+    emit(AuthValidation(validationCounter: _validationCounter));
+  }
+
+  void updatePassword() {
+    emit(AuthLoading());
+
+    emit(AuthLoaded());
   }
 }

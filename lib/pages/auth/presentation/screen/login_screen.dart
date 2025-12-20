@@ -28,13 +28,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _authCubit = Di().sl<AuthCubit>();
 
   @override
-  void dispose() {
-    _authCubit.emailController.dispose();
-    _authCubit.passwordController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF1A1B2E),
@@ -79,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _authCubit.emailController,
                           validator: _authCubit.validateEmail,
                           keyboardType: TextInputType.emailAddress,
-                          hintText: 'johndoe@email.com',
+                          hintText: 'example@gmail.com',
                           labelColor: Colors.white,
                           filled: false,
                         ),

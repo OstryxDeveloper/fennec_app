@@ -45,6 +45,10 @@ class $AssetsAnimationsGen {
   String get rotatingGroupAnimation =>
       'assets/animations/Rotating-Group-Animation.json';
 
+  /// File path: assets/animations/Rotating_Group_Animation_edges_No_BG.json
+  String get rotatingGroupAnimationEdgesNoBG =>
+      'assets/animations/Rotating_Group_Animation_edges_No_BG.json';
+
   /// File path: assets/animations/Scrolling-Messages---Top-Opacity.json
   String get scrollingMessagesTopOpacity =>
       'assets/animations/Scrolling-Messages---Top-Opacity.json';
@@ -77,6 +81,7 @@ class $AssetsAnimationsGen {
     rotatingGroupAnimation1,
     rotatingGroupAnimationNoShadow,
     rotatingGroupAnimation,
+    rotatingGroupAnimationEdgesNoBG,
     scrollingMessagesTopOpacity,
     scrollingMessages,
     welcomeScreenAnimationNoShadow,

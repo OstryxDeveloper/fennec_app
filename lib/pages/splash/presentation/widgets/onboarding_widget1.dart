@@ -58,7 +58,7 @@ class _OnBoardingWidget1State extends State<OnBoardingWidget1> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 22),
                   // Text content
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 40),

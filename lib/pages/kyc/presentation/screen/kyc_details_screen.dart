@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:auto_route/auto_route.dart';
+import 'package:fennac_app/app/constants/media_query_constants.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/cubit/kyc_cubit.dart';
@@ -53,10 +56,15 @@ class KycDetailsScreen extends StatelessWidget {
                         label: 'Short Bio',
                         controller: _kycCubit.shortBioController,
                         hintText: 'Type here..',
+                        hintStyle: AppTextStyles.bodyLarge(
+                          context,
+                        ).copyWith(color: Colors.white54),
                         labelColor: Colors.white,
+                        keyboardType: TextInputType.multiline,
+                        textInputAction: TextInputAction.done,
                         filled: false,
-                        maxLines: 4,
-                        minLines: 3,
+                        maxLines: getWidth(context) > 400 ? 3 : 2,
+                        minLines: getWidth(context) > 400 ? 3 : 2,
                       ),
                       CustomSizedBox(height: 32),
 
@@ -95,6 +103,7 @@ class KycDetailsScreen extends StatelessWidget {
                         labelColor: Colors.white,
                         filled: false,
                       ),
+                      CustomSizedBox(height: 80),
                     ],
                   ),
                 ),
@@ -103,31 +112,38 @@ class KycDetailsScreen extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      resizeToAvoidBottomInset: false,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Row(
-          children: [
-            Expanded(
-              child: CustomOutlinedButton(
-                onPressed: () {
-                  AutoRouter.of(context).push(KycGalleryRoute());
-                },
-                text: 'Skip',
-                width: double.infinity,
-              ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Row(
+              children: [
+                Expanded(
+                  child: CustomOutlinedButton(
+                    onPressed: () {
+                      AutoRouter.of(context).push(KycGalleryRoute());
+                    },
+                    text: 'Skip',
+                    width: double.infinity,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: CustomElevatedButton(
+                    onTap: () {
+                      AutoRouter.of(context).push(const KycGalleryRoute());
+                    },
+                    text: 'Continue',
+                    width: double.infinity,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: CustomElevatedButton(
-                onTap: () {
-                  AutoRouter.of(context).push(const KycGalleryRoute());
-                },
-                text: 'Continue',
-                width: double.infinity,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

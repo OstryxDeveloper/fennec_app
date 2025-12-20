@@ -17,6 +17,7 @@ class CustomLabelTextField extends StatelessWidget {
   final Widget? suffix;
   final Widget? prefix;
   final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
   final String? hintText;
   final Color? labelColor;
   final TextStyle? labelStyle;
@@ -54,6 +55,7 @@ class CustomLabelTextField extends StatelessWidget {
     this.labelStyle,
     this.textStyle,
     this.hintStyle,
+    this.textInputAction,
     this.fillColor,
     this.borderRadius,
     this.filled,
@@ -94,6 +96,7 @@ class CustomLabelTextField extends StatelessWidget {
             onFieldSubmitted: onSubmit,
             validator: validator,
             keyboardType: keyboardType,
+            textInputAction: textInputAction ?? TextInputAction.done,
             readOnly: readOnly ?? false,
             obscureText: obscureText ?? false,
             maxLines: obscureText == true ? 1 : maxLines,

@@ -52,12 +52,6 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
     );
   }
 
-  @override
-  void dispose() {
-    _bounceController.dispose();
-    super.dispose();
-  }
-
   void _handleTap(BuildContext context) {
     // Reset animation to beginning
     _bounceController.reset();

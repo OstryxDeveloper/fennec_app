@@ -81,12 +81,6 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
     }
   }
 
-  @override
-  void dispose() {
-    _phoneController.dispose();
-    super.dispose();
-  }
-
   void _notifyChange() {
     if (_selected != null && _phoneController.text.isNotEmpty) {
       final completeNumber = '${_selected!.phoneCode}${_phoneController.text}';
