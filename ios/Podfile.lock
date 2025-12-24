@@ -24,6 +24,8 @@ PODS:
     - FlutterMacOS
   - permission_handler_apple (9.3.0):
     - Flutter
+  - record_ios (1.1.0):
+    - Flutter
   - TOCropViewController (2.8.0)
   - video_player_avfoundation (0.0.1):
     - Flutter
@@ -41,6 +43,7 @@ DEPENDENCIES:
   - just_audio (from `.symlinks/plugins/just_audio/darwin`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
+  - record_ios (from `.symlinks/plugins/record_ios/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
 
 SPEC REPOS:
@@ -70,6 +73,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
+  record_ios:
+    :path: ".symlinks/plugins/record_ios/ios"
   video_player_avfoundation:
     :path: ".symlinks/plugins/video_player_avfoundation/darwin"
 
@@ -85,6 +90,7 @@ SPEC CHECKSUMS:
   just_audio: a42c63806f16995daf5b219ae1d679deb76e6a79
   path_provider_foundation: 0b743cbb62d8e47eab856f09262bb8c1ddcfe6ba
   permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
+  record_ios: 840d21cce013c5a3b2168b74a54ebdb4136359e2
   TOCropViewController: 797deaf39c90e6e9ddd848d88817f6b9a8a09888
   video_player_avfoundation: 7993f492ae0bd77edaea24d9dc051d8bb2cd7c86
 

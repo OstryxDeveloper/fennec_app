@@ -6,6 +6,7 @@ import 'package:fennac_app/pages/kyc/presentation/bloc/state/kyc_prompt_state.da
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:record/record.dart';
 
 class AudioPromptData {
   final String audioPath;
@@ -84,6 +85,7 @@ class KycPromptCubit extends Cubit<KycPromptState> {
   // Expose controllers to widgets (but widgets should only read, not manipulate)
   RecorderController get recorderController => _recorderController;
   PlayerController get playerController => _playerController;
+  StreamSubscription<Amplitude>? amplitudeSub;
 
   void toggleAudioMode() {
     emit(KycPromptLoading());
@@ -91,7 +93,39 @@ class KycPromptCubit extends Cubit<KycPromptState> {
     emit(KycPromptLoaded());
   }
 
+  // reset recording state
+  void resetRecording() {
+    emit(KycPromptLoading());
+    recordingPath = null;
+    isRecording = false;
+    isRecordingPaused = false;
+    isRecorded = false;
+    isPlaying = false;
+    recordedWaveformData = [];
+    recordedDuration = '00:00';
+    _recordingElapsed = Duration.zero;
+    emit(KycPromptLoaded());
+  }
+
+  // show recorded state
+  void showRecordedState(
+    String audioPath,
+    List<double> waveformData,
+    String duration,
+  ) {
+    emit(KycPromptLoading());
+    recordingPath = audioPath;
+    isRecording = false;
+    isRecordingPaused = false;
+    isRecorded = true;
+    isPlaying = false;
+    recordedWaveformData = waveformData;
+    recordedDuration = duration;
+    emit(KycPromptLoaded());
+  }
+
   // ==================== RECORDING CONTROL ====================
+  final record = AudioRecorder();
 
   /// Start recording a new audio prompt
   Future<void> startRecording() async {
@@ -99,7 +133,7 @@ class KycPromptCubit extends Cubit<KycPromptState> {
       emit(KycPromptLoading());
 
       // Check permissions first
-      final hasPermission = await _recorderController.checkPermission();
+      final hasPermission = await record.hasPermission();
       if (!hasPermission) {
         log('Recording permission not granted');
         emit(KycPromptError());
@@ -110,13 +144,34 @@ class KycPromptCubit extends Cubit<KycPromptState> {
       final path =
           '${directory.path}/audio_${DateTime.now().millisecondsSinceEpoch}.m4a';
 
-      await _recorderController.record(path: path);
+      await record.start(
+        RecordConfig(
+          androidConfig: AndroidRecordConfig(
+            audioManagerMode: AudioManagerMode.modeInCommunication,
+            service: AndroidService(
+              title: 'Fennec Audio Recording',
+              content: "Recording audio for KYC prompt",
+            ),
+          ),
+          noiseSuppress: true,
+          encoder: AudioEncoder.wav,
+          iosConfig: IosRecordConfig(
+            categoryOptions: [
+              IosAudioCategoryOption.allowBluetooth,
+              IosAudioCategoryOption.defaultToSpeaker,
+            ],
+          ),
+        ),
+        path: path,
+      );
       recordingPath = path;
       isRecording = true;
       isRecordingPaused = false;
       isRecorded = false;
       isPlaying = false;
-
+      recordedWaveformData = [];
+      recordedDuration = '00:00';
+      _startWaveformStream();
       _startTimer();
       emit(KycPromptLoaded());
     } catch (e) {
@@ -126,11 +181,32 @@ class KycPromptCubit extends Cubit<KycPromptState> {
     }
   }
 
+  void _startWaveformStream() {
+    amplitudeSub?.cancel();
+
+    amplitudeSub = record
+        .onAmplitudeChanged(const Duration(milliseconds: 60))
+        .listen((amp) {
+          emit(KycPromptLoading());
+          // Normalize amplitude for waveform (0–100)
+          final normalized = amp.current.clamp(-60, 0);
+          final waveValue = ((normalized + 60) / 60) * 100;
+          recordedWaveformData.add(waveValue);
+          if (recordedWaveformData.length > 100) {
+            recordedWaveformData.removeAt(0);
+          }
+          debugPrint('Amplitude: ${amp.current}, WaveValue: $waveValue');
+          emit(KycPromptLoaded());
+        });
+  }
+
   /// Pause an active recording
   Future<void> pauseRecording() async {
     try {
       if (!isRecording || isRecordingPaused) return;
       emit(KycPromptLoading());
+      await record.pause();
+      amplitudeSub?.pause();
       isRecordingPaused = true;
       _recordTimer?.cancel();
       emit(KycPromptLoaded());
@@ -146,6 +222,8 @@ class KycPromptCubit extends Cubit<KycPromptState> {
     try {
       if (!isRecording || !isRecordingPaused) return;
       emit(KycPromptLoading());
+      await record.resume();
+      amplitudeSub?.resume();
       isRecordingPaused = false;
       _startTimer();
       emit(KycPromptLoaded());
@@ -161,7 +239,8 @@ class KycPromptCubit extends Cubit<KycPromptState> {
     try {
       log('Stopping recording...');
       emit(KycPromptLoading());
-      final path = await _recorderController.stop();
+
+      final path = await record.stop();
       recordingPath = path ?? recordingPath;
       isRecording = false;
       isRecordingPaused = false;
@@ -169,7 +248,7 @@ class KycPromptCubit extends Cubit<KycPromptState> {
       isPlaying = false;
 
       _stopTimer();
-
+      amplitudeSub?.cancel();
       // Capture finalized waveform data from recorder
       _captureWaveformData();
 
@@ -301,14 +380,12 @@ class KycPromptCubit extends Cubit<KycPromptState> {
 
   /// Reset all audio-related state
   void _resetAudioState() {
+    emit(KycPromptLoading());
     // Stop playback and recording
-    try {
-      _playerController.stopPlayer();
-    } catch (_) {}
-    try {
-      _recorderController.stop();
-    } catch (_) {}
-
+    record.stop();
+    isPlaying = false;
+    isRecording = false;
+    isRecordingPaused = false;
     _stopTimer();
     _recordingElapsed = Duration.zero;
 
@@ -331,6 +408,7 @@ class KycPromptCubit extends Cubit<KycPromptState> {
     isRecordingPaused = false;
     recordedWaveformData = [];
     recordedDuration = '00:00';
+    emit(KycPromptLoaded());
   }
 
   // ==================== PROMPT MANAGEMENT ====================

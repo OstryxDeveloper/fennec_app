@@ -230,7 +230,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               label: 'Password',
                               controller: _authCubit.passwordController,
                               obscureText: _authCubit.obscurePassword,
-                              hintText: '•••••',
+                              hintText: '•••••••••••••',
                               labelColor: Colors.white,
                               filled: false,
                               suffixIcon: IconButton(

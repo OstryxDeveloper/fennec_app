@@ -114,6 +114,8 @@ class _OnBoardingScreen1State extends State<OnBoardingScreen1>
                         duration: const Duration(milliseconds: 300),
                         curve: Curves.easeInOut,
                       );
+                    } else if (_backgroundCubit.selectedIndex == 0) {
+                      AutoRouter.of(context).pop();
                     }
                   },
                 ),

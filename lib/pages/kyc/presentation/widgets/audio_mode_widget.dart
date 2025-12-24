@@ -1,4 +1,5 @@
-import 'package:audio_waveforms/audio_waveforms.dart';
+import 'dart:math';
+
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/cubit/kyc_prompt_cubit.dart';
@@ -36,7 +37,12 @@ class AudioModeWidget extends StatelessWidget {
       builder: (context, state) {
         // Preview mode: audio has been recorded
         if (cubit.isRecorded) {
-          return _buildPreviewUI(context, cubit);
+          return _buildPreviewUI(
+            context,
+            cubit,
+            existingAudioPath ?? "",
+            existingAudioData,
+          );
         }
 
         // Recording mode: capture live waveform
@@ -46,14 +52,23 @@ class AudioModeWidget extends StatelessWidget {
   }
 
   /// Build UI for recorded audio preview
-  Widget _buildPreviewUI(BuildContext context, KycPromptCubit cubit) {
+  Widget _buildPreviewUI(
+    BuildContext context,
+    KycPromptCubit cubit,
+    String audioPath,
+    AudioPromptData? audioData,
+  ) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(
           height: 80.h,
           child: Center(
-            child: _buildWaveformPreview(cubit),
+            child: _buildWaveformPreview(
+              cubit,
+              cubit.recordingPath ?? existingAudioPath!,
+              existingAudioData,
+            ),
           ),
         ),
         const CustomSizedBox(height: 20),
@@ -71,21 +86,94 @@ class AudioModeWidget extends StatelessWidget {
 
   /// Build UI for active recording
   Widget _buildRecordingUI(BuildContext context, KycPromptCubit cubit) {
+    final ScrollController _scrollController = ScrollController();
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(
           height: 32.h,
-          child: AudioWaveforms(
-            size: Size(double.infinity, 32.h),
-            recorderController: cubit.recorderController,
-            waveStyle: const WaveStyle(
-              waveColor: Colors.white,
-              extendWaveform: true,
-              showMiddleLine: false,
-            ),
+          child: BlocBuilder<KycPromptCubit, KycPromptState>(
+            bloc: cubit,
+            builder: (context, state) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (_scrollController.hasClients) {
+                  _scrollController.animateTo(
+                    _scrollController.position.maxScrollExtent,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeOut,
+                  );
+                }
+              });
+              return SingleChildScrollView(
+                controller: _scrollController,
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: cubit.recordedWaveformData.map((height) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 1),
+                      child: Container(
+                        width: 3,
+                        height: height,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(1.5),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              );
+            },
           ),
         ),
+
+        // SizedBox(
+        //   height: 32.h,
+        //   child: StreamBuilder<Amplitude>(
+        //     stream: cubit.record.onAmplitudeChanged(
+        //       const Duration(milliseconds: 80),
+        //     ),
+        //     builder: (context, snapshot) {
+        //       final amp = snapshot.data?.current ?? -60.0;
+
+        //       // 1️⃣ Clamp amplitude safely
+        //       final normalizedAmp = amp.clamp(-60.0, 0.0);
+
+        //       // 2️⃣ Convert to height
+        //       final rawHeight = ((normalizedAmp + 60) / 60) * 30;
+
+        //       // 3️⃣ Final safety clamp
+        //       final height = rawHeight.clamp(2.0, 30.0);
+
+        //       return Align(
+        //         alignment: Alignment.bottomCenter,
+        //         child: Container(
+        //           width: 2,
+        //           height: height,
+        //           decoration: BoxDecoration(
+        //             color: Colors.white,
+        //             borderRadius: BorderRadius.circular(2),
+        //           ),
+        //         ),
+        //       );
+        //     },
+        //   ),
+        // ),
+
+        // SizedBox(
+        //   height: 32.h,
+        //   child: AudioWaveforms(
+        //     size: Size(double.infinity, 32.h),
+        //     recorderController: cubit.recorderController,
+        //     waveStyle: const WaveStyle(
+        //       waveColor: Colors.white,
+        //       extendWaveform: true,
+        //       showMiddleLine: false,
+        //     ),
+        //   ),
+        // ),
         const CustomSizedBox(height: 16),
         _buildRecordButton(context, cubit),
       ],
@@ -150,10 +238,7 @@ class AudioModeWidget extends StatelessWidget {
         ),
         child: cubit.isPlaying
             ? const Icon(Icons.stop, color: Colors.white, size: 32)
-            : SvgPicture.asset(
-                Assets.icons.play.path,
-                color: Colors.white,
-              ),
+            : SvgPicture.asset(Assets.icons.play.path, color: Colors.white),
       ),
     );
   }
@@ -179,7 +264,11 @@ class AudioModeWidget extends StatelessWidget {
   }
 
   /// Waveform display for recorded audio
-  Widget _buildWaveformPreview(KycPromptCubit cubit) {
+  Widget _buildWaveformPreview(
+    KycPromptCubit cubit,
+    String audioPath,
+    AudioPromptData? audioData,
+  ) {
     if (cubit.recordedWaveformData.isEmpty) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -200,9 +289,11 @@ class AudioModeWidget extends StatelessWidget {
     }
 
     return PromptAudioRow(
-      audioPath: cubit.recordingPath ?? "",
-      waveformData: cubit.recordedWaveformData,
-      duration: cubit.recordedDuration,
+      audioPath: existingAudioPath ?? cubit.recordingPath ?? "",
+      waveformData: audioData?.waveformData.isNotEmpty ?? false
+          ? audioData?.waveformData ?? []
+          : cubit.recordedWaveformData,
+      duration: audioData?.duration ?? cubit.recordedDuration,
       height: 80,
       backgroundColor: Colors.transparent,
       playButtonColor: ColorPalette.primary,

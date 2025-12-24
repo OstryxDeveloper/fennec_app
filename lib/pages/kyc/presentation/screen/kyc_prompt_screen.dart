@@ -117,6 +117,7 @@ class _KycPromptScreenState extends State<KycPromptScreen> {
                                         setState(() {
                                           _isBackgroundBlurred = true;
                                         });
+                                        _kycPromptCubit.resetRecording();
                                         await CreatePromptBottomSheet.show(
                                           context,
                                           'Create Custom Prompt',
@@ -221,7 +222,7 @@ class _KycPromptScreenState extends State<KycPromptScreen> {
                 Expanded(
                   child: CustomOutlinedButton(
                     onPressed: () {
-                      AutoRouter.of(context).pop();
+                      AutoRouter.of(context).push(const DashboardRoute());
                     },
                     text: 'Skip',
                     width: double.infinity,
@@ -231,7 +232,7 @@ class _KycPromptScreenState extends State<KycPromptScreen> {
                 Expanded(
                   child: CustomElevatedButton(
                     onTap: () {
-                      AutoRouter.of(context).push(const OnBoardingRoute());
+                      AutoRouter.of(context).push(const DashboardRoute());
                     },
                     text: 'Continue',
                     width: double.infinity,

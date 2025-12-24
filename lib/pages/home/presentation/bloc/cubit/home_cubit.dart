@@ -12,4 +12,12 @@ class HomeCubit extends Cubit<HomeState> {
     Assets.dummy.groupSunset.path,
     Assets.dummy.groupGlasses.path,
   ];
+
+  int? selectedIndex;
+
+  void selectGroupIndex(int? index) {
+    emit(HomeLoading());
+    selectedIndex = index;
+    emit(HomeLoaded());
+  }
 }

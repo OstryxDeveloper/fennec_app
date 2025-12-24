@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
@@ -46,21 +48,30 @@ class _PromptAudioRowState extends State<PromptAudioRow> {
     _preparePlayer();
   }
 
+  List<double> data = [];
+  final waveformExtraction = WaveformExtractionController();
   Future<void> _preparePlayer() async {
-    debugPrint(
-      'Preparing audio player for: ${widget.audioPath} :: waveform samples: ${widget.waveformData?.length ?? 0}',
-    );
-    await _playerController.preparePlayer(
-      path: widget.audioPath,
-      noOfSamples: widget.waveformData?.length ?? 120,
-      shouldExtractWaveform: true,
-    );
+    try {
+      debugPrint(
+        'Preparing audio player for: ${widget.audioPath} :: waveform samples: ${widget.waveformData?.length ?? 0}',
+      );
+      await _playerController.preparePlayer(path: widget.audioPath);
 
-    /// IMPORTANT: force rebuild after waveform extraction
-    if (mounted) {
-      setState(() {
-        _isPrepared = true;
-      });
+      var waveformData = await waveformExtraction.extractWaveformData(
+        path: widget.audioPath,
+        noOfSamples: 100,
+      );
+
+      /// IMPORTANT: force rebuild after waveform extraction
+      if (mounted) {
+        setState(() {
+          _isPrepared = true;
+          data = waveformData;
+          log('Extracted waveform data length: ${data.length}');
+        });
+      }
+    } catch (e) {
+      log("Error preparing player: $e");
     }
   }
 
@@ -124,6 +135,7 @@ class _PromptAudioRowState extends State<PromptAudioRow> {
 
     return AudioFileWaveforms(
       playerController: _playerController,
+      waveformData: data,
       waveformType: WaveformType.fitWidth,
       size: const Size(double.infinity, 34),
 

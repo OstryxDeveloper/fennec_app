@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
-import 'package:fennac_app/pages/auth/presentation/bloc/cubit/auth_cubit.dart';
+import 'package:fennac_app/pages/auth/presentation/bloc/cubit/login_cubit.dart';
 import 'package:fennac_app/routes/routes_imports.gr.dart';
 import 'package:fennac_app/widgets/custom_back_button.dart';
 import 'package:fennac_app/widgets/custom_text_field.dart';
@@ -25,7 +25,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final _authCubit = Di().sl<AuthCubit>();
+  final _loginCubit = Di().sl<LoginCubit>();
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: BlocBuilder(
-                bloc: _authCubit,
+                bloc: _loginCubit,
                 builder: (context, state) {
                   return Form(
                     key: _formKey,
@@ -69,8 +69,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         CustomLabelTextField(
                           label: 'Email',
-                          controller: _authCubit.emailController,
-                          validator: _authCubit.validateEmail,
+                          controller: _loginCubit.email,
+                          validator: _loginCubit.validateEmail,
                           keyboardType: TextInputType.emailAddress,
                           hintText: 'example@gmail.com',
                           labelColor: Colors.white,
@@ -81,18 +81,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         CustomLabelTextField(
                           label: 'Password',
-                          controller: _authCubit.passwordController,
-                          validator: _authCubit.validatePassword,
-                          obscureText: _authCubit.obscurePassword,
+                          controller: _loginCubit.password,
+                          validator: _loginCubit.validatePassword,
+                          obscureText: _loginCubit.obscurePassword,
                           hintText: '••••••••••',
                           labelColor: Colors.white,
                           filled: false,
                           suffixIcon: IconButton(
                             onPressed: () {
-                              _authCubit.togglePasswordVisibility();
+                              _loginCubit.togglePasswordVisibility();
                             },
                             icon: Icon(
-                              _authCubit.obscurePassword
+                              _loginCubit.obscurePassword
                                   ? Icons.visibility_outlined
                                   : Icons.visibility_off_outlined,
                               color: Colors.white70,
@@ -125,13 +125,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         CustomElevatedButton(
                           onTap: () {
                             if (_formKey.currentState!.validate()) {
+                              // _loginCubit.email.clear();
+                              // _loginCubit.password.clear();
                               AutoRouter.of(context).push(KycRoute());
                             }
                           },
                           text: 'Login',
                           width: double.infinity,
                         ),
-
                         CustomSizedBox(height: 40),
                       ],
                     ),

@@ -596,8 +596,20 @@ class $AssetsImagesBackgroundGen {
   AssetGenImage get bg3 =>
       const AssetGenImage('assets/images/background/BG - 3.png');
 
+  /// File path: assets/images/background/BG - 4.png
+  AssetGenImage get bg4 =>
+      const AssetGenImage('assets/images/background/BG - 4.png');
+
+  /// File path: assets/images/background/BG - 5.png
+  AssetGenImage get bg5 =>
+      const AssetGenImage('assets/images/background/BG - 5.png');
+
+  /// File path: assets/images/background/BG - 6.png
+  AssetGenImage get bg6 =>
+      const AssetGenImage('assets/images/background/BG - 6.png');
+
   /// List of all assets
-  List<AssetGenImage> get values => [bg1, bg2, bg3];
+  List<AssetGenImage> get values => [bg1, bg2, bg3, bg4, bg5, bg6];
 }
 
 class Assets {

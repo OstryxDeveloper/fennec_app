@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'avatar_strip.dart';
 
 class HeroSection extends StatelessWidget {
@@ -13,26 +16,45 @@ class HeroSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
+    return BlocBuilder(
+      bloc: homeCubit,
+      builder: (context, state) {
+        return Stack(
+          clipBehavior: Clip.none,
 
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(28),
-          child: Image.asset(
-            imagePath,
-            height: 283,
-            width: double.infinity,
-            fit: BoxFit.cover,
-          ),
-        ),
-        Positioned(
-          bottom: -20,
-          left: 0,
-          right: 0,
-          child: Center(child: AvatarStrip(avatarPaths: avatarPaths)),
-        ),
-      ],
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(28),
+              child: Stack(
+                children: [
+                  Image.asset(
+                    imagePath,
+                    height: 283,
+                    opacity: AlwaysStoppedAnimation(0.8),
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                  AnimatedOpacity(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    opacity: homeCubit.selectedIndex != null ? 1.0 : 0.0,
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                      child: Container(color: Colors.black.withOpacity(0)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              bottom: -20,
+              left: 0,
+              right: 0,
+              child: Center(child: AvatarStrip(avatarPaths: avatarPaths)),
+            ),
+          ],
+        );
+      },
     );
   }
 }

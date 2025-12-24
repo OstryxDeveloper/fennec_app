@@ -77,6 +77,11 @@ class PromptCard extends StatelessWidget {
                 ? null
                 : () async {
                     setBackgroundBlurred(true);
+                    kycPromptCubit.showRecordedState(
+                      prompt,
+                      audioData?.waveformData ?? [],
+                      audioData?.duration ?? "",
+                    );
                     await CreatePromptBottomSheet.show(
                       context,
                       prompt,
