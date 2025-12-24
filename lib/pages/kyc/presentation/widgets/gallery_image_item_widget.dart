@@ -56,7 +56,7 @@ class GalleryImageItemWidget extends StatelessWidget {
       ),
       child: DragTarget<int>(
         onAcceptWithDetails: (details) {
-          cubit.reorderImages(details.data, index);
+          cubit.reorderMedia(details.data, index);
         },
         builder: (context, candidateData, rejectedData) {
           return Container(
@@ -95,7 +95,7 @@ class GalleryImageItemWidget extends StatelessWidget {
                     top: 6,
                     right: 6,
                     child: GestureDetector(
-                      onTap: () => cubit.removeImage(index),
+                      onTap: () => cubit.removeMedia(cubit.mediaList[index].id),
                       child: Container(
                         alignment: Alignment.center,
                         width: 24,

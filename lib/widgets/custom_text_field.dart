@@ -35,6 +35,7 @@ class CustomLabelTextField extends StatelessWidget {
   final EdgeInsetsGeometry? contentPadding;
   final int? maxLines;
   final int? minLines;
+  final ScrollController? scrollController;
 
   const CustomLabelTextField({
     super.key,
@@ -68,6 +69,7 @@ class CustomLabelTextField extends StatelessWidget {
     this.contentPadding,
     this.maxLines,
     this.minLines,
+    this.scrollController,
   });
 
   @override
@@ -95,6 +97,7 @@ class CustomLabelTextField extends StatelessWidget {
             onChanged: onChanged,
             onFieldSubmitted: onSubmit,
             validator: validator,
+            scrollController: scrollController,
             keyboardType: keyboardType,
             textInputAction: textInputAction ?? TextInputAction.done,
             readOnly: readOnly ?? false,

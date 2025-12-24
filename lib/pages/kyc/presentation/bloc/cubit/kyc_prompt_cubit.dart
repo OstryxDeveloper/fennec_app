@@ -1,9 +1,23 @@
+import 'dart:developer';
 import 'dart:io';
+import 'dart:async';
 import 'package:audio_waveforms/audio_waveforms.dart';
-import 'package:fennac_app/helpers/toast_helper.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/state/kyc_prompt_state.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path_provider/path_provider.dart';
+
+class AudioPromptData {
+  final String audioPath;
+  final List<double> waveformData;
+  final String duration;
+
+  AudioPromptData({
+    required this.audioPath,
+    required this.waveformData,
+    required this.duration,
+  });
+}
 
 class KycPromptCubit extends Cubit<KycPromptState> {
   KycPromptCubit() : super(KycPromptInitial());
@@ -20,6 +34,9 @@ class KycPromptCubit extends Cubit<KycPromptState> {
     'My ideal group activity is...',
   ];
 
+  final TextEditingController promptController = TextEditingController();
+  final TextEditingController controller = TextEditingController();
+
   // Selected prompts (up to 4)
   final List<String> selectedPrompts = [];
 
@@ -33,6 +50,9 @@ class KycPromptCubit extends Cubit<KycPromptState> {
   // Audio paths for prompts: Map<prompt, audioPath>
   final Map<String, String> promptAudioPaths = {};
 
+  // Audio prompt data with waveform and duration: Map<prompt, AudioPromptData>
+  final Map<String, AudioPromptData> audioPromptData = {};
+
   // Maximum allowed prompts
   static const int maxPrompts = 4;
 
@@ -42,11 +62,28 @@ class KycPromptCubit extends Cubit<KycPromptState> {
 
   bool isAudioMode = false;
 
-  // Audio recording state
+  // ==================== AUDIO CONTROLLERS (Owned by Cubit) ====================
+  final RecorderController _recorderController = RecorderController();
+  final PlayerController _playerController = PlayerController();
+
+  // ==================== AUDIO STATE (Single Source of Truth) ====================
   String? recordingPath;
   bool isRecording = false;
+  bool isRecordingPaused = false;
   bool isRecorded = false;
   bool isPlaying = false;
+  List<double> recordedWaveformData = [];
+  String recordedDuration = '00:00';
+
+  // ==================== TIMER STATE (Owned by Cubit) ====================
+  Timer? _recordTimer;
+  Duration _recordingElapsed = Duration.zero;
+
+  Duration get recordingElapsed => _recordingElapsed;
+
+  // Expose controllers to widgets (but widgets should only read, not manipulate)
+  RecorderController get recorderController => _recorderController;
+  PlayerController get playerController => _playerController;
 
   void toggleAudioMode() {
     emit(KycPromptLoading());
@@ -54,70 +91,228 @@ class KycPromptCubit extends Cubit<KycPromptState> {
     emit(KycPromptLoaded());
   }
 
-  Future<void> startRecording(RecorderController recorderController) async {
+  // ==================== RECORDING CONTROL ====================
+
+  /// Start recording a new audio prompt
+  Future<void> startRecording() async {
     try {
       emit(KycPromptLoading());
+
+      // Check permissions first
+      final hasPermission = await _recorderController.checkPermission();
+      if (!hasPermission) {
+        log('Recording permission not granted');
+        emit(KycPromptError());
+        return;
+      }
+
       final directory = await getApplicationDocumentsDirectory();
       final path =
           '${directory.path}/audio_${DateTime.now().millisecondsSinceEpoch}.m4a';
 
-      await recorderController.record(path: path);
+      await _recorderController.record(path: path);
       recordingPath = path;
       isRecording = true;
+      isRecordingPaused = false;
       isRecorded = false;
       isPlaying = false;
+
+      _startTimer();
       emit(KycPromptLoaded());
     } catch (e) {
+      log('Error starting recording: $e');
       emit(KycPromptError());
       rethrow;
     }
   }
 
-  Future<void> stopRecording(RecorderController recorderController) async {
+  /// Pause an active recording
+  Future<void> pauseRecording() async {
     try {
+      if (!isRecording || isRecordingPaused) return;
       emit(KycPromptLoading());
-      final path = await recorderController.stop();
+      isRecordingPaused = true;
+      _recordTimer?.cancel();
+      emit(KycPromptLoaded());
+    } catch (e) {
+      log('Error pausing recording: $e');
+      emit(KycPromptError());
+      rethrow;
+    }
+  }
+
+  /// Resume a paused recording
+  Future<void> resumeRecording() async {
+    try {
+      if (!isRecording || !isRecordingPaused) return;
+      emit(KycPromptLoading());
+      isRecordingPaused = false;
+      _startTimer();
+      emit(KycPromptLoaded());
+    } catch (e) {
+      log('Error resuming recording: $e');
+      emit(KycPromptError());
+      rethrow;
+    }
+  }
+
+  /// Stop recording and finalize waveform data
+  Future<void> stopRecording() async {
+    try {
+      log('Stopping recording...');
+      emit(KycPromptLoading());
+      final path = await _recorderController.stop();
       recordingPath = path ?? recordingPath;
       isRecording = false;
+      isRecordingPaused = false;
       isRecorded = true;
+      isPlaying = false;
+
+      _stopTimer();
+
+      // Capture finalized waveform data from recorder
+      _captureWaveformData();
+
+      emit(KycPromptLoaded());
+    } catch (e) {
+      log('Error stopping recording: $e');
+      emit(KycPromptError());
+      rethrow;
+    }
+  }
+
+  // ==================== PREVIEW CONTROL ====================
+
+  /// Play the recorded audio
+  Future<void> playPreview() async {
+    try {
+      emit(KycPromptLoading());
+      if (recordingPath == null) {
+        emit(KycPromptLoaded());
+        return;
+      }
+      await _playerController.preparePlayer(path: recordingPath!);
+      await _playerController.startPlayer();
+      isPlaying = true;
+
+      _playerController.onPlayerStateChanged.listen((state) {
+        if (state == PlayerState.stopped) {
+          _onPlaybackStopped();
+        }
+      });
+      emit(KycPromptLoaded());
+    } catch (e) {
+      log('Error playing preview: $e');
+      emit(KycPromptError());
+      rethrow;
+    }
+  }
+
+  /// Pause playback
+  Future<void> pausePreview() async {
+    try {
+      if (!isPlaying) return;
+      emit(KycPromptLoading());
+      await _playerController.pausePlayer();
       isPlaying = false;
       emit(KycPromptLoaded());
     } catch (e) {
+      log('Error pausing preview: $e');
       emit(KycPromptError());
       rethrow;
     }
   }
 
-  Future<void> togglePlayback(PlayerController playerController) async {
+  /// Stop playback
+  Future<void> stopPreview() async {
     try {
       emit(KycPromptLoading());
-      if (isPlaying) {
-        await playerController.pausePlayer();
-        isPlaying = false;
-      } else {
-        if (recordingPath != null) {
-          await playerController.preparePlayer(path: recordingPath!);
-          await playerController.startPlayer();
-          isPlaying = true;
-
-          // Listen for playback completion
-          playerController.onPlayerStateChanged.listen((state) {
-            if (state == PlayerState.stopped) {
-              isPlaying = false;
-              emit(KycPromptLoaded());
-            }
-          });
-        }
-      }
+      await _playerController.stopPlayer();
+      isPlaying = false;
       emit(KycPromptLoaded());
     } catch (e) {
+      log('Error stopping preview: $e');
       emit(KycPromptError());
       rethrow;
     }
   }
 
-  void deleteRecording(PlayerController playerController) {
+  // ==================== DELETE AUDIO ====================
+
+  /// Delete recorded audio and reset all audio state
+  void deleteAudio() {
     emit(KycPromptLoading());
+    _resetAudioState();
+    emit(KycPromptLoaded());
+  }
+
+  // ==================== PRIVATE HELPERS ====================
+
+  /// Start the recording timer
+  void _startTimer() {
+    _recordTimer?.cancel();
+    _recordTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      _recordingElapsed += const Duration(seconds: 1);
+      emit(KycPromptLoaded());
+    });
+  }
+
+  /// Stop the recording timer
+  void _stopTimer() {
+    _recordTimer?.cancel();
+  }
+
+  /// Capture waveform data from the recorder controller
+  void _captureWaveformData() {
+    if (_recorderController.waveData.isNotEmpty) {
+      final maxAmplitude = _recorderController.waveData
+          .reduce((a, b) => a > b ? a : b)
+          .toDouble();
+      recordedWaveformData = List<double>.from(
+        _recorderController.waveData.map(
+          (e) => maxAmplitude > 0 ? e / maxAmplitude : 0.0,
+        ),
+      );
+    } else {
+      recordedWaveformData = List.generate(100, (i) {
+        final t = i / 100.0;
+        return (0.3 + 0.7 * (1 - (2 * t - 1).abs())) *
+            (0.5 + 0.5 * (i % 3) / 3);
+      });
+    }
+
+    // Update duration from timer
+    final minutes = (_recordingElapsed.inSeconds ~/ 60).toString().padLeft(
+      2,
+      '0',
+    );
+    final seconds = (_recordingElapsed.inSeconds % 60).toString().padLeft(
+      2,
+      '0',
+    );
+    recordedDuration = '$minutes:$seconds';
+  }
+
+  /// Called when playback stops
+  void _onPlaybackStopped() {
+    isPlaying = false;
+    emit(KycPromptLoaded());
+  }
+
+  /// Reset all audio-related state
+  void _resetAudioState() {
+    // Stop playback and recording
+    try {
+      _playerController.stopPlayer();
+    } catch (_) {}
+    try {
+      _recorderController.stop();
+    } catch (_) {}
+
+    _stopTimer();
+    _recordingElapsed = Duration.zero;
+
+    // Delete audio file
     if (recordingPath != null) {
       try {
         final file = File(recordingPath!);
@@ -125,16 +320,20 @@ class KycPromptCubit extends Cubit<KycPromptState> {
           file.deleteSync();
         }
       } catch (e) {
-        // Handle error silently
+        log('Error deleting audio file: $e');
       }
     }
-    playerController.stopPlayer();
+
     recordingPath = null;
     isRecorded = false;
     isPlaying = false;
     isRecording = false;
-    emit(KycPromptLoaded());
+    isRecordingPaused = false;
+    recordedWaveformData = [];
+    recordedDuration = '00:00';
   }
+
+  // ==================== PROMPT MANAGEMENT ====================
 
   void showCreatePromptBottomSheet() {
     emit(KycPromptLoading());
@@ -172,15 +371,28 @@ class KycPromptCubit extends Cubit<KycPromptState> {
     }
   }
 
-  void savePromptAnswer(String prompt, String answer, {String? audioPath}) {
+  void savePromptAnswer(
+    String prompt,
+    String answer, {
+    String? audioPath,
+    List<double>? waveformData,
+    String? duration,
+  }) {
     emit(KycPromptLoading());
     promptAnswers[prompt] = answer;
     if (audioPath != null) {
       promptAudioPaths[prompt] = audioPath;
+      if (waveformData != null && duration != null) {
+        audioPromptData[prompt] = AudioPromptData(
+          audioPath: audioPath,
+          waveformData: waveformData,
+          duration: duration,
+        );
+      }
     } else {
       promptAudioPaths.remove(prompt);
+      audioPromptData.remove(prompt);
     }
-    // Auto-select the prompt if not already selected
     if (!selectedPrompts.contains(prompt) &&
         selectedPrompts.length < maxPrompts) {
       selectedPrompts.add(prompt);
@@ -190,7 +402,6 @@ class KycPromptCubit extends Cubit<KycPromptState> {
 
   void editPromptAnswer(String prompt) {
     emit(KycPromptLoading());
-    // This will be used to open the bottom sheet with existing answer
     emit(KycPromptLoaded());
   }
 
@@ -222,11 +433,14 @@ class KycPromptCubit extends Cubit<KycPromptState> {
   }
 
   bool canSelectMore() {
-    if (selectedPrompts.length < maxPrompts) {
-      return true;
-    } else {
-      VxToast.show(msg: 'You can select up to $maxPrompts prompts only.');
-      return false;
-    }
+    return selectedPrompts.length < maxPrompts;
+  }
+
+  AudioPromptData? getAudioPromptData(String prompt) {
+    return audioPromptData[prompt];
+  }
+
+  bool isMaxReached() {
+    return selectedPrompts.length >= maxPrompts;
   }
 }

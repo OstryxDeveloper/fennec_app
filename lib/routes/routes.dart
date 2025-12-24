@@ -13,6 +13,12 @@ class AppRouter extends RootStackRouter {
     ),
 
     CustomRoute(
+      page: LandingRoute.page,
+      barrierColor: Colors.transparent,
+      transitionsBuilder: TransitionsBuilders.noTransition,
+    ),
+
+    CustomRoute(
       page: DashboardRoute.page,
       barrierColor: Colors.transparent,
       transitionsBuilder: TransitionsBuilders.noTransition,

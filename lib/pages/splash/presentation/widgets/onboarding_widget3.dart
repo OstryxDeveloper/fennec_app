@@ -23,7 +23,7 @@ class _OnboardingWidget3State extends State<OnboardingWidget3> {
             alignment: Alignment.center,
             children: [
               Lottie.asset(
-                Assets.animations.rotatingGroupAnimationEdgesNoBG,
+                Assets.animations.rotatingGroupAnimationNoShadowDotted,
                 repeat: true,
                 fit: BoxFit.fill,
               ),

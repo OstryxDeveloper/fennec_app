@@ -33,11 +33,13 @@ class GalleryUploadWidget extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
-              child: (cubit.selectedImage?.path.isNotEmpty ?? false)
+              child:
+                  (cubit.mediaList.isNotEmpty &&
+                      cubit.mediaList[0].path.isNotEmpty)
                   ? Stack(
                       children: [
                         Image.file(
-                          File(cubit.selectedImage?.path ?? ''),
+                          File(cubit.mediaList[0].path),
                           width: double.infinity,
                           height: 260,
                           fit: BoxFit.cover,
@@ -54,7 +56,8 @@ class GalleryUploadWidget extends StatelessWidget {
                           top: 6,
                           right: 6,
                           child: GestureDetector(
-                            onTap: () => cubit.removeImage(0),
+                            onTap: () =>
+                                cubit.removeMedia(cubit.mediaList[0].id),
                             child: Container(
                               alignment: Alignment.center,
                               width: 24,

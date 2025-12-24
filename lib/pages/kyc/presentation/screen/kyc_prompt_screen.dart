@@ -4,7 +4,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/core/di_container.dart';
-import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/cubit/kyc_prompt_cubit.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/state/kyc_prompt_state.dart';
 import 'package:fennac_app/pages/kyc/presentation/widgets/create_prompt_bottom_sheet.dart';
@@ -18,7 +17,6 @@ import 'package:fennac_app/widgets/custom_text.dart';
 import 'package:fennac_app/widgets/movable_background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 @RoutePage()
 class KycPromptScreen extends StatefulWidget {
@@ -103,13 +101,8 @@ class _KycPromptScreenState extends State<KycPromptScreen> {
                                 Container(
                                   width: double.infinity,
                                   decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        ColorPalette.primary,
-                                        ColorPalette.primary.withOpacity(0.8),
-                                      ],
-                                      begin: Alignment.centerLeft,
-                                      end: Alignment.centerRight,
+                                    color: ColorPalette.primary.withOpacity(
+                                      0.3,
                                     ),
                                     borderRadius: BorderRadius.circular(16),
                                   ),
@@ -117,19 +110,21 @@ class _KycPromptScreenState extends State<KycPromptScreen> {
                                     color: Colors.transparent,
                                     child: InkWell(
                                       onTap: () async {
-                                        if (_kycPromptCubit.canSelectMore()) {
+                                        if (_kycPromptCubit.isMaxReached()) {
+                                          _showMaxPromptsDialog(context);
+                                          return;
+                                        }
+                                        setState(() {
+                                          _isBackgroundBlurred = true;
+                                        });
+                                        await CreatePromptBottomSheet.show(
+                                          context,
+                                          'Create Custom Prompt',
+                                        );
+                                        if (mounted) {
                                           setState(() {
-                                            _isBackgroundBlurred = true;
+                                            _isBackgroundBlurred = false;
                                           });
-                                          await CreatePromptBottomSheet.show(
-                                            context,
-                                            'Create Custom Prompt',
-                                          );
-                                          if (mounted) {
-                                            setState(() {
-                                              _isBackgroundBlurred = false;
-                                            });
-                                          }
                                         }
                                       },
                                       borderRadius: BorderRadius.circular(16),
@@ -236,8 +231,7 @@ class _KycPromptScreenState extends State<KycPromptScreen> {
                 Expanded(
                   child: CustomElevatedButton(
                     onTap: () {
-                      // Handle continue action
-                      AutoRouter.of(context).push(const DashboardRoute());
+                      AutoRouter.of(context).push(const OnBoardingRoute());
                     },
                     text: 'Continue',
                     width: double.infinity,
@@ -248,6 +242,47 @@ class _KycPromptScreenState extends State<KycPromptScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showMaxPromptsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: ColorPalette.secondry,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: AppText(
+            text: 'Maximum Prompts Reached',
+            style: AppTextStyles.h1(context).copyWith(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: AppText(
+            text:
+                'You can select only 4 prompts. Please deselect one to add another.',
+            style: AppTextStyles.bodyLarge(
+              context,
+            ).copyWith(color: Colors.white.withOpacity(0.8), fontSize: 14),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: AppText(
+                text: 'OK',
+                style: AppTextStyles.bodyLarge(context).copyWith(
+                  color: ColorPalette.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:fennac_app/widgets/custom_sized_box.dart';
 import 'package:fennac_app/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
 class OnboardingWidget2 extends StatelessWidget {
@@ -18,13 +19,12 @@ class OnboardingWidget2 extends StatelessWidget {
             child: Lottie.asset(Assets.animations.emojis7s, fit: BoxFit.cover),
           ),
         ),
-
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Spacer(flex: 50),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
                   Lottie.asset(
@@ -38,7 +38,7 @@ class OnboardingWidget2 extends StatelessWidget {
                       context,
                     ).copyWith(color: Colors.white, fontSize: 32),
                   ),
-                  const CustomSizedBox(height: 24),
+                  CustomSizedBox(height: 10.h),
                   AppText(
                     text:
                         'Dive into a shared chat room, Have fun with your friends',

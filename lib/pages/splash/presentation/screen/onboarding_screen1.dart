@@ -139,7 +139,7 @@ class _OnBoardingScreen1State extends State<OnBoardingScreen1>
                   return Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: 24.w,
-                      vertical: 50.h,
+                      vertical: 20.h,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

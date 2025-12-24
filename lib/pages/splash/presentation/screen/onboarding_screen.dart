@@ -101,7 +101,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
                   alignment: Alignment.center,
                   children: [
                     Lottie.asset(
-                      Assets.animations.welcomeScreenAnimationNoShadow,
+                      Assets
+                          .animations
+                          .welcomeScreenAnimationRoadNoShadowDashed,
                       repeat: true,
                       fit: BoxFit.fill,
                     ),
@@ -125,13 +127,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
                     child: SlideTransition(
                       position: _textSlideAnimation,
                       child: AppText(
-                        text: 'Find your vibe\n-together.',
+                        text: 'Find your vibe\n-\ttogether.',
                         textAlign: TextAlign.center,
-                        style: AppTextStyles.h1(context).copyWith(
-                          color: Colors.white,
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: AppTextStyles.h1(context),
                       ),
                     ),
                   );
@@ -148,7 +146,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
         width: 0.9.sw,
         text: 'Get Started',
         onTap: () {
-          AutoRouter.of(context).replace(const DashboardRoute());
+          AutoRouter.of(context).replace(const LandingRoute());
         },
         icon: Assets.icons.arrowRight.svg(
           width: 24,

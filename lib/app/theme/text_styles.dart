@@ -5,25 +5,49 @@ import '../constants/media_query_constants.dart';
 class AppTextStyles {
   AppTextStyles._();
 
-  // Base text style with SF Pro font
-  static TextStyle _sfProTextStyle() => const TextStyle(fontFamily: 'SFPro');
+  static TextStyle _sfProTextStyle() =>
+      const TextStyle(fontFamily: 'SFPro', color: Colors.white);
+
+  static TextStyle h1(BuildContext context) => _sfProTextStyle().copyWith(
+    fontSize: 40,
+    fontWeight: FontWeight.w700,
+    height: 1.0,
+    letterSpacing: -0.02 * 40,
+  );
+
+  static TextStyle h2(BuildContext context) => _sfProTextStyle().copyWith(
+    fontSize: 32,
+    fontWeight: FontWeight.w500,
+    height: 1.0,
+    letterSpacing: -0.02 * 32,
+  );
+
+  static TextStyle h4(BuildContext context) => _sfProTextStyle().copyWith(
+    fontSize: 20,
+    fontWeight: FontWeight.w500,
+    height: 1.0,
+    letterSpacing: -0.02 * 20,
+  );
+
+  static TextStyle description(BuildContext context) =>
+      _sfProTextStyle().copyWith(
+        fontSize: 12,
+        fontWeight: FontWeight.w400,
+        height: 1.0,
+        letterSpacing: 0,
+      );
+
+  static TextStyle body(BuildContext context) => _sfProTextStyle().copyWith(
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    height: 1.5,
+    letterSpacing: 0,
+  );
 
   static TextStyle h1Large(BuildContext context) => _sfProTextStyle().copyWith(
     fontSize: getWidth(context) > 1000 ? 40 : 28,
     fontWeight: FontWeight.w500,
     height: getWidth(context) > 1000 ? 40 / 28 : null,
-  );
-
-  static TextStyle h1(BuildContext context) => _sfProTextStyle().copyWith(
-    fontSize: getWidth(context) > 1000 ? 32 : 18,
-    fontWeight: FontWeight.w500,
-    height: getWidth(context) > 1000 ? 24 / 28 : null,
-  );
-
-  static TextStyle h2(BuildContext context) => _sfProTextStyle().copyWith(
-    fontSize: getWidth(context) > 1050 ? 24 : 18,
-    fontWeight: FontWeight.w500,
-    height: getWidth(context) > 1050 ? 24 / 24 : null,
   );
 
   static TextStyle bodyLarge(BuildContext context) =>
@@ -55,9 +79,11 @@ class AppTextStyles {
 
   static TextStyle bodySmall(BuildContext context) =>
       _sfProTextStyle().copyWith(
-        fontSize: getWidth(context) > 1000 ? 12 : 12,
-        height: getWidth(context) > 1000 ? 17 / 12 : null,
+        fontSize: 12,
         fontWeight: FontWeight.w400,
+        fontStyle: FontStyle.normal,
+        height: 1.0,
+        letterSpacing: 0,
       );
 
   static Widget checkDirection(BuildContext context, List<Widget> data) =>

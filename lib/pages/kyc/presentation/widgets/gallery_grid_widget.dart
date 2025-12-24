@@ -16,16 +16,16 @@ class GalleryGridWidget extends StatelessWidget {
         children: [
           GalleryGridSlot(
             index: 0,
-            imagePath: cubit.selectedImagePaths.isNotEmpty
-                ? cubit.selectedImagePaths[0]
+            imagePath: cubit.mediaList.isNotEmpty
+                ? cubit.mediaList[0].path
                 : null,
             onTap: cubit.pickMultipleImagesFromGallery,
           ),
           const SizedBox(height: 10),
           GalleryGridSlot(
             index: 1,
-            imagePath: cubit.selectedImagePaths.length > 1
-                ? cubit.selectedImagePaths[1]
+            imagePath: cubit.mediaList.length > 1
+                ? cubit.mediaList[1].path
                 : null,
             onTap: cubit.pickMultipleImagesFromGallery,
           ),

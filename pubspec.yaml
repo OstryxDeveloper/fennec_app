@@ -34,6 +34,7 @@ dependencies:
   geolocator: ^13.0.1
   audio_waveforms: ^2.0.1
   path_provider: ^2.1.4
+  just_audio: ^0.10.5
 
   freezed_annotation: ^3.0.0
   json_annotation: ^4.9.0

@@ -1,134 +1,249 @@
-import 'dart:io';
-
+import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/bloc/state/imagepicker_state.dart';
-import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
+
+class MediaItem {
+  final String path;
+  final MediaType type;
+  final String id;
+
+  MediaItem({required this.path, required this.type, required this.id});
+}
+
+enum MediaType { image, video }
 
 class ImagePickerCubit extends Cubit<ImagePickerState> {
+  static const int maxMediaItems = 6;
+
   ImagePickerCubit() : super(ImagePickerInitial());
 
   final ImagePicker _imagePicker = ImagePicker();
-  List<File> selectedImages = [];
-  List<String> selectedImagePaths = [
-    Assets.dummy.portrait.path,
-    Assets.dummy.portrait1.path,
-    Assets.dummy.portrait2.path,
-    Assets.dummy.portrait3.path,
-    Assets.dummy.portrait4.path,
-  ];
+  final ImageCropper _imageCropper = ImageCropper();
+  List<MediaItem> mediaList = [];
 
-  Future<void> pickImageFromGallery() async {
-    emit(ImagePickerLoading());
+  /// Force square cropping for every image selection.
+  Future<String?> _cropToSquare(String sourcePath) async {
     try {
-      final XFile? pickedFile = await _imagePicker.pickImage(
-        source: ImageSource.gallery,
-        requestFullMetadata: false,
+      final croppedFile = await _imageCropper.cropImage(
+        sourcePath: sourcePath,
+        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+        uiSettings: [
+          AndroidUiSettings(
+            backgroundColor: ColorPalette.secondry,
+            toolbarColor: ColorPalette.secondry,
+            toolbarTitle: 'Crop Image',
+            lockAspectRatio: true,
+            hideBottomControls: true,
+            toolbarWidgetColor: Colors.white,
+            statusBarColor: ColorPalette.white,
+          ),
+          IOSUiSettings(title: 'Crop Image', aspectRatioLockEnabled: true),
+        ],
       );
 
-      if (pickedFile != null) {
-        selectedImages.add(File(pickedFile.path));
-        emit(ImagePickerLoaded());
-      }
+      return croppedFile?.path;
     } catch (e) {
-      emit(ImagePickerError());
-      debugPrint('Error picking image from gallery: $e');
+      debugPrint('Error while cropping image: $e');
+      emit(ImagePickerError('Could not crop image'));
+      return null;
     }
   }
 
-  Future<void> pickMultipleImagesFromGallery() async {
+  /// Pick single or multiple images from gallery and add to specific index
+  Future<void> pickImagesFromGallery({int? containerIndex}) async {
+    if (mediaList.length >= maxMediaItems) {
+      emit(ImagePickerError('Maximum $maxMediaItems media items allowed'));
+      return;
+    }
+
     emit(ImagePickerLoading());
     try {
-      final List<XFile> pickedFiles = await _imagePicker.pickMultiImage(
-        requestFullMetadata: false,
-      );
+      final List<XFile> pickedFiles = await _imagePicker.pickMultiImage();
 
       if (pickedFiles.isNotEmpty) {
-        selectedImages.addAll(pickedFiles.map((file) => File(file.path)));
-        emit(ImagePickerLoaded());
+        for (var file in pickedFiles) {
+          if (mediaList.length < maxMediaItems) {
+            final croppedPath = await _cropToSquare(file.path);
+            if (croppedPath == null) {
+              continue;
+            }
+
+            final newItem = MediaItem(
+              path: croppedPath,
+              type: MediaType.image,
+              id:
+                  DateTime.now().millisecondsSinceEpoch.toString() +
+                  mediaList.length.toString(),
+            );
+
+            // Add to specific container if provided, otherwise append
+            if (containerIndex != null &&
+                containerIndex >= 0 &&
+                containerIndex < maxMediaItems) {
+              if (containerIndex < mediaList.length) {
+                mediaList[containerIndex] = newItem;
+              } else {
+                mediaList.add(newItem);
+              }
+            } else {
+              mediaList.add(newItem);
+            }
+          }
+        }
+        emit(ImagePickerLoaded(mediaList: mediaList));
+      } else {
+        emit(ImagePickerLoaded(mediaList: mediaList));
       }
     } catch (e) {
-      emit(ImagePickerError());
+      emit(ImagePickerError('Error picking images: $e'));
       debugPrint('Error picking images from gallery: $e');
     }
   }
 
-  Future<void> pickImageFromCamera() async {
-    emit(ImagePickerLoading());
+  /// Pick video from gallery and add to specific index
+  Future<void> pickVideoFromGallery({int? containerIndex}) async {
+    if (mediaList.length >= maxMediaItems) {
+      emit(ImagePickerError('Maximum $maxMediaItems media items allowed'));
+      return;
+    }
 
+    emit(ImagePickerLoading());
+    try {
+      final XFile? pickedFile = await _imagePicker.pickVideo(
+        source: ImageSource.gallery,
+        maxDuration: const Duration(minutes: 5),
+      );
+
+      if (pickedFile != null) {
+        final newItem = MediaItem(
+          path: pickedFile.path,
+          type: MediaType.video,
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+        );
+
+        // Add to specific container if provided, otherwise append
+        if (containerIndex != null &&
+            containerIndex >= 0 &&
+            containerIndex < maxMediaItems) {
+          if (containerIndex < mediaList.length) {
+            mediaList[containerIndex] = newItem;
+          } else {
+            mediaList.add(newItem);
+          }
+        } else {
+          mediaList.add(newItem);
+        }
+        emit(ImagePickerLoaded(mediaList: mediaList));
+      } else {
+        emit(ImagePickerLoaded(mediaList: mediaList));
+      }
+    } catch (e) {
+      emit(ImagePickerError('Error picking video: $e'));
+      debugPrint('Error picking video from gallery: $e');
+    }
+  }
+
+  /// Pick image from camera and add to specific index
+  Future<void> pickImageFromCamera({int? containerIndex}) async {
+    if (mediaList.length >= maxMediaItems) {
+      emit(ImagePickerError('Maximum $maxMediaItems media items allowed'));
+      return;
+    }
+
+    emit(ImagePickerLoading());
     try {
       final XFile? pickedFile = await _imagePicker.pickImage(
         source: ImageSource.camera,
         maxWidth: 1000,
         maxHeight: 1000,
         imageQuality: 80,
-        requestFullMetadata: false,
       );
 
       if (pickedFile != null) {
-        selectedImages.add(File(pickedFile.path));
-        emit(ImagePickerLoaded());
+        final croppedPath = await _cropToSquare(pickedFile.path);
+        if (croppedPath == null) {
+          emit(ImagePickerLoaded(mediaList: mediaList));
+          return;
+        }
+
+        final newItem = MediaItem(
+          path: croppedPath,
+          type: MediaType.image,
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+        );
+
+        // Add to specific container if provided, otherwise append
+        if (containerIndex != null &&
+            containerIndex >= 0 &&
+            containerIndex < maxMediaItems) {
+          if (containerIndex < mediaList.length) {
+            mediaList[containerIndex] = newItem;
+          } else {
+            mediaList.add(newItem);
+          }
+        } else {
+          mediaList.add(newItem);
+        }
+        emit(ImagePickerLoaded(mediaList: mediaList));
+      } else {
+        emit(ImagePickerLoaded(mediaList: mediaList));
       }
     } catch (e) {
-      emit(ImagePickerError());
-
+      emit(ImagePickerError('Error picking image from camera: $e'));
       debugPrint('Error picking image from camera: $e');
     }
   }
 
-  void removeImage(int index) {
+  /// Remove media item by ID or by index
+  void removeMedia(String? id, {int? index}) {
     emit(ImagePickerLoading());
-    if (index >= 0 && index < selectedImages.length) {
-      selectedImages.removeAt(index);
-      emit(ImagePickerLoaded());
+    if (id != null) {
+      mediaList.removeWhere((item) => item.id == id);
+    } else if (index != null && index >= 0 && index < mediaList.length) {
+      mediaList.removeAt(index);
     }
-    // Also remove from asset paths
-    if (index >= 0 && index < selectedImagePaths.length) {
-      selectedImagePaths.removeAt(index);
-      emit(ImagePickerLoaded());
-    }
+    emit(ImagePickerLoaded(mediaList: mediaList));
   }
 
-  void reorderImages(int oldIndex, int newIndex) {
-    emit(ImagePickerLoading());
+  /// Reorder media items by dragging
+  void reorderMedia(int oldIndex, int newIndex) {
+    if (oldIndex < 0 ||
+        oldIndex >= mediaList.length ||
+        newIndex < 0 ||
+        newIndex >= mediaList.length) {
+      return;
+    }
+
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
-    if (oldIndex >= 0 &&
-        oldIndex < selectedImages.length &&
-        newIndex >= 0 &&
-        newIndex < selectedImages.length) {
-      final item = selectedImages.removeAt(oldIndex);
-      selectedImages.insert(newIndex, item);
-      emit(ImagePickerLoaded());
-    }
-    // Also reorder asset paths
-    if (oldIndex >= 0 &&
-        oldIndex < selectedImagePaths.length &&
-        newIndex >= 0 &&
-        newIndex < selectedImagePaths.length) {
-      if (oldIndex < newIndex) {
-        newIndex -= 1;
-      }
-      final item = selectedImagePaths.removeAt(oldIndex);
-      selectedImagePaths.insert(newIndex, item);
-      emit(ImagePickerLoaded());
-    }
+
+    final item = mediaList.removeAt(oldIndex);
+    mediaList.insert(newIndex, item);
+    emit(ImagePickerLoaded(mediaList: mediaList));
   }
 
-  void clearAllImages() {
-    emit(ImagePickerLoading());
-    selectedImages.clear();
-    selectedImagePaths.clear();
-    emit(ImagePickerLoaded());
+  /// Clear all media
+  void clearAllMedia() {
+    mediaList.clear();
+    emit(ImagePickerLoaded(mediaList: mediaList));
   }
+
+  /// Get current count of media
+  int get mediaCount => mediaList.length;
+
+  /// Check if max capacity reached
+  bool get isMaxCapacityReached => mediaList.length >= maxMediaItems;
+
+  /// Get remaining slots
+  int get remainingSlots => maxMediaItems - mediaList.length;
 
   // Legacy support
-  File? get selectedImage =>
-      selectedImages.isNotEmpty ? selectedImages.first : null;
-
-  void clearSelectedImage() {
-    clearAllImages();
+  @deprecated
+  Future<void> pickMultipleImagesFromGallery() async {
+    await pickImagesFromGallery();
   }
 }
