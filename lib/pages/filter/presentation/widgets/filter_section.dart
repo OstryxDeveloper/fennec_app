@@ -47,7 +47,7 @@ class FilterSection extends StatelessWidget {
             height: 138,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             decoration: BoxDecoration(
-              color: ColorPalette.black.withOpacity(0.2),
+              color: ColorPalette.black.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
@@ -67,7 +67,10 @@ class FilterSection extends StatelessWidget {
                     ),
                     SvgPicture.asset(
                       Assets.icons.arrowRight.path,
-                      color: Colors.white70,
+                      colorFilter: ColorFilter.mode(
+                        Colors.white70,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ],
                 ),

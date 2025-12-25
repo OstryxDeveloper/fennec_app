@@ -4,10 +4,10 @@ import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/bloc/cubit/imagepicker_cubit.dart';
 import 'package:fennac_app/bloc/state/imagepicker_state.dart';
 import 'package:fennac_app/core/di_container.dart';
+import 'package:fennac_app/pages/kyc/presentation/widgets/continue_button.dart';
 import 'package:fennac_app/pages/kyc/presentation/widgets/media_container_widget.dart';
 import 'package:fennac_app/routes/routes_imports.gr.dart';
 import 'package:fennac_app/widgets/custom_back_button.dart';
-import 'package:fennac_app/widgets/custom_elevated_button.dart';
 import 'package:fennac_app/widgets/custom_outlined_button.dart';
 import 'package:fennac_app/widgets/custom_sized_box.dart';
 import 'package:fennac_app/widgets/custom_text.dart';
@@ -76,7 +76,7 @@ class KycGalleryScreen extends StatelessWidget {
                           text:
                               'Drag the photos to sort them. Your primary photo appears at the top and will be used as your profile picture.',
                           style: AppTextStyles.bodyLarge(context).copyWith(
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 0.7),
                             fontSize: 12,
                             height: 1.6,
                           ),
@@ -106,13 +106,13 @@ class KycGalleryScreen extends StatelessWidget {
               ),
             ),
             const CustomSizedBox(width: 16),
+
             Expanded(
-              child: CustomElevatedButton(
+              child: ContinueButton(
                 onTap: () {
                   AutoRouter.of(context).push(const KycMatchRoute());
                 },
                 text: 'Continue',
-                width: double.infinity,
               ),
             ),
           ],
@@ -325,7 +325,7 @@ class KycGalleryScreen extends StatelessWidget {
                     width: 50,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.3),
+                      color: Colors.white.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -350,7 +350,7 @@ class KycGalleryScreen extends StatelessWidget {
                     cubit.pickImagesFromGallery(containerIndex: containerIndex);
                   },
                 ),
-                Divider(color: Colors.white.withOpacity(0.08), height: 1),
+                Divider(color: Colors.white.withValues(alpha: 0.08), height: 1),
                 _buildMediaOption(
                   label: 'Pick Video from Gallery',
                   icon: Icons.videocam_outlined,
@@ -359,7 +359,7 @@ class KycGalleryScreen extends StatelessWidget {
                     cubit.pickVideoFromGallery(containerIndex: containerIndex);
                   },
                 ),
-                Divider(color: Colors.white.withOpacity(0.08), height: 1),
+                Divider(color: Colors.white.withValues(alpha: 0.08), height: 1),
                 _buildMediaOption(
                   label: 'Take a Photo with Camera',
                   icon: Icons.photo_camera_outlined,

@@ -35,7 +35,7 @@ class GalleryImageItemWidget extends StatelessWidget {
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
-                  color: ColorPalette.secondry.withOpacity(0.5),
+                  color: ColorPalette.secondry.withValues(alpha: 0.5),
                   child: const Icon(
                     Icons.broken_image,
                     color: Colors.white54,
@@ -50,8 +50,11 @@ class GalleryImageItemWidget extends StatelessWidget {
       childWhenDragging: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
-          color: Colors.black.withOpacity(0.3),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.2),
+            width: 1,
+          ),
+          color: Colors.black.withValues(alpha: 0.3),
         ),
       ),
       child: DragTarget<int>(
@@ -66,7 +69,7 @@ class GalleryImageItemWidget extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 width: 1,
               ),
             ),
@@ -82,7 +85,7 @@ class GalleryImageItemWidget extends StatelessWidget {
                     width: 124,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
-                        color: ColorPalette.secondry.withOpacity(0.5),
+                        color: ColorPalette.secondry.withValues(alpha: 0.5),
                         child: const Icon(
                           Icons.broken_image,
                           color: Colors.white54,
@@ -106,7 +109,10 @@ class GalleryImageItemWidget extends StatelessWidget {
                         ),
                         child: SvgPicture.asset(
                           Assets.icons.trash.path,
-                          color: Colors.white,
+                          colorFilter: ColorFilter.mode(
+                            ColorPalette.white,
+                            BlendMode.srcIn,
+                          ),
                           width: 10,
                           height: 10,
                         ),

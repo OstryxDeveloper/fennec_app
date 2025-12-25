@@ -38,7 +38,7 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
             lockAspectRatio: true,
             hideBottomControls: true,
             toolbarWidgetColor: Colors.white,
-            statusBarColor: ColorPalette.white,
+            statusBarLight: true,
           ),
           IOSUiSettings(title: 'Crop Image', aspectRatioLockEnabled: true),
         ],
@@ -241,8 +241,6 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
   /// Get remaining slots
   int get remainingSlots => maxMediaItems - mediaList.length;
 
-  // Legacy support
-  @deprecated
   Future<void> pickMultipleImagesFromGallery() async {
     await pickImagesFromGallery();
   }

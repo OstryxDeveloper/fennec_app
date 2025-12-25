@@ -318,8 +318,8 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
                                       text: _formatTime(remainingSeconds),
                                       style: AppTextStyles.bodyLarge(context)
                                           .copyWith(
-                                            color: Colors.white.withOpacity(
-                                              0.7,
+                                            color: Colors.white.withValues(
+                                              alpha: 0.7,
                                             ),
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -344,7 +344,7 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
               return Positioned.fill(
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                  child: Container(color: Colors.black.withOpacity(0.1)),
+                  child: Container(color: Colors.black.withValues(alpha: 0.1)),
                 ),
               );
             },

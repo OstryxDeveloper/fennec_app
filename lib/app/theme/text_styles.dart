@@ -22,6 +22,14 @@ class AppTextStyles {
     letterSpacing: -0.02 * 32,
   );
 
+  static TextStyle h3(BuildContext context) => _sfProTextStyle().copyWith(
+    fontSize: 24,
+    fontWeight: FontWeight.w500,
+    fontStyle: FontStyle.normal,
+    height: 1.0,
+    letterSpacing: -0.02 * 24,
+  );
+
   static TextStyle h4(BuildContext context) => _sfProTextStyle().copyWith(
     fontSize: 20,
     fontWeight: FontWeight.w500,
@@ -64,7 +72,14 @@ class AppTextStyles {
         height: getWidth(context) > 1050 ? 17 / 14 : null,
         fontWeight: FontWeight.w400,
       );
-
+  static TextStyle subHeading(BuildContext context) =>
+      _sfProTextStyle().copyWith(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+        fontStyle: FontStyle.normal,
+        height: 24 / 16,
+        letterSpacing: -0.02 * 16,
+      );
   static TextStyle h5(BuildContext context) => _sfProTextStyle().copyWith(
     fontSize: getWidth(context) > 1000 ? 20 : 12,
     height: getWidth(context) > 1000 ? 17 / 20 : null,
@@ -85,7 +100,14 @@ class AppTextStyles {
         height: 1.0,
         letterSpacing: 0,
       );
-
+  static TextStyle inputLabel(BuildContext context) =>
+      _sfProTextStyle().copyWith(
+        fontSize: 12,
+        fontWeight: FontWeight.w700,
+        fontStyle: FontStyle.normal,
+        height: 16 / 12,
+        letterSpacing: 0,
+      );
   static Widget checkDirection(BuildContext context, List<Widget> data) =>
       getWidth(context) > 1000
       ? Row(
@@ -158,7 +180,7 @@ class AppTextStyles {
     borderRadius: BorderRadius.circular(16),
     boxShadow: [
       BoxShadow(
-        color: Colors.grey.withOpacity(0.1),
+        color: Colors.grey.withValues(alpha: 0.1),
         blurRadius: 3,
         spreadRadius: 3,
         offset: const Offset(0, 3),

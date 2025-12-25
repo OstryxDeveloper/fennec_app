@@ -1,9 +1,9 @@
+import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:fennac_app/widgets/custom_sized_box.dart';
 import 'package:fennac_app/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
 class OnboardingWidget2 extends StatelessWidget {
@@ -22,7 +22,6 @@ class OnboardingWidget2 extends StatelessWidget {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Spacer(flex: 50),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
@@ -34,18 +33,19 @@ class OnboardingWidget2 extends StatelessWidget {
                   AppText(
                     text: 'Group Chats that\nStay Alive',
                     textAlign: TextAlign.center,
-                    style: AppTextStyles.h1(
+                    style: AppTextStyles.h2(
                       context,
-                    ).copyWith(color: Colors.white, fontSize: 32),
+                    ).copyWith(fontWeight: FontWeight.bold),
                   ),
-                  CustomSizedBox(height: 10.h),
+                  CustomSizedBox(height: 20),
                   AppText(
                     text:
-                        'Dive into a shared chat room, Have fun with your friends',
+                        'Dive into a shared chat room,\t\tHave fun with your friends',
                     textAlign: TextAlign.center,
-                    style: AppTextStyles.bodyLarge(
-                      context,
-                    ).copyWith(color: Colors.white, fontSize: 16),
+                    style: AppTextStyles.subHeading(context).copyWith(
+                      color: ColorPalette.textSecondary,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),

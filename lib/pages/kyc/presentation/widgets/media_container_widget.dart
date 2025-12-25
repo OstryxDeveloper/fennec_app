@@ -95,8 +95,11 @@ class _MediaContainerWidgetState extends State<MediaContainerWidget> {
       childWhenDragging: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
-          color: Colors.black.withOpacity(0.3),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.2),
+            width: 1,
+          ),
+          color: Colors.black.withValues(alpha: 0.3),
         ),
       ),
       child: DragTarget<int>(
@@ -117,9 +120,12 @@ class _MediaContainerWidgetState extends State<MediaContainerWidget> {
         height: widget.height,
         width: widget.width,
         decoration: BoxDecoration(
-          color: ColorPalette.secondry.withOpacity(0.5),
+          color: ColorPalette.secondry.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.2),
+            width: 1,
+          ),
         ),
         child: Center(
           child: SvgPicture.asset(
@@ -159,7 +165,10 @@ class _MediaContainerWidgetState extends State<MediaContainerWidget> {
       width: widget.width,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.2),
+          width: 1,
+        ),
       ),
       child: Stack(
         fit: StackFit.expand,
@@ -187,7 +196,7 @@ class _MediaContainerWidgetState extends State<MediaContainerWidget> {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.8),
+                  color: Colors.red.withValues(alpha: 0.8),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -206,7 +215,7 @@ class _MediaContainerWidgetState extends State<MediaContainerWidget> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.6),
+                  color: Colors.black.withValues(alpha: 0.6),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: const Row(
@@ -258,7 +267,7 @@ class _MediaContainerWidgetState extends State<MediaContainerWidget> {
               ),
             ),
             Container(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withValues(alpha: 0.2),
               child: const Center(
                 child: Icon(
                   Icons.play_circle_fill,
@@ -275,7 +284,7 @@ class _MediaContainerWidgetState extends State<MediaContainerWidget> {
 
   Widget _buildVideoPlaceholder({bool isLoading = false}) {
     return Container(
-      color: ColorPalette.secondry.withOpacity(0.3),
+      color: ColorPalette.secondry.withValues(alpha: 0.3),
       child: Center(
         child: isLoading
             ? const SizedBox(
@@ -288,7 +297,7 @@ class _MediaContainerWidgetState extends State<MediaContainerWidget> {
               )
             : Icon(
                 Icons.video_camera_back,
-                color: Colors.white.withOpacity(0.6),
+                color: Colors.white.withValues(alpha: 0.6),
                 size: 40,
               ),
       ),
@@ -297,7 +306,7 @@ class _MediaContainerWidgetState extends State<MediaContainerWidget> {
 
   Widget _buildErrorWidget() {
     return Container(
-      color: ColorPalette.secondry.withOpacity(0.5),
+      color: ColorPalette.secondry.withValues(alpha: 0.5),
       child: const Icon(Icons.broken_image, color: Colors.white54, size: 30),
     );
   }

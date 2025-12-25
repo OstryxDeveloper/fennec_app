@@ -8,7 +8,7 @@ class LoginCubit extends Cubit<LoginState> {
   final email = TextEditingController();
   final phone = TextEditingController();
   final password = TextEditingController();
-  int _validationCounter = 0;
+  int validationCounter = 0;
   bool obscurePassword = true;
 
   String? validateEmail(String? value) {
@@ -24,17 +24,38 @@ class LoginCubit extends Cubit<LoginState> {
 
   String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Password must be at least 8 characters';
+      return 'Password is required';
     }
     if (value.length < 8) {
       return 'Password must be at least 8 characters';
     }
+
+    // Check for uppercase letter
+    if (!value.contains(RegExp(r'[A-Z]'))) {
+      return 'Password must contain at least one uppercase letter';
+    }
+
+    // Check for lowercase letter
+    if (!value.contains(RegExp(r'[a-z]'))) {
+      return 'Password must contain at least one lowercase letter';
+    }
+
+    // Check for digit
+    if (!value.contains(RegExp(r'[0-9]'))) {
+      return 'Password must contain at least one digit';
+    }
+
+    // Check for special character
+    if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+      return 'Password must contain at least one special character (!@#\$%^&*)';
+    }
+
     return null;
   }
 
   void togglePasswordVisibility() {
     emit(LoginValidationLoading());
     obscurePassword = !obscurePassword;
-    emit(LoginValidation(validationCounter: _validationCounter));
+    emit(LoginValidation(validationCounter: validationCounter));
   }
 }

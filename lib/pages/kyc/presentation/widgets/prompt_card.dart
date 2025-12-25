@@ -59,12 +59,12 @@ class PromptCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? ColorPalette.primary
-              : ColorPalette.secondry.withOpacity(0.3),
+              : ColorPalette.secondry.withValues(alpha: 0.3),
           borderRadius: BorderRadius.circular(16),
 
           boxShadow: [
             BoxShadow(
-              color: ColorPalette.primary.withOpacity(0.15),
+              color: ColorPalette.primary.withValues(alpha: 0.15),
               blurRadius: 5,
               offset: const Offset(0, 5),
             ),
@@ -120,7 +120,7 @@ class PromptCard extends StatelessWidget {
                             child: AppText(
                               text: subtitle,
                               style: AppTextStyles.bodySmall(context).copyWith(
-                                color: Colors.white.withOpacity(0.85),
+                                color: Colors.white.withValues(alpha: 0.85),
                                 fontSize: 14,
                               ),
                               maxLines: 2,
@@ -133,13 +133,19 @@ class PromptCard extends StatelessWidget {
                             Assets.icons.edit3.path,
                             width: 20,
                             height: 20,
-                            color: Colors.white,
+                            colorFilter: ColorFilter.mode(
+                              Colors.white.withValues(alpha: 0.6),
+                              BlendMode.srcIn,
+                            ),
                           )
                         : SvgPicture.asset(
                             Assets.icons.arrowRight.path,
                             width: 24,
                             height: 24,
-                            color: Colors.white.withOpacity(0.6),
+                            colorFilter: ColorFilter.mode(
+                              Colors.white.withValues(alpha: 0.6),
+                              BlendMode.srcIn,
+                            ),
                           ),
                   ),
 
@@ -182,9 +188,10 @@ class PromptCard extends StatelessWidget {
           content: AppText(
             text:
                 'Do you want to deselect this prompt? Your answer will remain saved.',
-            style: AppTextStyles.bodyLarge(
-              context,
-            ).copyWith(color: Colors.white.withOpacity(0.8), fontSize: 14),
+            style: AppTextStyles.bodyLarge(context).copyWith(
+              color: Colors.white.withValues(alpha: 0.8),
+              fontSize: 14,
+            ),
           ),
           actions: [
             TextButton(
@@ -192,7 +199,7 @@ class PromptCard extends StatelessWidget {
               child: AppText(
                 text: 'Cancel',
                 style: AppTextStyles.bodyLarge(context).copyWith(
-                  color: Colors.white.withOpacity(0.7),
+                  color: Colors.white.withValues(alpha: 0.7),
                   fontWeight: FontWeight.bold,
                 ),
               ),

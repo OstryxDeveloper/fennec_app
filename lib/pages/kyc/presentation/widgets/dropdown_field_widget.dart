@@ -17,6 +17,7 @@ class DropdownFieldWidget extends StatefulWidget {
   final Function(String)? onSelected;
   final Function(List<String>)? onMultipleSelected;
   final SelectionType selectionType;
+  final ValueNotifier<bool>? blurNotifier;
 
   const DropdownFieldWidget({
     super.key,
@@ -28,6 +29,7 @@ class DropdownFieldWidget extends StatefulWidget {
     this.onSelected,
     this.onMultipleSelected,
     this.selectionType = SelectionType.single,
+    this.blurNotifier,
   });
 
   @override
@@ -52,20 +54,20 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
     );
   }
 
-  void _handleTap(BuildContext context) {
-    // Reset animation to beginning
+  Future<void> _handleTap(BuildContext context) async {
     _bounceController.reset();
-    // Trigger bounce animation - forward then reverse for smooth bounce effect
     _bounceController.forward().then((_) {
       _bounceController.reverse();
     });
 
-    // Show bottom sheet after animation starts for better UX
-    Future.delayed(const Duration(milliseconds: 150), () {
-      if (mounted) {
-        _showBottomSheet(context);
-      }
-    });
+    await Future.delayed(const Duration(milliseconds: 150));
+    if (!mounted) return;
+
+    widget.blurNotifier?.value = true;
+    await _showBottomSheet(context);
+    if (mounted) {
+      widget.blurNotifier?.value = false;
+    }
   }
 
   @override
@@ -88,9 +90,9 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
       children: [
         AppText(
           text: widget.label,
-          style: AppTextStyles.bodyLarge(
+          style: AppTextStyles.inputLabel(
             context,
-          ).copyWith(color: Colors.white, fontWeight: FontWeight.w500),
+          ).copyWith(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         ScaleTransition(
@@ -109,7 +111,7 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
                       text: displayText,
                       style: AppTextStyles.bodyLarge(context).copyWith(
                         color: displayText == 'Select'
-                            ? Colors.white.withOpacity(0.5)
+                            ? Colors.white.withValues(alpha: 0.5)
                             : Colors.white,
                       ),
                     ),
@@ -128,18 +130,18 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
     );
   }
 
-  void _showBottomSheet(BuildContext context) {
+  Future<void> _showBottomSheet(BuildContext context) {
     if (widget.selectionType == SelectionType.multiple) {
-      _showCheckboxBottomSheet(context);
+      return _showCheckboxBottomSheet(context);
     } else {
-      _showRadioBottomSheet(context);
+      return _showRadioBottomSheet(context);
     }
   }
 
-  void _showCheckboxBottomSheet(BuildContext context) {
+  Future<void> _showCheckboxBottomSheet(BuildContext context) {
     final selected = List<String>.from(widget.selectedValues ?? []);
 
-    showModalBottomSheet(
+    return showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
@@ -147,7 +149,7 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
         child: StatefulBuilder(
           builder: (context, setModalState) {
             return Container(
-              height: MediaQuery.of(context).size.height * 0.75,
+              height: MediaQuery.of(context).size.height * 0.8,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -155,8 +157,8 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
                   colors: [ColorPalette.secondry, ColorPalette.black],
                 ),
                 borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(24),
-                  topRight: Radius.circular(24),
+                  topLeft: Radius.circular(32),
+                  topRight: Radius.circular(32),
                 ),
               ),
               child: Column(
@@ -166,7 +168,7 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.3),
+                      color: Colors.white.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -187,7 +189,7 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
                         AppText(
                           text: widget.subtitle,
                           style: AppTextStyles.bodyLarge(context).copyWith(
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 0.7),
                             fontSize: 14,
                           ),
                           textAlign: TextAlign.center,
@@ -199,9 +201,9 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
                     child: ListView.separated(
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       itemCount: widget.options.length,
-                      separatorBuilder: (_, __) => Divider(
+                      separatorBuilder: (_, _) => Divider(
                         height: 1,
-                        color: Colors.white.withOpacity(0.1),
+                        color: Colors.white.withValues(alpha: 0.2),
                       ),
                       itemBuilder: (context, index) {
                         final option = widget.options[index];
@@ -261,7 +263,11 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(24),
+                    padding: const EdgeInsets.only(
+                      left: 24,
+                      right: 24,
+                      bottom: 60,
+                    ),
                     child: CustomElevatedButton(
                       onTap: () {
                         widget.onMultipleSelected?.call(selected);
@@ -280,10 +286,10 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
     );
   }
 
-  void _showRadioBottomSheet(BuildContext context) {
+  Future<void> _showRadioBottomSheet(BuildContext context) {
     String? selected = widget.selectedValue;
 
-    showModalBottomSheet(
+    return showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
@@ -299,8 +305,8 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
                   colors: [ColorPalette.secondry, ColorPalette.black],
                 ),
                 borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(24),
-                  topRight: Radius.circular(24),
+                  topLeft: Radius.circular(32),
+                  topRight: Radius.circular(32),
                 ),
               ),
               child: Column(
@@ -310,7 +316,7 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.3),
+                      color: Colors.white.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -331,7 +337,7 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
                         AppText(
                           text: widget.subtitle,
                           style: AppTextStyles.bodyLarge(context).copyWith(
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 0.7),
                             fontSize: 14,
                           ),
                           textAlign: TextAlign.center,
@@ -343,9 +349,9 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
                     child: ListView.separated(
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       itemCount: widget.options.length,
-                      separatorBuilder: (_, __) => Divider(
-                        height: 1,
-                        color: Colors.white.withOpacity(0.1),
+                      separatorBuilder: (_, _) => Divider(
+                        height: 2,
+                        color: Colors.white.withValues(alpha: 0.2),
                       ),
                       itemBuilder: (context, index) {
                         final option = widget.options[index];
@@ -361,18 +367,47 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             child: Row(
                               children: [
-                                Container(
-                                  width: 24,
-                                  height: 24,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      width: 2,
-                                    ),
-                                    color: isSelected
-                                        ? Colors.white
-                                        : Colors.black,
+                                SizedBox(
+                                  width: 28,
+                                  height: 28,
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      // Outer ring
+                                      Container(
+                                        width: 24,
+                                        height: 24,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: Colors.white,
+                                            width: 2,
+                                          ),
+                                        ),
+                                      ),
+                                      // Middle dark ring
+                                      Container(
+                                        width: 22,
+                                        height: 22,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      // Inner fill toggles selected state
+                                      Container(
+                                        width: 18,
+                                        height: 18,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: !isSelected
+                                              ? Colors.black.withValues(
+                                                  alpha: 0.9,
+                                                )
+                                              : Colors.white,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 const SizedBox(width: 16),

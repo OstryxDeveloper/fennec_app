@@ -5,10 +5,10 @@ import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/cubit/kyc_cubit.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/state/kyc_state.dart';
+import 'package:fennac_app/pages/kyc/presentation/widgets/continue_button.dart';
 import 'package:fennac_app/pages/kyc/presentation/widgets/interest_selection_widget.dart';
 import 'package:fennac_app/routes/routes_imports.gr.dart';
 import 'package:fennac_app/widgets/custom_back_button.dart';
-import 'package:fennac_app/widgets/custom_elevated_button.dart';
 import 'package:fennac_app/widgets/custom_outlined_button.dart';
 import 'package:fennac_app/widgets/custom_sized_box.dart';
 import 'package:fennac_app/widgets/custom_text.dart';
@@ -42,17 +42,16 @@ class KycMatchScreen extends StatelessWidget {
                       CustomSizedBox(height: 32),
                       AppText(
                         text: 'Choose what you love so we can match your vibe.',
-                        style: AppTextStyles.h1(context).copyWith(
+                        style: AppTextStyles.h4(context).copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 24,
                         ),
                       ),
-                      CustomSizedBox(height: 8),
+                      CustomSizedBox(height: 32),
                       AppText(
                         text: 'You can select up to 5 interests.',
                         style: AppTextStyles.bodyLarge(context).copyWith(
-                          color: Colors.white.withOpacity(0.7),
+                          color: Colors.white.withValues(alpha: 0.7),
                           fontSize: 14,
                         ),
                       ),
@@ -88,12 +87,11 @@ class KycMatchScreen extends StatelessWidget {
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: CustomElevatedButton(
+                  child: ContinueButton(
                     onTap: () {
                       AutoRouter.of(context).push(KycPromptRoute());
                     },
                     text: 'Continue',
-                    width: double.infinity,
                   ),
                 ),
               ],

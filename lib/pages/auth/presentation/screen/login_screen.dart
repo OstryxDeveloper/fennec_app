@@ -58,11 +58,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         AppText(
                           text: 'Login to your account',
-                          style: AppTextStyles.h1(context).copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 32,
-                          ),
+                          style: AppTextStyles.h2(
+                            context,
+                          ).copyWith(fontWeight: FontWeight.bold),
                         ),
 
                         CustomSizedBox(height: 40),
@@ -84,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _loginCubit.password,
                           validator: _loginCubit.validatePassword,
                           obscureText: _loginCubit.obscurePassword,
-                          hintText: '••••••••••',
+                          hintText: 'Enter your password',
                           labelColor: Colors.white,
                           filled: false,
                           suffixIcon: IconButton(
@@ -112,15 +110,15 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                             child: AppText(
                               text: 'Forgot Password?',
-                              style: AppTextStyles.bodyLarge(context).copyWith(
+                              style: AppTextStyles.inputLabel(context).copyWith(
                                 color: Colors.white,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
                         ),
 
-                        CustomSizedBox(height: 40),
+                        CustomSizedBox(height: 20),
 
                         CustomElevatedButton(
                           onTap: () {

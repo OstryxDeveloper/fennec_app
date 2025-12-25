@@ -173,7 +173,7 @@ class _SplashScreenState extends State<SplashScreen>
                           position: _textSlideAnimation,
                           child: SvgPicture.asset(
                             Assets.icons.fennecLogoText.path,
-                            width: 140,
+                            width: 170,
                           ),
                         ),
                       ),
@@ -203,7 +203,10 @@ class _SplashScreenState extends State<SplashScreen>
                         icon: Assets.icons.arrowRight.svg(
                           width: 24,
                           height: 24,
-                          color: ColorPalette.white,
+                          colorFilter: ColorFilter.mode(
+                            ColorPalette.white,
+                            BlendMode.srcIn,
+                          ),
                         ),
                       ),
                       SizedBox(height: 24.h),
@@ -215,19 +218,6 @@ class _SplashScreenState extends State<SplashScreen>
           ),
         ),
       ),
-    );
-  }
-
-  Widget _heroFlightBuilder(
-    BuildContext context,
-    Animation<double> animation,
-    HeroFlightDirection direction,
-    BuildContext fromContext,
-    BuildContext toContext,
-  ) {
-    return ScaleTransition(
-      scale: CurvedAnimation(parent: animation, curve: Curves.easeOutExpo),
-      child: toContext.widget,
     );
   }
 }

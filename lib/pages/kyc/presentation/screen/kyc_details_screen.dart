@@ -7,9 +7,9 @@ import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/cubit/kyc_cubit.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/state/kyc_state.dart';
 import 'package:fennac_app/pages/kyc/presentation/widgets/lifestyle_selection_widget.dart';
+import 'package:fennac_app/pages/kyc/presentation/widgets/continue_button.dart';
 import 'package:fennac_app/routes/routes_imports.gr.dart';
 import 'package:fennac_app/widgets/custom_back_button.dart';
-import 'package:fennac_app/widgets/custom_elevated_button.dart';
 import 'package:fennac_app/widgets/custom_text_field.dart';
 import 'package:fennac_app/widgets/custom_outlined_button.dart';
 import 'package:fennac_app/widgets/custom_sized_box.dart';
@@ -43,7 +43,7 @@ class KycDetailsScreen extends StatelessWidget {
                       CustomSizedBox(height: 24),
                       AppText(
                         text: 'Add a few details so people get a sense of you.',
-                        style: AppTextStyles.h1(context).copyWith(
+                        style: AppTextStyles.h3(context).copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 24,
@@ -56,7 +56,7 @@ class KycDetailsScreen extends StatelessWidget {
                         label: 'Short Bio',
                         controller: _kycCubit.shortBioController,
                         hintText: 'Type here..',
-                        hintStyle: AppTextStyles.bodyLarge(
+                        hintStyle: AppTextStyles.inputLabel(
                           context,
                         ).copyWith(color: Colors.white54),
                         labelColor: Colors.white,
@@ -133,12 +133,11 @@ class KycDetailsScreen extends StatelessWidget {
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: CustomElevatedButton(
+                  child: ContinueButton(
                     onTap: () {
                       AutoRouter.of(context).push(const KycGalleryRoute());
                     },
                     text: 'Continue',
-                    width: double.infinity,
                   ),
                 ),
               ],

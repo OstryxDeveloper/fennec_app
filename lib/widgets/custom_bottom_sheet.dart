@@ -79,7 +79,7 @@ class CustomBottomSheet extends StatelessWidget {
             text: description,
             style: AppTextStyles.bodyLarge(
               context,
-            ).copyWith(color: ColorPalette.white.withOpacity(0.8)),
+            ).copyWith(color: ColorPalette.white.withValues(alpha: 0.8)),
             textAlign: TextAlign.center,
           ),
           const CustomSizedBox(height: 32),

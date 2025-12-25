@@ -24,6 +24,7 @@ class LifestyleSelectionWidget extends StatelessWidget {
             final isSelected = cubit.selectedLifestyles.contains(lifestyle);
 
             return InkWell(
+              borderRadius: BorderRadius.circular(48),
               onTap: () => cubit.toggleLifestyle(lifestyle),
               child: Container(
                 height: 44,
@@ -34,13 +35,13 @@ class LifestyleSelectionWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: isSelected
                       ? ColorPalette.primary
-                      : ColorPalette.secondry.withOpacity(0.5),
+                      : ColorPalette.secondry,
                   borderRadius: BorderRadius.circular(48),
                   border: Border.all(
                     color: isSelected
-                        ? ColorPalette.primary
-                        : Colors.white.withOpacity(0.2),
-                    width: isSelected ? 2 : 1,
+                        ? Colors.transparent
+                        : ColorPalette.primary,
+                    width: 1,
                   ),
                 ),
                 child: AppText(

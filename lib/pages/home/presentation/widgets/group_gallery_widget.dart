@@ -73,19 +73,22 @@ class GroupGalleryWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
-                        color: ColorPalette.error.withOpacity(.1),
+                        color: ColorPalette.error.withValues(alpha: .1),
                         blurRadius: 5,
                         offset: const Offset(0, 5),
                       ),
                     ],
                     shape: BoxShape.circle,
-                    color: ColorPalette.error.withOpacity(.1),
+                    color: ColorPalette.error.withValues(alpha: .1),
                   ),
                   child: SvgPicture.asset(
                     Assets.icons.error.path,
                     height: 42,
                     width: 42,
-                    color: ColorPalette.error,
+                    colorFilter: ColorFilter.mode(
+                      ColorPalette.error,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
                 const CustomSizedBox(width: 32),
@@ -96,13 +99,13 @@ class GroupGalleryWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
-                        color: ColorPalette.green.withOpacity(.1),
+                        color: ColorPalette.green.withValues(alpha: .1),
                         blurRadius: 5,
                         offset: const Offset(0, 5),
                       ),
                     ],
                     shape: BoxShape.circle,
-                    color: ColorPalette.green.withOpacity(.1),
+                    color: ColorPalette.green.withValues(alpha: .1),
                   ),
                   child: Image.asset(
                     Assets.icons.checkGreen.path,
@@ -137,8 +140,8 @@ class _GroupAudioCard extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Colors.black.withOpacity(.2),
-            ColorPalette.black.withOpacity(.2),
+            Colors.black.withValues(alpha: .2),
+            ColorPalette.black.withValues(alpha: .2),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -181,8 +184,8 @@ class _GroupPromptCard extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Colors.black.withOpacity(.2),
-            ColorPalette.black.withOpacity(.2),
+            Colors.black.withValues(alpha: .2),
+            ColorPalette.black.withValues(alpha: .2),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,

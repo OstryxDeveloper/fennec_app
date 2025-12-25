@@ -80,7 +80,7 @@ class _OnBoardingWidget1State extends State<OnBoardingWidget1> {
                           'Stay safe, go out with a group',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 0.7),
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
                             height: 1.5,
@@ -138,7 +138,7 @@ class _OnBoardingWidget1State extends State<OnBoardingWidget1> {
         ),
         boxShadow: [
           BoxShadow(
-            color: ColorPalette.primary.withOpacity(0.5),
+            color: ColorPalette.primary.withValues(alpha: 0.5),
             blurRadius: 20,
             spreadRadius: 2,
             offset: Offset(0, 5),

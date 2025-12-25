@@ -136,7 +136,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
                 },
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -151,7 +151,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
         icon: Assets.icons.arrowRight.svg(
           width: 24,
           height: 24,
-          color: ColorPalette.white,
+          colorFilter: ColorFilter.mode(ColorPalette.white, BlendMode.srcIn),
         ),
       ),
     );

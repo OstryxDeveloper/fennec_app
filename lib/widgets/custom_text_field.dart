@@ -82,7 +82,7 @@ class CustomLabelTextField extends StatelessWidget {
             text: label!,
             style:
                 labelStyle ??
-                AppTextStyles.bodyLarge(context).copyWith(
+                AppTextStyles.inputLabel(context).copyWith(
                   color: labelColor ?? ColorPalette.primary,
                   fontWeight: FontWeight.bold,
                 ),
@@ -110,7 +110,10 @@ class CustomLabelTextField extends StatelessWidget {
             decoration: InputDecoration(
               hintText: hintText,
               hintStyle:
-                  hintStyle ?? TextStyle(color: Colors.white.withOpacity(0.5)),
+                  hintStyle ??
+                  AppTextStyles.inputLabel(
+                    context,
+                  ).copyWith(color: ColorPalette.textPrimary),
               filled: filled ?? false,
               fillColor: fillColor,
               suffixIcon: suffixIcon,

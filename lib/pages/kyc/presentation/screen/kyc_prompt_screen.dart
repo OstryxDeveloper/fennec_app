@@ -6,11 +6,11 @@ import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/cubit/kyc_prompt_cubit.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/state/kyc_prompt_state.dart';
+import 'package:fennac_app/pages/kyc/presentation/widgets/continue_button.dart';
 import 'package:fennac_app/pages/kyc/presentation/widgets/create_prompt_bottom_sheet.dart';
 import 'package:fennac_app/pages/kyc/presentation/widgets/prompt_card.dart';
 import 'package:fennac_app/routes/routes_imports.gr.dart';
 import 'package:fennac_app/widgets/custom_back_button.dart';
-import 'package:fennac_app/widgets/custom_elevated_button.dart';
 import 'package:fennac_app/widgets/custom_outlined_button.dart';
 import 'package:fennac_app/widgets/custom_sized_box.dart';
 import 'package:fennac_app/widgets/custom_text.dart';
@@ -101,8 +101,8 @@ class _KycPromptScreenState extends State<KycPromptScreen> {
                                 Container(
                                   width: double.infinity,
                                   decoration: BoxDecoration(
-                                    color: ColorPalette.primary.withOpacity(
-                                      0.3,
+                                    color: ColorPalette.primary.withValues(
+                                      alpha: 0.3,
                                     ),
                                     borderRadius: BorderRadius.circular(16),
                                   ),
@@ -205,7 +205,7 @@ class _KycPromptScreenState extends State<KycPromptScreen> {
             Positioned.fill(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                child: Container(color: Colors.black.withOpacity(0.1)),
+                child: Container(color: Colors.black.withValues(alpha: 0.1)),
               ),
             ),
         ],
@@ -230,12 +230,11 @@ class _KycPromptScreenState extends State<KycPromptScreen> {
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: CustomElevatedButton(
+                  child: ContinueButton(
                     onTap: () {
                       AutoRouter.of(context).push(const OnBoardingRoute());
                     },
                     text: 'Continue',
-                    width: double.infinity,
                   ),
                 ),
               ],
@@ -266,9 +265,10 @@ class _KycPromptScreenState extends State<KycPromptScreen> {
           content: AppText(
             text:
                 'You can select only 4 prompts. Please deselect one to add another.',
-            style: AppTextStyles.bodyLarge(
-              context,
-            ).copyWith(color: Colors.white.withOpacity(0.8), fontSize: 14),
+            style: AppTextStyles.bodyLarge(context).copyWith(
+              color: Colors.white.withValues(alpha: 0.8),
+              fontSize: 14,
+            ),
           ),
           actions: [
             TextButton(

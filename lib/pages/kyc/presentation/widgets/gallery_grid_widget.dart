@@ -19,7 +19,7 @@ class GalleryGridWidget extends StatelessWidget {
             imagePath: cubit.mediaList.isNotEmpty
                 ? cubit.mediaList[0].path
                 : null,
-            onTap: cubit.pickMultipleImagesFromGallery,
+            onTap: cubit.pickImagesFromGallery,
           ),
           const SizedBox(height: 10),
           GalleryGridSlot(
@@ -27,7 +27,7 @@ class GalleryGridWidget extends StatelessWidget {
             imagePath: cubit.mediaList.length > 1
                 ? cubit.mediaList[1].path
                 : null,
-            onTap: cubit.pickMultipleImagesFromGallery,
+            onTap: cubit.pickImagesFromGallery,
           ),
         ],
       ),

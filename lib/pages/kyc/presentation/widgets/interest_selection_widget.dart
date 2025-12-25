@@ -38,11 +38,14 @@ class InterestSelectionWidget extends StatelessWidget {
                   spacing: 12,
                   runSpacing: 12,
                   children: entry.value.map((interest) {
-                    final isSelected = cubit.selectedInterests.contains(interest);
-                    final isMaxReached = cubit.selectedInterests.length >= 5 &&
-                        !isSelected;
+                    final isSelected = cubit.selectedInterests.contains(
+                      interest,
+                    );
+                    final isMaxReached =
+                        cubit.selectedInterests.length >= 5 && !isSelected;
 
                     return InkWell(
+                      borderRadius: BorderRadius.circular(20),
                       onTap: () => cubit.toggleInterest(interest),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
@@ -52,12 +55,12 @@ class InterestSelectionWidget extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: isSelected
                               ? ColorPalette.primary
-                              : ColorPalette.secondry.withOpacity(0.5),
+                              : ColorPalette.secondry.withValues(alpha: 0.5),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
                             color: isSelected
                                 ? ColorPalette.primary
-                                : Colors.white.withOpacity(0.2),
+                                : ColorPalette.primary,
                             width: isSelected ? 2 : 1,
                           ),
                         ),
@@ -65,11 +68,12 @@ class InterestSelectionWidget extends StatelessWidget {
                           text: interest,
                           style: AppTextStyles.bodyLarge(context).copyWith(
                             color: isMaxReached
-                                ? Colors.white.withOpacity(0.4)
+                                ? Colors.white.withValues(alpha: 0.4)
                                 : Colors.white,
                             fontSize: 14,
-                            fontWeight:
-                                isSelected ? FontWeight.w600 : FontWeight.normal,
+                            fontWeight: isSelected
+                                ? FontWeight.w600
+                                : FontWeight.normal,
                           ),
                         ),
                       ),
@@ -85,4 +89,3 @@ class InterestSelectionWidget extends StatelessWidget {
     );
   }
 }
-

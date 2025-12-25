@@ -94,7 +94,7 @@ class _LandingScreenState extends State<LandingScreen>
         color: ColorPalette.secondry,
         boxShadow: [
           BoxShadow(
-            color: ColorPalette.secondry.withOpacity(0.6),
+            color: ColorPalette.secondry.withValues(alpha: 0.6),
             spreadRadius: 2,
             blurRadius: 8,
             offset: const Offset(0, 3),
@@ -184,7 +184,10 @@ class _LandingScreenState extends State<LandingScreen>
                               Assets.icons.apple.svg(
                                 width: 24,
                                 height: 24,
-                                color: Colors.white,
+                                colorFilter: ColorFilter.mode(
+                                  ColorPalette.white,
+                                  BlendMode.srcIn,
+                                ),
                               ),
                             ),
                           ],

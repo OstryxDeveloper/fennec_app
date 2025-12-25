@@ -17,11 +17,11 @@ class CustomBottomNavigationBar extends StatefulWidget {
   });
 
   @override
-  _CustomBottomNavigationBarState createState() =>
-      _CustomBottomNavigationBarState();
+  CustomBottomNavigationBarState createState() =>
+      CustomBottomNavigationBarState();
 }
 
-class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
+class CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -35,10 +35,10 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
             decoration: BoxDecoration(
-              color: const Color(0xFF2A2A2A).withOpacity(0.7),
+              color: const Color(0xFF2A2A2A).withValues(alpha: 0.7),
               borderRadius: BorderRadius.circular(32),
               border: Border.all(
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.white.withValues(alpha: 0.1),
                 width: 1,
               ),
             ),
@@ -86,7 +86,10 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                             children: [
                               SvgPicture.asset(
                                 item.iconPath,
-                                color: Colors.white,
+                                colorFilter: ColorFilter.mode(
+                                  ColorPalette.white,
+                                  BlendMode.srcIn,
+                                ),
                                 width: 24,
                                 height: 24,
                               ),

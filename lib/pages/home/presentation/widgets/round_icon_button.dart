@@ -1,3 +1,4 @@
+import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -23,7 +24,7 @@ class RoundIconButton extends StatelessWidget {
         height: size,
         width: size,
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.08),
+          color: Colors.black.withValues(alpha: 0.08),
           shape: BoxShape.circle,
         ),
         child: Center(
@@ -31,7 +32,7 @@ class RoundIconButton extends StatelessWidget {
             iconPath,
             height: iconSize,
             width: iconSize,
-            color: Colors.white,
+            colorFilter: ColorFilter.mode(ColorPalette.white, BlendMode.srcIn),
           ),
         ),
       ),

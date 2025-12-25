@@ -86,7 +86,7 @@ class AudioModeWidget extends StatelessWidget {
 
   /// Build UI for active recording
   Widget _buildRecordingUI(BuildContext context, KycPromptCubit cubit) {
-    final ScrollController _scrollController = ScrollController();
+    final ScrollController scrollController = ScrollController();
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -97,16 +97,16 @@ class AudioModeWidget extends StatelessWidget {
             bloc: cubit,
             builder: (context, state) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (_scrollController.hasClients) {
-                  _scrollController.animateTo(
-                    _scrollController.position.maxScrollExtent,
+                if (scrollController.hasClients) {
+                  scrollController.animateTo(
+                    scrollController.position.maxScrollExtent,
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeOut,
                   );
                 }
               });
               return SingleChildScrollView(
-                controller: _scrollController,
+                controller: scrollController,
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -204,7 +204,7 @@ class AudioModeWidget extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: (cubit.isRecording ? Colors.red : ColorPalette.primary)
-                  .withOpacity(0.5),
+                  .withValues(alpha: 0.5),
               blurRadius: 30,
               spreadRadius: 10,
             ),
@@ -216,7 +216,10 @@ class AudioModeWidget extends StatelessWidget {
                 Assets.icons.mic.path,
                 width: 32,
                 height: 32,
-                color: Colors.white,
+                colorFilter: ColorFilter.mode(
+                  ColorPalette.white,
+                  BlendMode.srcIn,
+                ),
               ),
       ),
     );
@@ -242,7 +245,13 @@ class AudioModeWidget extends StatelessWidget {
         ),
         child: cubit.isPlaying
             ? const Icon(Icons.stop, color: Colors.white, size: 32)
-            : SvgPicture.asset(Assets.icons.play.path, color: Colors.white),
+            : SvgPicture.asset(
+                Assets.icons.play.path,
+                colorFilter: ColorFilter.mode(
+                  ColorPalette.white,
+                  BlendMode.srcIn,
+                ),
+              ),
       ),
     );
   }
@@ -261,7 +270,7 @@ class AudioModeWidget extends StatelessWidget {
           Assets.icons.trash.path,
           width: 24,
           height: 24,
-          color: Colors.white,
+          colorFilter: ColorFilter.mode(ColorPalette.white, BlendMode.srcIn),
         ),
       ),
     );
@@ -284,7 +293,7 @@ class AudioModeWidget extends StatelessWidget {
             height: heights[i % heights.length],
             margin: const EdgeInsets.symmetric(horizontal: 1.5),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.3),
+              color: Colors.white.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(2),
             ),
           );

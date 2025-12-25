@@ -31,6 +31,14 @@ class AppRouter extends RootStackRouter {
       duration: const Duration(milliseconds: 300),
     ),
 
+    // Home Landing Screen
+    CustomRoute(
+      page: HomeLandingRoute.page,
+      transitionsBuilder: TransitionsBuilders.fadeIn,
+      barrierColor: Colors.transparent,
+      duration: const Duration(milliseconds: 300),
+    ),
+
     CustomRoute(
       page: LoginRoute.page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {

@@ -24,10 +24,10 @@ class GalleryUploadWidget extends StatelessWidget {
             width: 258,
             height: 260,
             decoration: BoxDecoration(
-              color: ColorPalette.secondry.withOpacity(0.5),
+              color: ColorPalette.secondry.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 width: 1,
               ),
             ),
@@ -68,7 +68,10 @@ class GalleryUploadWidget extends StatelessWidget {
                               ),
                               child: SvgPicture.asset(
                                 Assets.icons.trash.path,
-                                color: Colors.white,
+                                colorFilter: ColorFilter.mode(
+                                  ColorPalette.white,
+                                  BlendMode.srcIn,
+                                ),
                                 width: 10,
                                 height: 10,
                               ),
@@ -115,7 +118,7 @@ class GalleryUploadWidget extends StatelessWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.3),
+                  color: Colors.white.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -127,7 +130,7 @@ class GalleryUploadWidget extends StatelessWidget {
                 ),
                 onTap: () {
                   Navigator.pop(context);
-                  cubit.pickMultipleImagesFromGallery();
+                  cubit.pickImagesFromGallery();
                 },
               ),
               ListTile(

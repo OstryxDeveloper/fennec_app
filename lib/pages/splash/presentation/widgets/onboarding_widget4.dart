@@ -260,13 +260,13 @@ class _AnimatedFloatingIconState extends State<_AnimatedFloatingIcon>
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: widget.color.withOpacity(0.05),
+                    color: widget.color.withValues(alpha: 0.05),
                     blurRadius: 24,
                     spreadRadius: 2,
                     offset: Offset(0, 8),
                   ),
                   BoxShadow(
-                    color: widget.color.withOpacity(0.1),
+                    color: widget.color.withValues(alpha: 0.1),
                     blurRadius: 16,
                     spreadRadius: 0,
                     offset: Offset(0, 4),

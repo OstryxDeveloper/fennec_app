@@ -96,7 +96,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         controller: _otpController,
                         length: 6,
                         onCompleted: (otp) {
-                          print("OTP Completed: $otp");
+                          debugPrint("OTP Completed: $otp");
                         },
                       ),
                       CustomSizedBox(height: 40),
@@ -133,8 +133,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                             buttonText: 'Continue',
                             onButtonPressed: () {
                               Navigator.pop(context);
-                              AutoRouter.of(context)
-                                  .push(const SetNewPasswordRoute());
+                              AutoRouter.of(
+                                context,
+                              ).push(const SetNewPasswordRoute());
                             },
                           );
                           if (mounted) {
@@ -167,10 +168,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                               ).copyWith(color: Colors.white),
                             ),
                             InkWell(
-                              onTap: () {
-                                // Resend logic
-                                print("Resend Code");
-                              },
+                              onTap: () {},
                               child: AppText(
                                 text: 'Resend',
                                 style: AppTextStyles.bodyLarge(context)
@@ -193,7 +191,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
             Positioned.fill(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                child: Container(color: Colors.black.withOpacity(0.1)),
+                child: Container(color: Colors.black.withValues(alpha: 0.1)),
               ),
             ),
         ],

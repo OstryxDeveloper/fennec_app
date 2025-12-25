@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:fennac_app/pages/auth/presentation/bloc/cubit/auth_cubit.dart';
@@ -67,21 +68,18 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         CustomSizedBox(height: 20),
                         AppText(
                           text: 'Create Your Account',
-                          style: AppTextStyles.h1(context).copyWith(
+                          style: AppTextStyles.h2(context).copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 24,
                           ),
                         ),
                         CustomSizedBox(height: 12),
                         AppText(
                           text:
                               'Create your Fennec account and start connecting with groups near you.',
-                          style: AppTextStyles.bodyLarge(context).copyWith(
-                            color: Colors.white70,
-                            fontSize: 14,
-                            height: 1.5,
-                          ),
+                          style: AppTextStyles.subHeading(
+                            context,
+                          ).copyWith(color: ColorPalette.textSecondary),
                           textAlign: TextAlign.center,
                         ),
                         CustomSizedBox(height: 40),
@@ -230,7 +228,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               label: 'Password',
                               controller: _authCubit.passwordController,
                               obscureText: _authCubit.obscurePassword,
-                              hintText: '•••••••••••••',
+                              hintText: 'Enter your password',
                               labelColor: Colors.white,
                               filled: false,
                               suffixIcon: IconButton(
@@ -239,12 +237,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                     _authCubit.togglePasswordVisibility();
                                   }
                                 },
-                                icon: Icon(
-                                  _authCubit.obscurePassword
-                                      ? Icons.visibility_outlined
-                                      : Icons.visibility_off_outlined,
-                                  color: Colors.white,
-                                ),
+                                icon: _authCubit.obscurePassword
+                                    ? Assets.icons.eye.svg(color: Colors.white)
+                                    : Assets.icons.eyeClose.svg(
+                                        color: Colors.white,
+                                      ),
                               ),
                               onChanged: (value) {
                                 if (mounted) {
@@ -272,7 +269,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               label: 'Confirm Password',
                               controller: _authCubit.confirmPasswordController,
                               obscureText: _authCubit.obscureConfirmPassword,
-                              hintText: '•••••••••••••',
+                              hintText: 'Re-enter your password',
                               labelColor: Colors.white,
                               filled: false,
                               suffixIcon: IconButton(
@@ -282,12 +279,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                         .toggleConfirmPasswordVisibility();
                                   }
                                 },
-                                icon: Icon(
-                                  _authCubit.obscureConfirmPassword
-                                      ? Icons.visibility_outlined
-                                      : Icons.visibility_off_outlined,
-                                  color: Colors.white,
-                                ),
+                                icon: _authCubit.obscureConfirmPassword
+                                    ? Assets.icons.eye.svg(color: Colors.white)
+                                    : Assets.icons.eyeClose.svg(
+                                        color: Colors.white,
+                                      ),
                               ),
                               onChanged: (value) {
                                 if (mounted) {
@@ -309,43 +305,46 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               ),
                           ],
                         ),
-                        CustomSizedBox(height: 40),
+                        CustomSizedBox(height: 16),
 
                         // Terms and Privacy
-                        RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            text: 'By signing up, you agree to our ',
-                            style: AppTextStyles.bodyLarge(
-                              context,
-                            ).copyWith(color: Colors.white70, fontSize: 12),
-                            children: [
-                              TextSpan(
-                                text: 'Terms of Service',
-                                style: const TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: RichText(
+                            textAlign: TextAlign.left,
+                            text: TextSpan(
+                              text: 'By signing up, you agree to our ',
+                              style: AppTextStyles.bodyLarge(
+                                context,
+                              ).copyWith(color: Colors.white70, fontSize: 12),
+                              children: [
+                                TextSpan(
+                                  text: 'Terms of Service',
+                                  style: const TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      TermsBottomSheet.show(context);
+                                    },
                                 ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    TermsBottomSheet.show(context);
-                                  },
-                              ),
-                              const TextSpan(text: ' and '),
-                              TextSpan(
-                                text: 'Privacy Policy',
-                                style: const TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                                const TextSpan(text: ' and '),
+                                TextSpan(
+                                  text: 'Privacy Policy',
+                                  style: const TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      PrivacyBottomSheet.show(context);
+                                    },
                                 ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    PrivacyBottomSheet.show(context);
-                                  },
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                         CustomSizedBox(height: 24),

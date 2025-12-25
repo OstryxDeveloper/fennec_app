@@ -99,7 +99,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
     return Container(
       height: getWidth(context) > 500 ? 250 : 200,
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
+        color: Colors.black.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(20),
       ),
       child: ClipRRect(
@@ -108,7 +108,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
             decoration: BoxDecoration(
-              color: ColorPalette.secondry.withOpacity(0.7),
+              color: ColorPalette.secondry.withValues(alpha: 0.7),
               borderRadius: BorderRadius.circular(24),
             ),
             child: Stack(
@@ -197,7 +197,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
         }
       }
     } catch (e) {
-      print('Invalid date selected: $year-$month-$day');
+      debugPrint('Invalid date selected: $year-$month-$day');
     }
   }
 
@@ -268,7 +268,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
             child: Text(
               formatter(item),
               style: AppTextStyles.h2(context).copyWith(
-                color: Colors.white.withOpacity(opacity),
+                color: Colors.white.withValues(alpha: opacity),
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.0,

@@ -24,9 +24,12 @@ class GalleryGridSlot extends StatelessWidget {
         width: 124,
         height: 124,
         decoration: BoxDecoration(
-          color: ColorPalette.secondry.withOpacity(0.5),
+          color: ColorPalette.secondry.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.2),
+            width: 1,
+          ),
         ),
         child: imagePath != null
             ? GalleryImageItemWidget(imagePath: imagePath!, index: index)

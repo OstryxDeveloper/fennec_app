@@ -48,7 +48,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                     child: MovableBackground(
-                      child: Container(color: Colors.black.withOpacity(0)),
+                      child: Container(
+                        color: Colors.black.withValues(alpha: 0),
+                      ),
                     ),
                   ),
                 );

@@ -34,7 +34,7 @@ class _CustomOtpFieldState extends State<CustomOtpField> {
         context,
       ).copyWith(color: ColorPalette.white, fontWeight: FontWeight.bold),
       decoration: BoxDecoration(
-        color: ColorPalette.black.withOpacity(.3),
+        color: ColorPalette.black.withValues(alpha: .3),
         border: Border.all(color: widget.color ?? Colors.white70, width: 1),
         borderRadius: BorderRadius.circular(16),
       ),

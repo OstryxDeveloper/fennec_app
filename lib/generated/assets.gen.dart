@@ -385,6 +385,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/eye.svg
   SvgGenImage get eye => const SvgGenImage('assets/icons/eye.svg');
 
+  /// File path: assets/icons/eye_close.svg
+  SvgGenImage get eyeClose => const SvgGenImage('assets/icons/eye_close.svg');
+
   /// File path: assets/icons/eye_emoji.png
   AssetGenImage get eyeEmoji =>
       const AssetGenImage('assets/icons/eye_emoji.png');
@@ -528,6 +531,7 @@ class $AssetsIconsGen {
     edit,
     error,
     eye,
+    eyeClose,
     eyeEmoji,
     facebook,
     google,

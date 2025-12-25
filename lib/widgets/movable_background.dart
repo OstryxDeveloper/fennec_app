@@ -94,6 +94,7 @@ class _MovableBackgroundState extends State<MovableBackground>
                       fit: StackFit.expand,
                       children: [
                         /// Background layer
+                        /// Background layer
                         Positioned.fill(
                           child: BlocBuilder<BackgroundCubit, BackgroundState>(
                             bloc: _backgroundCubit,
@@ -111,39 +112,51 @@ class _MovableBackgroundState extends State<MovableBackground>
                                   ? totalWidth - size.width
                                   : 0.0;
 
-                              return AnimatedBuilder(
-                                animation: _animation,
-                                builder: (context, child) {
-                                  double currentProgress = _animation.value;
-                                  final offset =
-                                      currentProgress * maxOffset * -1;
+                              return Stack(
+                                children: [
+                                  AnimatedBuilder(
+                                    animation: _animation,
+                                    builder: (context, child) {
+                                      double currentProgress = _animation.value;
+                                      final offset =
+                                          currentProgress * maxOffset * -1;
 
-                                  return Transform.translate(
-                                    offset: Offset(offset, 0),
-                                    child: child,
-                                  );
-                                },
-                                child: OverflowBox(
-                                  minWidth: 0,
-                                  maxWidth: double.infinity,
-                                  minHeight: size.height,
-                                  maxHeight: size.height,
-                                  alignment: Alignment.topLeft,
-                                  child: Row(
-                                    key: _rowKey,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: widget.assets.map((asset) {
-                                      return SizedBox(
-                                        height: size.height,
-                                        child: asset.image(
-                                          fit: BoxFit.fitHeight,
-                                          height: size.height,
-                                          alignment: Alignment.center,
-                                        ),
+                                      return Transform.translate(
+                                        offset: Offset(offset, 0),
+                                        child: child,
                                       );
-                                    }).toList(),
+                                    },
+                                    child: OverflowBox(
+                                      minWidth: 0,
+                                      maxWidth: double.infinity,
+                                      minHeight: size.height,
+                                      maxHeight: size.height,
+                                      alignment: Alignment.topLeft,
+                                      child: Row(
+                                        key: _rowKey,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: widget.assets.map((asset) {
+                                          return SizedBox(
+                                            height: size.height,
+                                            child: asset.image(
+                                              fit: BoxFit.fitHeight,
+                                              height: size.height,
+                                              alignment: Alignment.center,
+                                            ),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  // Add static white overlay here
+                                  Positioned.fill(
+                                    child: Container(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.05,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               );
                             },
                           ),

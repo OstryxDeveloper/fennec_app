@@ -133,9 +133,10 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
         if (widget.label != null)
           AppText(
             text: widget.label!,
-            style: AppTextStyles.bodyLarge(
-              context,
-            ).copyWith(color: ColorPalette.white, fontWeight: FontWeight.w500),
+            style: AppTextStyles.inputLabel(context).copyWith(
+              color: ColorPalette.textPrimary,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         if (widget.label != null) CustomSizedBox(height: 8),
 
@@ -201,10 +202,9 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
                               decoration: InputDecoration(
                                 hintText:
                                     widget.hintText ?? 'Enter phone number',
-                                hintStyle: AppTextStyles.bodyLarge(context)
-                                    .copyWith(
-                                      color: Colors.white.withOpacity(0.5),
-                                    ),
+                                hintStyle: AppTextStyles.inputLabel(
+                                  context,
+                                ).copyWith(color: ColorPalette.textSecondary),
                                 border: InputBorder.none,
                                 isDense: true,
                                 contentPadding: EdgeInsets.zero,
@@ -245,7 +245,7 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -386,7 +386,7 @@ class _CountryBottomSheetContentState
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.3),
+              color: Colors.white.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -423,17 +423,19 @@ class _CountryBottomSheetContentState
               style: const TextStyle(color: Colors.white, fontSize: 16),
               decoration: InputDecoration(
                 hintText: 'Search country',
-                hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
+                hintStyle: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.5),
+                ),
                 prefixIcon: Icon(
                   Icons.search,
-                  color: Colors.white.withOpacity(0.5),
+                  color: Colors.white.withValues(alpha: 0.5),
                   size: 20,
                 ),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
                         icon: Icon(
                           Icons.clear,
-                          color: Colors.white.withOpacity(0.5),
+                          color: Colors.white.withValues(alpha: 0.5),
                           size: 20,
                         ),
                         onPressed: () {
@@ -444,7 +446,7 @@ class _CountryBottomSheetContentState
                       )
                     : null,
                 filled: true,
-                fillColor: Colors.white.withOpacity(0.08),
+                fillColor: Colors.white.withValues(alpha: 0.08),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
@@ -463,8 +465,10 @@ class _CountryBottomSheetContentState
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               itemCount: _filteredCountries.length,
-              separatorBuilder: (_, __) =>
-                  Divider(height: 1, color: Colors.white.withOpacity(0.08)),
+              separatorBuilder: (_, _) => Divider(
+                height: 1,
+                color: Colors.white.withValues(alpha: 0.08),
+              ),
               itemBuilder: (_, index) {
                 final country = _filteredCountries[index];
                 final isSelected = widget.selectedCountry?.iso == country.iso;
@@ -502,7 +506,7 @@ class _CountryBottomSheetContentState
                               '${country.phoneCode}',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.white.withOpacity(0.6),
+                                color: Colors.white.withValues(alpha: 0.6),
                               ),
                             ),
                           ),

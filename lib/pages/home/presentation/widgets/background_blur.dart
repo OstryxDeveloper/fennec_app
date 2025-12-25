@@ -22,7 +22,7 @@ class BlurredBackground extends StatelessWidget {
           opacity: isSelected ? 1.0 : 0.0,
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-            child: Container(color: Colors.black.withOpacity(0)),
+            child: Container(color: Colors.black.withValues(alpha: 0)),
           ),
         ),
       ],
