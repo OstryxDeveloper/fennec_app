@@ -57,10 +57,15 @@ class _PromptAudioRowState extends State<PromptAudioRow> {
       );
       await _playerController.preparePlayer(path: widget.audioPath);
 
-      var waveformData = await waveformExtraction.extractWaveformData(
-        path: widget.audioPath,
-        noOfSamples: 100,
-      );
+      List<double> waveformData;
+      if (widget.waveformData != null && widget.waveformData!.isNotEmpty) {
+        waveformData = _normalizeWaveform(widget.waveformData!);
+      } else {
+        waveformData = await waveformExtraction.extractWaveformData(
+          path: widget.audioPath,
+          noOfSamples: 200,
+        );
+      }
 
       /// IMPORTANT: force rebuild after waveform extraction
       if (mounted) {
@@ -73,6 +78,18 @@ class _PromptAudioRowState extends State<PromptAudioRow> {
     } catch (e) {
       log("Error preparing player: $e");
     }
+  }
+
+  /// Normalize incoming waveform samples to 0..1 and apply a small boost.
+  List<double> _normalizeWaveform(List<double> input) {
+    if (input.isEmpty) return input;
+    // Detect typical ranges (0..1 or 0..100)
+    final maxVal = input.reduce((a, b) => a > b ? a : b);
+    final scale = maxVal == 0 ? 1.0 : maxVal;
+    // Map to 0..1 and apply 1.2x visual boost (clamped)
+    return input
+        .map((v) => ((v / scale) * 1.2).clamp(0.0, 1.0))
+        .toList(growable: false);
   }
 
   @override
@@ -133,11 +150,19 @@ class _PromptAudioRowState extends State<PromptAudioRow> {
       return const SizedBox(height: 34);
     }
 
+    // Compute an inner height based on the container height/padding.
+    final padding =
+        (widget.padding as EdgeInsets?) ??
+        const EdgeInsets.symmetric(horizontal: 12, vertical: 10);
+    final innerHeight = (widget.height - padding.vertical)
+        .clamp(24, widget.height.toInt())
+        .toDouble();
+
     return AudioFileWaveforms(
       playerController: _playerController,
       waveformData: data,
       waveformType: WaveformType.fitWidth,
-      size: const Size(double.infinity, 34),
+      size: Size(double.infinity, innerHeight),
 
       playerWaveStyle: PlayerWaveStyle(
         showTop: true,

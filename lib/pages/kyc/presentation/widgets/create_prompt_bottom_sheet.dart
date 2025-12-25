@@ -70,10 +70,9 @@ class _CreatePromptBottomSheetState extends State<CreatePromptBottomSheet> {
         : widget.promptText.trim();
 
     if (_kycPromptCubit.isAudioMode) {
-      if (_isCustom == true && promptText.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please add your prompt.')),
-        );
+      if (_isCustom == true &&
+          promptText.isEmpty &&
+          _formKey.currentState?.validate() != true) {
         return;
       }
 
@@ -121,8 +120,8 @@ class _CreatePromptBottomSheetState extends State<CreatePromptBottomSheet> {
       ),
       child: Container(
         height: _isCustom
-            ? getHeight(context) * 0.64
-            : getHeight(context) * 0.54,
+            ? getHeight(context) * 0.65
+            : getHeight(context) * 0.55,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [ColorPalette.secondry, ColorPalette.black],
