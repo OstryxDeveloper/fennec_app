@@ -1,15 +1,18 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
+import 'package:fennac_app/core/di_container.dart';
+import 'package:fennac_app/pages/splash/presentation/bloc/cubit/background_cubit.dart';
 import 'package:fennac_app/pages/splash/presentation/widgets/onboarding_widget1.dart';
+import 'package:fennac_app/pages/splash/presentation/widgets/onboarding_widget2.dart';
+import 'package:fennac_app/pages/splash/presentation/widgets/onboarding_widget3.dart';
 import 'package:fennac_app/pages/splash/presentation/widgets/onboarding_widget4.dart';
 import 'package:fennac_app/routes/routes_imports.gr.dart';
 import 'package:fennac_app/widgets/custom_text.dart';
 import 'package:fennac_app/widgets/movable_background.dart';
 import 'package:flutter/material.dart';
-import 'package:fennac_app/generated/assets.gen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lottie/lottie.dart';
 
 @RoutePage()
 class OnBoardingScreen1 extends StatefulWidget {
@@ -25,16 +28,8 @@ class _OnBoardingScreen1State extends State<OnBoardingScreen1>
   late AnimationController _textController;
   late AnimationController _buttonController;
 
-  late Animation<double> _logoScaleAnimation;
-  late Animation<double> _logoFadeAnimation;
-  late Animation<Offset> _textSlideAnimation;
-  late Animation<double> _textFadeAnimation;
-  late Animation<Offset> _buttonSlideAnimation;
-  late Animation<double> _buttonFadeAnimation;
-
   final PageController _pageController = PageController();
-  int _currentPage = 0;
-
+  final BackgroundCubit _backgroundCubit = Di().sl<BackgroundCubit>();
   @override
   void initState() {
     super.initState();
@@ -60,38 +55,6 @@ class _OnBoardingScreen1State extends State<OnBoardingScreen1>
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
-
-    // Logo animations
-    _logoScaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
-      CurvedAnimation(parent: _logoController, curve: Curves.easeOutBack),
-    );
-
-    _logoFadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _logoController, curve: Curves.easeIn));
-
-    // Text animations
-    _textSlideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.5),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _textController, curve: Curves.easeOut));
-
-    _textFadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _textController, curve: Curves.easeIn));
-
-    // Button animations
-    _buttonSlideAnimation =
-        Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero).animate(
-          CurvedAnimation(parent: _buttonController, curve: Curves.easeOut),
-        );
-
-    _buttonFadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _buttonController, curve: Curves.easeIn));
   }
 
   void _startAnimationSequence() async {
@@ -108,7 +71,7 @@ class _OnBoardingScreen1State extends State<OnBoardingScreen1>
   }
 
   void _nextPage() {
-    if (_currentPage < 3) {
+    if (_backgroundCubit.selectedIndex < 3) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -137,19 +100,36 @@ class _OnBoardingScreen1State extends State<OnBoardingScreen1>
       body: MovableBackground(
         child: SafeArea(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: BackButton(
+                  color: Colors.white,
+                  onPressed: () {
+                    if (_pageController.hasClients &&
+                        _backgroundCubit.selectedIndex > 0) {
+                      _pageController.previousPage(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    } else if (_backgroundCubit.selectedIndex == 0) {
+                      AutoRouter.of(context).pop();
+                    }
+                  },
+                ),
+              ),
               Expanded(
                 child: PageView(
                   controller: _pageController,
                   onPageChanged: (index) {
-                    setState(() {
-                      _currentPage = index;
-                    });
+                    _backgroundCubit.selectIndex(index);
                   },
                   children: [
                     OnBoardingWidget1(),
-                    _buildPage2(),
-                    _buildPage3(),
+                    OnboardingWidget2(),
+                    OnboardingWidget3(),
                     OnBoardingWidget4(),
                   ],
                 ),
@@ -161,7 +141,7 @@ class _OnBoardingScreen1State extends State<OnBoardingScreen1>
                   return Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: 24.w,
-                      vertical: 50.h,
+                      vertical: 20.h,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -176,28 +156,43 @@ class _OnBoardingScreen1State extends State<OnBoardingScreen1>
                             ),
                           ),
                         ),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: List.generate(
-                            4,
-                            (index) => Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 8),
-                              width: _currentPage == index ? 24 : 10,
-                              height: _currentPage == index ? 24 : 10,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: _currentPage == index
-                                    ? ColorPalette.primary
-                                    : Colors.white,
-                                border: Border.all(
-                                  color: _currentPage == index
-                                      ? ColorPalette.white
-                                      : Colors.transparent,
-                                  width: 2.2,
+                        BlocBuilder(
+                          bloc: _backgroundCubit,
+                          builder: (context, state) {
+                            return Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: List.generate(
+                                4,
+                                (index) => Container(
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                  ),
+                                  width: _backgroundCubit.selectedIndex == index
+                                      ? 24
+                                      : 10,
+                                  height:
+                                      _backgroundCubit.selectedIndex == index
+                                      ? 24
+                                      : 10,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color:
+                                        _backgroundCubit.selectedIndex == index
+                                        ? ColorPalette.primary
+                                        : Colors.white,
+                                    border: Border.all(
+                                      color:
+                                          _backgroundCubit.selectedIndex ==
+                                              index
+                                          ? ColorPalette.white
+                                          : Colors.transparent,
+                                      width: 2.2,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
+                            );
+                          },
                         ),
                         GestureDetector(
                           onTap: _nextPage,
@@ -224,107 +219,6 @@ class _OnBoardingScreen1State extends State<OnBoardingScreen1>
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildPage2() {
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Lottie.asset(Assets.animations.emojis7s, fit: BoxFit.cover),
-          ),
-        ),
-
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Spacer(flex: 50),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              child: Column(
-                children: [
-                  Lottie.asset(
-                    Assets.animations.scrollingMessagesTopOpacity,
-                    fit: BoxFit.contain,
-                  ),
-                  AppText(
-                    text: 'Group Chats that\nStay Alive',
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.h1(
-                      context,
-                    ).copyWith(color: Colors.white, fontSize: 32),
-                  ),
-                  const SizedBox(height: 24),
-                  AppText(
-                    text:
-                        'Dive into a shared chat room, Have fun with your friends',
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.bodyLarge(
-                      context,
-                    ).copyWith(color: Colors.white, fontSize: 16),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPage3() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Hero(
-          tag: 'splash_logo',
-          child: AnimatedBuilder(
-            animation: _logoController,
-            builder: (context, child) {
-              return FadeTransition(
-                opacity: _logoFadeAnimation,
-                child: ScaleTransition(
-                  scale: _logoScaleAnimation,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Lottie.asset(
-                        Assets.animations.rotatingGroupAnimationNoShadow,
-                        repeat: true,
-                        fit: BoxFit.fill,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40),
-          child: Column(
-            children: [
-              AppText(
-                text: 'Match in Groups',
-                textAlign: TextAlign.center,
-                style: AppTextStyles.h1(
-                  context,
-                ).copyWith(color: Colors.white, fontSize: 32),
-              ),
-              const SizedBox(height: 24),
-              AppText(
-                text: 'Find other groups that match your vibe ',
-                textAlign: TextAlign.center,
-                style: AppTextStyles.bodyLarge(
-                  context,
-                ).copyWith(color: Colors.white, fontSize: 16),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }

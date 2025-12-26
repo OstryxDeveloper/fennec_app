@@ -8,7 +8,9 @@ class KycCubit extends Cubit<KycState> {
     jobTitleController = TextEditingController();
     educationController = TextEditingController();
   }
-
+  DateTime? selectedDate;
+  String? selectedGender;
+  List<String> selectedSexualOrientations = [];
   final genders = ['Male', 'Female', 'Non-binary', 'Prefer not to say'];
   final sexualOrientations = [
     'Straight',
@@ -58,16 +60,44 @@ class KycCubit extends Cubit<KycState> {
     'Movie buff 🎥',
   ];
 
-  String? selectedGender;
-  List<String> selectedSexualOrientations = [];
+  // Interest categories
+  final Map<String, List<String>> interestCategories = {
+    'Sports & Outdoors': [
+      '🏔️ Hiking',
+      '🧘 Yoga',
+      '🏄 Surfing',
+      '⚽ Football',
+      '🏀 Basketball',
+      '🚴 Cycling',
+      '⛺ Camping',
+      '🎣 Fishing',
+      '🏃 Trail Running',
+      '🏂 Snowboarding',
+      '🎸 Music Festivals',
+      '⛷️ Skiing',
+      '🐴 Horse Riding',
+      '🛶 Kayaking',
+      '🏊 Swimming',
+      '🧗 Rock Climbing',
+    ],
+    'Food & Drink': [
+      '☕ Coffee Lover',
+      '🍣 Sushi Nights',
+      '🍕 Pizza Fridays',
+      '🍷 Wine Tasting',
+      '🚚 Street Food Explorer',
+      '🧁 Baking',
+    ],
+  };
+
   String? selectedPronoun;
   List<String> selectedLifestyles = [];
+  List<String> selectedInterests = [];
 
   late final TextEditingController shortBioController;
   late final TextEditingController jobTitleController;
   late final TextEditingController educationController;
 
-  DateTime? selectedDate;
   FixedExtentScrollController? dayController;
   FixedExtentScrollController? monthController;
   FixedExtentScrollController? yearController;
@@ -79,6 +109,37 @@ class KycCubit extends Cubit<KycState> {
     } else {
       selectedLifestyles.add(lifestyle);
     }
+    emit(KycLoaded());
+  }
+
+  void selectSexualOrientations(List<String> orientations) {
+    emit(KycLoading());
+    selectedSexualOrientations = List.from(orientations);
+    emit(KycLoaded());
+  }
+
+  void toggleInterest(String interest) {
+    emit(KycLoading());
+    if (selectedInterests.contains(interest)) {
+      selectedInterests.remove(interest);
+    } else {
+      // Max 5 interests
+      if (selectedInterests.length < 5) {
+        selectedInterests.add(interest);
+      }
+    }
+    emit(KycLoaded());
+  }
+
+  void selectGender(String gender) {
+    emit(KycLoading());
+    selectedGender = gender;
+    emit(KycLoaded());
+  }
+
+  void selectPronouns(String pronouns) {
+    emit(KycLoading());
+    selectedPronoun = pronouns;
     emit(KycLoaded());
   }
 

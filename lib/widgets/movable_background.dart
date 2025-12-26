@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/pages/splash/presentation/bloc/cubit/background_cubit.dart';
@@ -12,9 +11,9 @@ class MovableBackground extends StatefulWidget {
   final List<AssetGenImage> assets;
 
   static List<AssetGenImage> get defaultAssets => [
-    Assets.images.background.bg1,
-    Assets.images.background.bg2,
-    Assets.images.background.bg3,
+    Assets.images.background.bg4,
+    Assets.images.background.bg5,
+    Assets.images.background.bg6,
   ];
 
   MovableBackground({
@@ -77,7 +76,6 @@ class _MovableBackgroundState extends State<MovableBackground>
             final size = MediaQuery.of(context).size;
             return Scaffold(
               backgroundColor: ColorPalette.black,
-
               body: MouseRegion(
                 onHover: (event) {
                   final dx = (event.position.dx / size.width).clamp(0.0, 1.0);
@@ -96,6 +94,7 @@ class _MovableBackgroundState extends State<MovableBackground>
                       fit: StackFit.expand,
                       children: [
                         /// Background layer
+                        /// Background layer
                         Positioned.fill(
                           child: BlocBuilder<BackgroundCubit, BackgroundState>(
                             bloc: _backgroundCubit,
@@ -113,80 +112,57 @@ class _MovableBackgroundState extends State<MovableBackground>
                                   ? totalWidth - size.width
                                   : 0.0;
 
-                              return AnimatedBuilder(
-                                animation: _animation,
-                                builder: (context, child) {
-                                  double currentProgress = _animation.value;
-                                  if (manualProgress > 0) {
-                                    // If we wanted manual override.
-                                    // But `AnimatedBgWrapper` didn't have manual override in the snippet provided in the prompt?
-                                    // Wait, the snippet `AnimatedBgWrapper` ONLY used `bg.animation.value`.
-                                    // The `MovableBackground` snippet BEFORE that used `manualProgress`.
-                                    // The user said "use this file [AnimatedBgWrapper] and make MovableBackground".
-                                    // So I should stick to the `AnimatedBgWrapper` logic: Auto animation.
+                              return Stack(
+                                children: [
+                                  AnimatedBuilder(
+                                    animation: _animation,
+                                    builder: (context, child) {
+                                      double currentProgress = _animation.value;
+                                      final offset =
+                                          currentProgress * maxOffset * -1;
 
-                                    // However, the user ALSO said "make in cubit".
-                                    // So I will use the Cubit to store... what?
-                                    // If it's just auto animation, I don't strictly need a Cubit for state unless it's shared.
-                                    // But I'll put the "manual" capability in the Cubit as I defined it,
-                                    // and maybe use it if I want.
-                                    // I will stick to the `AnimatedBgWrapper` logic which is auto-scrolling.
-
-                                    // Re-reading: "make in cubit see cubit structure from auth folder and implement in splas"
-                                    // The `AnimatedBgWrapper` snippet has `bg.animation.value`.
-                                    // So I will use `_animation.value` here.
-                                  }
-
-                                  final offset =
-                                      currentProgress *
-                                      maxOffset *
-                                      -1; // Negative to move left
-
-                                  return Transform.translate(
-                                    offset: Offset(offset, 0),
-                                    child: child,
-                                  );
-                                },
-                                child: OverflowBox(
-                                  minWidth: 0,
-                                  maxWidth: double.infinity,
-                                  minHeight: size.height,
-                                  maxHeight: size.height,
-                                  alignment: Alignment.topLeft,
-                                  child: Row(
-                                    key: _rowKey,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: widget.assets.map((asset) {
-                                      return SizedBox(
-                                        height: size.height,
-                                        child: asset.image(
-                                          fit: BoxFit.fitHeight,
-                                          height: size.height,
-                                          alignment: Alignment.center,
-                                        ),
+                                      return Transform.translate(
+                                        offset: Offset(offset, 0),
+                                        child: child,
                                       );
-                                    }).toList(),
+                                    },
+                                    child: OverflowBox(
+                                      minWidth: 0,
+                                      maxWidth: double.infinity,
+                                      minHeight: size.height,
+                                      maxHeight: size.height,
+                                      alignment: Alignment.topLeft,
+                                      child: Row(
+                                        key: _rowKey,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: widget.assets.map((asset) {
+                                          return SizedBox(
+                                            height: size.height,
+                                            child: asset.image(
+                                              fit: BoxFit.fitHeight,
+                                              height: size.height,
+                                              alignment: Alignment.center,
+                                            ),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  // Add static white overlay here
+                                  Positioned.fill(
+                                    child: Container(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.05,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               );
                             },
                           ),
                         ),
 
-                        /// Foreground overlay
-                        Positioned.fill(
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
-                            child: ColoredBox(
-                              color: Colors.black.withOpacity(0.5),
-                            ),
-                          ),
-                        ),
-                        Positioned.fill(
-                          child: Container(
-                            color: Colors.black.withOpacity(0.5),
-                          ),
-                        ),
+                        /// Child content on top
                         widget.child,
                       ],
                     ),

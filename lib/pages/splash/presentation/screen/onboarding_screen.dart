@@ -25,12 +25,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
   late AnimationController _textController;
   late AnimationController _buttonController;
 
-  late Animation<double> _logoScaleAnimation;
-  late Animation<double> _logoFadeAnimation;
   late Animation<Offset> _textSlideAnimation;
   late Animation<double> _textFadeAnimation;
-  late Animation<Offset> _buttonSlideAnimation;
-  late Animation<double> _buttonFadeAnimation;
 
   @override
   void initState() {
@@ -58,16 +54,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
       vsync: this,
     );
 
-    // Logo animations
-    _logoScaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
-      CurvedAnimation(parent: _logoController, curve: Curves.easeOutBack),
-    );
-
-    _logoFadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _logoController, curve: Curves.easeIn));
-
     // Text animations
     _textSlideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.5),
@@ -78,17 +64,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
       begin: 0.0,
       end: 1.0,
     ).animate(CurvedAnimation(parent: _textController, curve: Curves.easeIn));
-
-    // Button animations
-    _buttonSlideAnimation =
-        Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero).animate(
-          CurvedAnimation(parent: _buttonController, curve: Curves.easeOut),
-        );
-
-    _buttonFadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _buttonController, curve: Curves.easeIn));
   }
 
   void _startAnimationSequence() async {
@@ -126,7 +101,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
                   alignment: Alignment.center,
                   children: [
                     Lottie.asset(
-                      Assets.animations.welcomeScreenAnimationNoShadow,
+                      Assets
+                          .animations
+                          .welcomeScreenAnimationRoadNoShadowDashed,
                       repeat: true,
                       fit: BoxFit.fill,
                     ),
@@ -150,17 +127,16 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
                     child: SlideTransition(
                       position: _textSlideAnimation,
                       child: AppText(
-                        text: 'Find your vibe\n-together.',
-                        style: AppTextStyles.h1(
-                          context,
-                        ).copyWith(color: Colors.white, fontSize: 40),
+                        text: 'Find your vibe\n-\ttogether.',
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.h1(context),
                       ),
                     ),
                   );
                 },
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -170,12 +146,12 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
         width: 0.9.sw,
         text: 'Get Started',
         onTap: () {
-          AutoRouter.of(context).replace(const DashboardRoute());
+          AutoRouter.of(context).replace(const LandingRoute());
         },
         icon: Assets.icons.arrowRight.svg(
           width: 24,
           height: 24,
-          color: ColorPalette.white,
+          colorFilter: ColorFilter.mode(ColorPalette.white, BlendMode.srcIn),
         ),
       ),
     );

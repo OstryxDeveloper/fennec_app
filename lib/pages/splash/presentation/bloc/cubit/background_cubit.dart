@@ -6,8 +6,16 @@ class BackgroundCubit extends Cubit<BackgroundState> {
 
   double manualProgress = 0.0;
 
+  int selectedIndex = 0;
+
   void setManualProgress(double progress) {
     manualProgress = progress;
     emit(BackgroundUpdated(manualProgress));
+  }
+
+  void selectIndex(int index) {
+    emit(BackgroundLoading());
+    selectedIndex = index;
+    emit(BackgroundLoaded());
   }
 }

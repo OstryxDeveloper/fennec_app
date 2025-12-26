@@ -21,32 +21,64 @@ class GalleryUploadWidget extends StatelessWidget {
         return GestureDetector(
           onTap: () => _showImageSourceDialog(context, cubit),
           child: Container(
-            width: double.infinity,
+            width: 258,
             height: 260,
             decoration: BoxDecoration(
-              color: ColorPalette.secondry.withOpacity(0.5),
+              color: ColorPalette.secondry.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 width: 1,
               ),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
-              child: (cubit.selectedImage?.path.isNotEmpty ?? false)
-                  ? Image.file(
-                      File(cubit.selectedImage!.path),
-                      width: double.infinity,
-                      height: 260,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Center(
-                          child: SvgPicture.asset(
-                            Assets.icons.camera.path,
-                            fit: BoxFit.scaleDown,
+              child:
+                  (cubit.mediaList.isNotEmpty &&
+                      cubit.mediaList[0].path.isNotEmpty)
+                  ? Stack(
+                      children: [
+                        Image.file(
+                          File(cubit.mediaList[0].path),
+                          width: double.infinity,
+                          height: 260,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Center(
+                              child: SvgPicture.asset(
+                                Assets.icons.camera.path,
+                                fit: BoxFit.scaleDown,
+                              ),
+                            );
+                          },
+                        ),
+                        Positioned(
+                          top: 6,
+                          right: 6,
+                          child: GestureDetector(
+                            onTap: () =>
+                                cubit.removeMedia(cubit.mediaList[0].id),
+                            child: Container(
+                              alignment: Alignment.center,
+                              width: 24,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: ColorPalette.error,
+                              ),
+                              child: SvgPicture.asset(
+                                Assets.icons.trash.path,
+                                colorFilter: ColorFilter.mode(
+                                  ColorPalette.white,
+                                  BlendMode.srcIn,
+                                ),
+                                width: 10,
+                                height: 10,
+                              ),
+                            ),
                           ),
-                        );
-                      },
+                        ),
+                      ],
                     )
                   : Center(
                       child: SvgPicture.asset(
@@ -86,7 +118,7 @@ class GalleryUploadWidget extends StatelessWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.3),
+                  color: Colors.white.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -98,7 +130,7 @@ class GalleryUploadWidget extends StatelessWidget {
                 ),
                 onTap: () {
                   Navigator.pop(context);
-                  cubit.pickMultipleImagesFromGallery();
+                  cubit.pickImagesFromGallery();
                 },
               ),
               ListTile(

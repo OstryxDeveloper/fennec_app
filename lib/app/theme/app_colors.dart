@@ -9,4 +9,6 @@ class ColorPalette {
   static Color green = HexColor("#3ADC60");
   static Color greenDark = HexColor("#1E382B");
   static Color error = HexColor("#FF4E4E");
+  static Color textSecondary = HexColor("#CCCCCC");
+  static Color textPrimary = HexColor("#FFFFFF");
 }

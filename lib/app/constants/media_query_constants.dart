@@ -1,14 +1,25 @@
-
 import 'package:flutter/widgets.dart';
 
-double getHeight(context) => MediaQuery.of(context).size.height;
-double getWidth(context) => MediaQuery.of(context).size.width;
+const double designWidth = 440;
+const double designHeight = 956;
+const double minHeight = 600;
 
-// set height
+double getHeight(BuildContext context) => MediaQuery.of(context).size.height;
+
+double getWidth(BuildContext context) => MediaQuery.of(context).size.width;
+
 double getProportionalHeight(BuildContext context, double inputHeight) {
-  return (inputHeight / getHeight(context)) * getHeight(context);
+  final screenHeight = getHeight(context);
+
+  final scale = (screenHeight / designHeight).clamp(
+    minHeight / designHeight,
+    1.2,
+  );
+
+  return inputHeight * scale;
 }
 
 double getProportionalWidth(BuildContext context, double inputWidth) {
-  return (inputWidth / getWidth(context)) * MediaQuery.of(context).size.width;
+  final screenWidth = getWidth(context);
+  return (inputWidth / designWidth) * screenWidth;
 }

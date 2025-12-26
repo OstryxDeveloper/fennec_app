@@ -6,55 +6,80 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitial());
 
+  // UI states
   bool obscurePassword = true;
+  bool obscureConfirmPassword = true;
+  bool obscureNewPassword = true;
+  bool obscureConfirmNewPassword = true;
   bool isEmail = true;
 
-  final formKey = GlobalKey<FormState>();
+  // Controllers
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  final newPasswordController = TextEditingController();
+  final confirmNewPasswordController = TextEditingController();
+
   Country? selectedCountry;
 
-  // Individual field validation states
   bool _firstNameTouched = false;
   bool _lastNameTouched = false;
   bool _emailTouched = false;
   bool _phoneTouched = false;
   bool _passwordTouched = false;
   bool _confirmPasswordTouched = false;
+  bool _newPasswordTouched = false;
+  bool _confirmNewPasswordTouched = false;
 
-  void isObsecure() {
-    emit(AuthLoading());
+  int _validationCounter = 0;
+
+  void togglePasswordVisibility() {
+    emit(AuthValidationLoading());
     obscurePassword = !obscurePassword;
-    emit(AuthLoaded());
+    emit(AuthValidation(validationCounter: _validationCounter));
   }
 
-  void isEmailOrPhone() {
-    emit(AuthLoading());
+  void toggleConfirmPasswordVisibility() {
+    emit(AuthValidationLoading());
+    obscureConfirmPassword = !obscureConfirmPassword;
+    emit(AuthValidation(validationCounter: _validationCounter));
+  }
+
+  void toggleNewPasswordVisibility() {
+    emit(AuthValidationLoading());
+    obscureNewPassword = !obscureNewPassword;
+    emit(AuthValidation(validationCounter: _validationCounter));
+  }
+
+  void toggleConfirmNewPasswordVisibility() {
+    emit(AuthValidationLoading());
+    obscureConfirmNewPassword = !obscureConfirmNewPassword;
+    emit(AuthValidation(validationCounter: _validationCounter));
+  }
+
+  void toggleEmailOrPhone() {
+    emit(AuthValidationLoading());
     isEmail = !isEmail;
-    emit(AuthLoaded());
+    emit(AuthValidation(validationCounter: _validationCounter));
   }
 
-  String? validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Enter a valid email address.';
-    }
-    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    if (!emailRegex.hasMatch(value)) {
-      return 'Enter a valid email address.';
+  String? validateName(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Name is required';
     }
     return null;
   }
 
-  String? validatePassword(String? value) {
+  String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Password must be at least 8 characters.';
+      return 'Enter a valid email address';
     }
-    if (value.length < 8) {
-      return 'Password must be at least 8 characters.';
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    if (!emailRegex.hasMatch(value)) {
+      return 'Enter a valid email address';
     }
     return null;
   }
@@ -69,25 +94,18 @@ class AuthCubit extends Cubit<AuthState> {
     if (digitsOnly.length < 10) {
       return 'Phone number must be at least 10 digits';
     }
-
     if (digitsOnly.length > 15) {
       return 'Phone number is too long';
     }
-
     return null;
   }
 
-  bool obscureConfirmPassword = true;
-
-  void isObsecureConfirm() {
-    emit(AuthLoading());
-    obscureConfirmPassword = !obscureConfirmPassword;
-    emit(AuthLoaded());
-  }
-
-  String? validateName(String? value) {
+  String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Name is required';
+      return 'Password must be at least 8 characters';
+    }
+    if (value.length < 8) {
+      return 'Password must be at least 8 characters';
     }
     return null;
   }
@@ -102,120 +120,184 @@ class AuthCubit extends Cubit<AuthState> {
     return null;
   }
 
-  // Individual field validation methods
-  void onFirstNameChanged(String value) {
-    if (!_firstNameTouched && value.isNotEmpty) {
-      _firstNameTouched = true;
-      emit(AuthLoaded());
+  String? validateNewPassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password must be at least 8 characters';
     }
+    if (value.length < 8) {
+      return 'Password must be at least 8 characters';
+    }
+    return null;
+  }
+
+  String? validateConfirmNewPassword(String? value, String password) {
+    if (value == null || value.isEmpty) {
+      return 'Passwords don\'t match';
+    }
+    if (value != password) {
+      return 'Passwords don\'t match';
+    }
+    return null;
+  }
+
+  void onFirstNameChanged(String value) {
+    _firstNameTouched = true;
+    emit(AuthValidation(validationCounter: _validationCounter));
   }
 
   void onLastNameChanged(String value) {
-    if (!_lastNameTouched && value.isNotEmpty) {
-      _lastNameTouched = true;
-      emit(AuthLoaded());
-    }
+    _lastNameTouched = true;
+    emit(AuthValidation(validationCounter: _validationCounter));
   }
 
   void onEmailChanged(String value) {
-    if (!_emailTouched && value.isNotEmpty) {
-      _emailTouched = true;
-      emit(AuthLoaded());
-    }
+    _emailTouched = true;
+    emit(AuthValidation(validationCounter: _validationCounter));
   }
 
   void onPhoneChanged(String value) {
-    if (!_phoneTouched && value.isNotEmpty) {
-      _phoneTouched = true;
-      emit(AuthLoaded());
-    }
+    _phoneTouched = true;
+    emit(AuthValidation(validationCounter: _validationCounter));
   }
 
   void onPasswordChanged(String value) {
-    if (!_passwordTouched && value.isNotEmpty) {
-      _passwordTouched = true;
-      emit(AuthLoaded());
-    }
+    _passwordTouched = true;
+    emit(AuthValidation(validationCounter: _validationCounter));
   }
 
   void onConfirmPasswordChanged(String value) {
-    if (!_confirmPasswordTouched && value.isNotEmpty) {
-      _confirmPasswordTouched = true;
-      emit(AuthLoaded());
+    _confirmPasswordTouched = true;
+    emit(AuthValidation(validationCounter: _validationCounter));
+  }
+
+  void onNewPasswordChanged(String value) {
+    _newPasswordTouched = true;
+    emit(AuthValidation(validationCounter: _validationCounter));
+  }
+
+  void onConfirmNewPasswordChanged(String value) {
+    _confirmNewPasswordTouched = true;
+    emit(AuthValidation(validationCounter: _validationCounter));
+  }
+
+  String? getFirstNameError() {
+    try {
+      return _firstNameTouched ? validateName(firstNameController.text) : null;
+    } catch (e) {
+      return null;
     }
   }
 
-  // Get validation error for individual fields (only if touched)
-  String? getFirstNameError() {
-    return _firstNameTouched ? validateName(firstNameController.text) : null;
-  }
-
   String? getLastNameError() {
-    return _lastNameTouched ? validateName(lastNameController.text) : null;
+    try {
+      return _lastNameTouched ? validateName(lastNameController.text) : null;
+    } catch (e) {
+      return null;
+    }
   }
 
   String? getEmailError() {
-    return _emailTouched ? validateEmail(emailController.text) : null;
+    try {
+      return _emailTouched ? validateEmail(emailController.text) : null;
+    } catch (e) {
+      return null;
+    }
   }
 
   String? getPhoneError() {
-    return _phoneTouched ? validatePhoneNumber(phoneController.text) : null;
+    try {
+      return _phoneTouched ? validatePhoneNumber(phoneController.text) : null;
+    } catch (e) {
+      return null;
+    }
   }
 
   String? getPasswordError() {
-    return _passwordTouched ? validatePassword(passwordController.text) : null;
+    try {
+      return _passwordTouched
+          ? validatePassword(passwordController.text)
+          : null;
+    } catch (e) {
+      return null;
+    }
   }
 
   String? getConfirmPasswordError() {
-    return _confirmPasswordTouched
-        ? validateConfirmPassword(
-            confirmPasswordController.text,
-            passwordController.text,
-          )
-        : null;
+    try {
+      return _confirmPasswordTouched
+          ? validateConfirmPassword(
+              confirmPasswordController.text,
+              passwordController.text,
+            )
+          : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  String? getNewPasswordError() {
+    try {
+      return _newPasswordTouched
+          ? validateNewPassword(newPasswordController.text)
+          : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  String? getConfirmNewPasswordError() {
+    try {
+      return _confirmNewPasswordTouched
+          ? validateConfirmNewPassword(
+              confirmNewPasswordController.text,
+              newPasswordController.text,
+            )
+          : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  void submit() {
+    _firstNameTouched = true;
+    _lastNameTouched = true;
+    _emailTouched = true;
+    _phoneTouched = true;
+    _passwordTouched = true;
+    _confirmPasswordTouched = true;
+    _validationCounter++;
+    emit(AuthValidation(validationCounter: _validationCounter));
+  }
+
+  bool isFormValid() {
+    return getFirstNameError() == null &&
+        getLastNameError() == null &&
+        getEmailError() == null &&
+        getPhoneError() == null &&
+        getPasswordError() == null &&
+        getConfirmPasswordError() == null;
   }
 
   void loadCountry() {
-    emit(AuthLoading());
     loadCountries().then((countries) {
       selectedCountry = countries.firstWhere(
         (c) => c.iso == 'US',
         orElse: () => countries.first,
       );
-      emit(AuthLoaded());
+      emit(AuthValidation(validationCounter: _validationCounter));
     });
   }
 
-  int a = 3;
-  int b = 8;
-
-  int getAwithB(int x) {
-    return 11 - x;
+  void submitNewPassword() {
+    _newPasswordTouched = true;
+    _confirmNewPasswordTouched = true;
+    _validationCounter++;
+    emit(AuthValidation(validationCounter: _validationCounter));
   }
 
-  // write function to make anagram is or not
-  bool isAnagram(String str1, String str2) {
-    if (str1.length != str2.length) {
-      return false;
-    }
-    final charCount = <String, int>{};
-    for (var char in str1.split('')) {
-      charCount[char] = (charCount[char] ?? 0) + 1;
-    }
-    for (var char in str2.split('')) {
-      if (!charCount.containsKey(char) || charCount[char] == 0) {
-        return false;
-      }
-      charCount[char] = charCount[char]! - 1;
-    }
-    return true;
-  }
-
-  void swap() {
+  void updatePassword() {
     emit(AuthLoading());
-    a = a + b;
-    b = a - b;
-    a = a - b;
+
     emit(AuthLoaded());
   }
 }

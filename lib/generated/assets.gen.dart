@@ -45,6 +45,14 @@ class $AssetsAnimationsGen {
   String get rotatingGroupAnimation =>
       'assets/animations/Rotating-Group-Animation.json';
 
+  /// File path: assets/animations/Rotating-Group-Animation_No_Shadow_dotted.json
+  String get rotatingGroupAnimationNoShadowDotted =>
+      'assets/animations/Rotating-Group-Animation_No_Shadow_dotted.json';
+
+  /// File path: assets/animations/Rotating_Group_Animation_edges_No_BG.json
+  String get rotatingGroupAnimationEdgesNoBG =>
+      'assets/animations/Rotating_Group_Animation_edges_No_BG.json';
+
   /// File path: assets/animations/Scrolling-Messages---Top-Opacity.json
   String get scrollingMessagesTopOpacity =>
       'assets/animations/Scrolling-Messages---Top-Opacity.json';
@@ -59,6 +67,10 @@ class $AssetsAnimationsGen {
   /// File path: assets/animations/Welcome-Screen-Animation.json
   String get welcomeScreenAnimation =>
       'assets/animations/Welcome-Screen-Animation.json';
+
+  /// File path: assets/animations/Welcome-Screen-Animation_road_No-Shadow (dashed).json
+  String get welcomeScreenAnimationRoadNoShadowDashed =>
+      'assets/animations/Welcome-Screen-Animation_road_No-Shadow (dashed).json';
 
   /// File path: assets/animations/countries.json
   String get countries => 'assets/animations/countries.json';
@@ -77,10 +89,13 @@ class $AssetsAnimationsGen {
     rotatingGroupAnimation1,
     rotatingGroupAnimationNoShadow,
     rotatingGroupAnimation,
+    rotatingGroupAnimationNoShadowDotted,
+    rotatingGroupAnimationEdgesNoBG,
     scrollingMessagesTopOpacity,
     scrollingMessages,
     welcomeScreenAnimationNoShadow,
     welcomeScreenAnimation,
+    welcomeScreenAnimationRoadNoShadowDashed,
     countries,
     countriesPhoneCodes,
   ];
@@ -88,6 +103,61 @@ class $AssetsAnimationsGen {
 
 class $AssetsDummyGen {
   const $AssetsDummyGen();
+
+  /// File path: assets/dummy/boy_sitting.png
+  AssetGenImage get boySitting =>
+      const AssetGenImage('assets/dummy/boy_sitting.png');
+
+  /// File path: assets/dummy/girl_blackdress.png
+  AssetGenImage get girlBlackdress =>
+      const AssetGenImage('assets/dummy/girl_blackdress.png');
+
+  /// File path: assets/dummy/girl_car.png
+  AssetGenImage get girlCar => const AssetGenImage('assets/dummy/girl_car.png');
+
+  /// File path: assets/dummy/girl_coat.png
+  AssetGenImage get girlCoat =>
+      const AssetGenImage('assets/dummy/girl_coat.png');
+
+  /// File path: assets/dummy/girl_golf.png
+  AssetGenImage get girlGolf =>
+      const AssetGenImage('assets/dummy/girl_golf.png');
+
+  /// File path: assets/dummy/girl_home.png
+  AssetGenImage get girlHome =>
+      const AssetGenImage('assets/dummy/girl_home.png');
+
+  /// File path: assets/dummy/girl_orange_portrait.png
+  AssetGenImage get girlOrangePortrait =>
+      const AssetGenImage('assets/dummy/girl_orange_portrait.png');
+
+  /// File path: assets/dummy/girl_smile.png
+  AssetGenImage get girlSmile =>
+      const AssetGenImage('assets/dummy/girl_smile.png');
+
+  /// File path: assets/dummy/girl_wall.png
+  AssetGenImage get girlWall =>
+      const AssetGenImage('assets/dummy/girl_wall.png');
+
+  /// File path: assets/dummy/group_fire.png
+  AssetGenImage get groupFire =>
+      const AssetGenImage('assets/dummy/group_fire.png');
+
+  /// File path: assets/dummy/group_glasses.png
+  AssetGenImage get groupGlasses =>
+      const AssetGenImage('assets/dummy/group_glasses.png');
+
+  /// File path: assets/dummy/group_night.png
+  AssetGenImage get groupNight =>
+      const AssetGenImage('assets/dummy/group_night.png');
+
+  /// File path: assets/dummy/group_selfie.png
+  AssetGenImage get groupSelfie =>
+      const AssetGenImage('assets/dummy/group_selfie.png');
+
+  /// File path: assets/dummy/group_sunset.png
+  AssetGenImage get groupSunset =>
+      const AssetGenImage('assets/dummy/group_sunset.png');
 
   /// File path: assets/dummy/portrait.png
   AssetGenImage get portrait =>
@@ -113,14 +183,33 @@ class $AssetsDummyGen {
   AssetGenImage get portrait5 =>
       const AssetGenImage('assets/dummy/portrait5.png');
 
+  /// File path: assets/dummy/portrait_orange.png
+  AssetGenImage get portraitOrange =>
+      const AssetGenImage('assets/dummy/portrait_orange.png');
+
   /// List of all assets
   List<AssetGenImage> get values => [
+    boySitting,
+    girlBlackdress,
+    girlCar,
+    girlCoat,
+    girlGolf,
+    girlHome,
+    girlOrangePortrait,
+    girlSmile,
+    girlWall,
+    groupFire,
+    groupGlasses,
+    groupNight,
+    groupSelfie,
+    groupSunset,
     portrait,
     portrait1,
     portrait2,
     portrait3,
     portrait4,
     portrait5,
+    portraitOrange,
   ];
 }
 
@@ -296,6 +385,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/eye.svg
   SvgGenImage get eye => const SvgGenImage('assets/icons/eye.svg');
 
+  /// File path: assets/icons/eye_close.svg
+  SvgGenImage get eyeClose => const SvgGenImage('assets/icons/eye_close.svg');
+
   /// File path: assets/icons/eye_emoji.png
   AssetGenImage get eyeEmoji =>
       const AssetGenImage('assets/icons/eye_emoji.png');
@@ -439,6 +531,7 @@ class $AssetsIconsGen {
     edit,
     error,
     eye,
+    eyeClose,
     eyeEmoji,
     facebook,
     google,
@@ -507,8 +600,20 @@ class $AssetsImagesBackgroundGen {
   AssetGenImage get bg3 =>
       const AssetGenImage('assets/images/background/BG - 3.png');
 
+  /// File path: assets/images/background/BG - 4.png
+  AssetGenImage get bg4 =>
+      const AssetGenImage('assets/images/background/BG - 4.png');
+
+  /// File path: assets/images/background/BG - 5.png
+  AssetGenImage get bg5 =>
+      const AssetGenImage('assets/images/background/BG - 5.png');
+
+  /// File path: assets/images/background/BG - 6.png
+  AssetGenImage get bg6 =>
+      const AssetGenImage('assets/images/background/BG - 6.png');
+
   /// List of all assets
-  List<AssetGenImage> get values => [bg1, bg2, bg3];
+  List<AssetGenImage> get values => [bg1, bg2, bg3, bg4, bg5, bg6];
 }
 
 class Assets {

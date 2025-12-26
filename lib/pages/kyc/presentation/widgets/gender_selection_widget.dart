@@ -45,6 +45,7 @@ class _GenderSelectionWidgetState extends State<GenderSelectionWidget> {
         final isSelected = _kycCubit.selectedGender == gender;
 
         return InkWell(
+          borderRadius: BorderRadius.circular(16),
           onTap: () {
             _kycCubit.selectedGender = gender;
             widget.onGenderSelected?.call(gender);
@@ -53,13 +54,13 @@ class _GenderSelectionWidgetState extends State<GenderSelectionWidget> {
             decoration: BoxDecoration(
               color: isSelected
                   ? ColorPalette.primary
-                  : ColorPalette.secondry.withOpacity(0.2),
+                  : ColorPalette.secondry.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Center(
               child: AppText(
                 text: gender,
-                style: AppTextStyles.bodyLarge(context).copyWith(
+                style: AppTextStyles.subHeading(context).copyWith(
                   color: Colors.white,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                 ),

@@ -24,7 +24,7 @@ dependencies:
   flutter_screenutil: ^5.9.3
   google_fonts: ^6.3.3
   hexcolor: ^3.0.1
-  lottie: ^3.3.2
+  lottie: ^3.3.1
 
   image_picker: ^1.2.0
   image_cropper: ^11.0.0
@@ -32,12 +32,16 @@ dependencies:
   camera: ^0.11.2
   permission_handler: ^11.3.1
   geolocator: ^13.0.1
+  audio_waveforms: ^2.0.1
+  path_provider: ^2.1.4
+  just_audio: ^0.10.5
 
   freezed_annotation: ^3.0.0
   json_annotation: ^4.9.0
   rename: ^3.1.0
   pinput: ^6.0.1
   fluttertoast: ^9.0.0
+  record: ^6.1.2
 
 dev_dependencies:
   flutter_test:

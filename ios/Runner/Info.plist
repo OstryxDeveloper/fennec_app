@@ -51,5 +51,7 @@
 	<string>This app uses your location to provide location-based features while you are using the app.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app uses your location to support features that require access even when the app is not active.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs access to your microphone to record audio responses for prompts.</string>
 </dict>
 </plist>

@@ -17,6 +17,7 @@ class CustomLabelTextField extends StatelessWidget {
   final Widget? suffix;
   final Widget? prefix;
   final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
   final String? hintText;
   final Color? labelColor;
   final TextStyle? labelStyle;
@@ -34,6 +35,7 @@ class CustomLabelTextField extends StatelessWidget {
   final EdgeInsetsGeometry? contentPadding;
   final int? maxLines;
   final int? minLines;
+  final ScrollController? scrollController;
 
   const CustomLabelTextField({
     super.key,
@@ -54,6 +56,7 @@ class CustomLabelTextField extends StatelessWidget {
     this.labelStyle,
     this.textStyle,
     this.hintStyle,
+    this.textInputAction,
     this.fillColor,
     this.borderRadius,
     this.filled,
@@ -66,6 +69,7 @@ class CustomLabelTextField extends StatelessWidget {
     this.contentPadding,
     this.maxLines,
     this.minLines,
+    this.scrollController,
   });
 
   @override
@@ -78,9 +82,9 @@ class CustomLabelTextField extends StatelessWidget {
             text: label!,
             style:
                 labelStyle ??
-                AppTextStyles.bodyLarge(context).copyWith(
+                AppTextStyles.inputLabel(context).copyWith(
                   color: labelColor ?? ColorPalette.primary,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.bold,
                 ),
           ),
         if (label != null) CustomSizedBox(height: 8),
@@ -93,7 +97,9 @@ class CustomLabelTextField extends StatelessWidget {
             onChanged: onChanged,
             onFieldSubmitted: onSubmit,
             validator: validator,
+            scrollController: scrollController,
             keyboardType: keyboardType,
+            textInputAction: textInputAction ?? TextInputAction.done,
             readOnly: readOnly ?? false,
             obscureText: obscureText ?? false,
             maxLines: obscureText == true ? 1 : maxLines,
@@ -104,7 +110,10 @@ class CustomLabelTextField extends StatelessWidget {
             decoration: InputDecoration(
               hintText: hintText,
               hintStyle:
-                  hintStyle ?? TextStyle(color: Colors.white.withOpacity(0.5)),
+                  hintStyle ??
+                  AppTextStyles.inputLabel(
+                    context,
+                  ).copyWith(color: ColorPalette.textPrimary),
               filled: filled ?? false,
               fillColor: fillColor,
               suffixIcon: suffixIcon,
