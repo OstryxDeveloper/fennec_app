@@ -155,9 +155,17 @@ class $AssetsDummyGen {
   AssetGenImage get groupSelfie =>
       const AssetGenImage('assets/dummy/group_selfie.png');
 
+  /// File path: assets/dummy/group_selfie_beach.png
+  AssetGenImage get groupSelfieBeach =>
+      const AssetGenImage('assets/dummy/group_selfie_beach.png');
+
   /// File path: assets/dummy/group_sunset.png
   AssetGenImage get groupSunset =>
       const AssetGenImage('assets/dummy/group_sunset.png');
+
+  /// File path: assets/dummy/group_swiming.png
+  AssetGenImage get groupSwiming =>
+      const AssetGenImage('assets/dummy/group_swiming.png');
 
   /// File path: assets/dummy/portrait.png
   AssetGenImage get portrait =>
@@ -202,7 +210,9 @@ class $AssetsDummyGen {
     groupGlasses,
     groupNight,
     groupSelfie,
+    groupSelfieBeach,
     groupSunset,
+    groupSwiming,
     portrait,
     portrait1,
     portrait2,

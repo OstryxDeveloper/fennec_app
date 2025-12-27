@@ -149,13 +149,13 @@ class _MovableBackgroundState extends State<MovableBackground>
                                     ),
                                   ),
                                   // Add static white overlay here
-                                  Positioned.fill(
-                                    child: Container(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.05,
-                                      ),
-                                    ),
-                                  ),
+                                  // Positioned.fill(
+                                  //   child: Container(
+                                  //     color: Color(
+                                  //       0xFF111111,
+                                  //     ).withValues(alpha: 0.05),
+                                  //   ),
+                                  // ),`
                                 ],
                               );
                             },

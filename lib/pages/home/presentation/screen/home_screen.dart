@@ -25,11 +25,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final List<String> _avatarPaths = [
-    Assets.dummy.portrait1.path,
+    Assets.dummy.girlOrangePortrait.path,
     Assets.dummy.portrait2.path,
-    Assets.dummy.portrait3.path,
-    Assets.dummy.portrait4.path,
-    Assets.dummy.portrait5.path,
+    Assets.dummy.girlBlackdress.path,
+    Assets.dummy.boySitting.path,
+    Assets.dummy.girlCoat.path,
   ];
 
   @override
@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const CustomSizedBox(height: 16),
                   HeroSection(
-                    imagePath: Assets.images.girlsGroup.path,
+                    imagePath: Assets.dummy.groupSelfie.path,
                     avatarPaths: _avatarPaths,
                   ),
                   const SizedBox(height: 32),

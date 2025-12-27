@@ -4,6 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../routes/routes_imports.dart';
 
+// Global scaffold messenger key for app-wide toasts/snackbars
+final GlobalKey<ScaffoldMessengerState> snackbarKey =
+    GlobalKey<ScaffoldMessengerState>();
+
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -17,7 +21,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(440, 1000),
+      designSize: const Size(440, 956),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
@@ -32,6 +36,7 @@ class _MyAppState extends State<MyApp> {
             child: MaterialApp.router(
               title: 'Fennac App',
               debugShowCheckedModeBanner: false,
+              scaffoldMessengerKey: snackbarKey,
               routerConfig: _appRouter.config(),
             ),
           ),

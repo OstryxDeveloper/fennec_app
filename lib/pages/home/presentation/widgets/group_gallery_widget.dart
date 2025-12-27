@@ -35,7 +35,7 @@ class GroupGalleryWidget extends StatelessWidget {
                         borderRadius: BorderRadius.circular(24),
                         child: Image.asset(
                           _homeCubit.groupImages[index],
-                          height: 408,
+                          // height: 408,
                           width: double.infinity,
                           fit: BoxFit.cover,
                         ),

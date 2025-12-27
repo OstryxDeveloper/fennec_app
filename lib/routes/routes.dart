@@ -39,6 +39,14 @@ class AppRouter extends RootStackRouter {
       duration: const Duration(milliseconds: 300),
     ),
 
+    // Create Group Screen
+    CustomRoute(
+      page: CreateGroupRoute.page,
+      transitionsBuilder: TransitionsBuilders.fadeIn,
+      barrierColor: Colors.transparent,
+      duration: const Duration(milliseconds: 300),
+    ),
+
     CustomRoute(
       page: LoginRoute.page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -228,6 +236,25 @@ class AppRouter extends RootStackRouter {
 
     CustomRoute(
       page: FilterRoute.page,
+      barrierColor: Colors.transparent,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(0.0, 1.0);
+        const end = Offset.zero;
+        const curve = Curves.easeInOut;
+
+        var tween = Tween(
+          begin: begin,
+          end: end,
+        ).chain(CurveTween(curve: curve));
+        var offsetAnimation = animation.drive(tween);
+
+        return SlideTransition(position: offsetAnimation, child: child);
+      },
+      duration: const Duration(milliseconds: 500),
+    ),
+
+    CustomRoute(
+      page: AddMemberRoute.page,
       barrierColor: Colors.transparent,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 1.0);

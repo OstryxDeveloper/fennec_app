@@ -222,7 +222,7 @@ class _KycPromptScreenState extends State<KycPromptScreen> {
                 Expanded(
                   child: CustomOutlinedButton(
                     onPressed: () {
-                      AutoRouter.of(context).push(const OnBoardingRoute());
+                      AutoRouter.of(context).push(const DashboardRoute());
                     },
                     text: 'Skip',
                     width: double.infinity,
@@ -232,7 +232,7 @@ class _KycPromptScreenState extends State<KycPromptScreen> {
                 Expanded(
                   child: ContinueButton(
                     onTap: () {
-                      AutoRouter.of(context).push(const OnBoardingRoute());
+                      AutoRouter.of(context).push(const DashboardRoute());
                     },
                     text: 'Continue',
                   ),

@@ -1,0 +1,419 @@
+# Cursor Rules for Fennec App
+
+## Project Overview
+
+This is a Flutter application using BLoC/Cubit for state management, Clean Architecture principles, and dependency injection with GetIt.
+
+## Core State Management Rules - CRITICAL
+
+### Cubit Implementation Rules
+
+1. **ALWAYS store data in variables, NEVER in state classes**
+
+   - All business data, form data, and application state must be stored as typed variables in the Cubit class
+   - Variables should be declared at class level, organized by data type
+   - State classes should ONLY represent UI state (Initial, Loading, Loaded, Error)
+
+2. **State Classes Pattern**
+
+   ```dart
+   // ✅ CORRECT: Lightweight state classes
+   class ExampleState extends Equatable {
+     @override
+     List<Object?> get props => [];
+   }
+   class ExampleInitial extends ExampleState {}
+   class ExampleLoading extends ExampleState {}
+   class ExampleLoaded extends ExampleState {}
+   class ExampleError extends ExampleState {}
+
+   // ❌ WRONG: Don't store data in state
+   class ExampleLoaded extends ExampleState {
+     final String data;  // ❌ Data should be in Cubit variable
+   }
+   ```
+
+3. **Cubit Structure**
+
+   ```dart
+   class ExampleCubit extends Cubit<ExampleState> {
+     ExampleCubit() : super(ExampleInitial());
+
+     // ========== DATA VARIABLES (organized by type) ==========
+     // String variables
+     String selectedValue = '';
+     String? optionalValue;
+
+     // Numeric variables
+     int counter = 0;
+     double progress = 0.0;
+
+     // Boolean variables
+     bool isEnabled = true;
+     bool obscureText = false;
+
+     // Collections
+     List<String> items = [];
+     Map<String, dynamic> data = {};
+
+     // Controllers
+     final textController = TextEditingController();
+
+     // Custom objects
+     UserModel? currentUser;
+     DateTime? selectedDate;
+
+     // ========== METHODS ==========
+     void updateValue(String value) {
+       emit(ExampleLoading());  // UI state
+       selectedValue = value;   // Update variable
+       emit(ExampleLoaded());   // UI state
+     }
+
+     @override
+     Future<void> close() {
+       textController.dispose();
+       return super.close();
+     }
+   }
+   ```
+
+4. **Accessing Data in Widgets**
+
+   ```dart
+   // ✅ CORRECT: Access data from Cubit
+   final cubit = Di().sl<ExampleCubit>();
+   Text(cubit.selectedValue)
+
+   // ❌ WRONG: Don't access from state
+   Text(state.selectedValue)
+
+   // Use BlocBuilder for UI state changes
+   BlocBuilder<ExampleCubit, ExampleState>(
+     builder: (context, state) {
+       if (state is ExampleLoading) return CircularProgressIndicator();
+       return Text(cubit.selectedValue);  // Access from cubit
+     },
+   )
+   ```
+
+5. **Method Implementation Rules**
+   - Always emit Loading state before operations: `emit(ExampleLoading());`
+   - Update variables, not state: `selectedValue = value;`
+   - Always emit Loaded/Error state after operations: `emit(ExampleLoaded());`
+   - Never pass data through state constructors
+
+## Code Style & Conventions
+
+### File Organization
+
+- Follow Clean Architecture: `pages/[feature]/presentation/bloc/cubit/`
+- State files: `pages/[feature]/presentation/bloc/state/`
+- Widgets: `pages/[feature]/presentation/widgets/`
+- Screens: `pages/[feature]/presentation/screen/`
+
+### Naming Conventions
+
+- Cubits: `[Feature]Cubit` (e.g., `AuthCubit`, `KycCubit`)
+- States: `[Feature]State` (e.g., `AuthState`, `KycState`)
+- Screens: `[Feature]Screen` (e.g., `LoginScreen`, `KycScreen`)
+- Widgets: `[Feature]Widget` or `Custom[WidgetName]`
+- Variables: camelCase (e.g., `selectedCategory`, `obscurePassword`)
+- Private variables: prefix with `_` (e.g., `_validationCounter`, `_fieldTouched`)
+
+### Dependency Injection
+
+- Use GetIt via `Di().sl<CubitType>()`
+- Register all Cubits as lazy singletons in `di_container.dart`
+- Access Cubits: `final cubit = Di().sl<CubitType>();`
+
+### Import Organization
+
+```dart
+// 1. Flutter imports
+import 'package:flutter/material.dart';
+
+// 2. Package imports
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+// 3. Project imports
+import 'package:fennac_app/core/di_container.dart';
+import 'package:fennac_app/pages/feature/presentation/bloc/cubit/feature_cubit.dart';
+```
+
+## Variable Organization Rules
+
+### Group Variables by Type
+
+```dart
+class ExampleCubit extends Cubit<ExampleState> {
+  // ========== STRING VARIABLES ==========
+  String primaryValue = '';
+  String? optionalValue;
+
+  // ========== NUMERIC VARIABLES ==========
+  int selectedIndex = 0;
+  double progress = 0.0;
+
+  // ========== BOOLEAN VARIABLES ==========
+  bool isEnabled = true;
+  bool obscureText = false;
+
+  // ========== COLLECTIONS ==========
+  List<String> items = [];
+  Map<String, dynamic> data = {};
+
+  // ========== CONTROLLERS ==========
+  final textController = TextEditingController();
+
+  // ========== CUSTOM OBJECTS ==========
+  UserModel? currentUser;
+  DateTime? selectedDate;
+}
+```
+
+### Variable Initialization
+
+- Always initialize with default values: `String value = '';`
+- Use nullable types only when necessary: `DateTime? selectedDate;`
+- Use private variables for internal state: `int _validationCounter = 0;`
+
+## Common Patterns
+
+### Toggle Pattern
+
+```dart
+void toggleVisibility() {
+  emit(ExampleLoading());
+  obscureText = !obscureText;
+  emit(ExampleLoaded());
+}
+```
+
+### Selection Pattern
+
+```dart
+void selectItem(String item) {
+  emit(ExampleLoading());
+  selectedItem = item;
+  emit(ExampleLoaded());
+}
+```
+
+### List Operations
+
+```dart
+void addItem(String item) {
+  emit(ExampleLoading());
+  items.add(item);
+  emit(ExampleLoaded());
+}
+
+void removeItem(int index) {
+  emit(ExampleLoading());
+  items.removeAt(index);
+  emit(ExampleLoaded());
+}
+```
+
+### Async Operations
+
+```dart
+Future<void> fetchData() async {
+  emit(ExampleLoading());
+  try {
+    final result = await apiService.getData();
+    data = result;  // Update variable
+    emit(ExampleLoaded());
+  } catch (e) {
+    errorMessage = e.toString();
+    emit(ExampleError());
+  }
+}
+```
+
+### Form Validation Pattern
+
+```dart
+int _validationCounter = 0;
+bool _fieldTouched = false;
+
+void validateField(String value) {
+  _fieldTouched = true;
+  _validationCounter++;
+  emit(AuthValidation(validationCounter: _validationCounter));
+}
+
+String? getFieldError() {
+  return _fieldTouched ? validateField(fieldController.text) : null;
+}
+```
+
+## Widget Patterns
+
+### BlocBuilder Usage
+
+```dart
+BlocBuilder<ExampleCubit, ExampleState>(
+  builder: (context, state) {
+    final cubit = context.read<ExampleCubit>();
+
+    if (state is ExampleLoading) {
+      return CircularProgressIndicator();
+    }
+
+    if (state is ExampleError) {
+      return Text('Error: ${cubit.errorMessage}');
+    }
+
+    // Access data from cubit, not state
+    return Text(cubit.selectedValue);
+  },
+)
+```
+
+### Direct Cubit Access
+
+```dart
+final cubit = Di().sl<ExampleCubit>();
+// Access variables directly
+Text(cubit.selectedValue)
+```
+
+## Best Practices
+
+1. **Controller Disposal**
+
+   - Always dispose controllers in `close()` method
+
+   ```dart
+   @override
+   Future<void> close() {
+     textController.dispose();
+     return super.close();
+   }
+   ```
+
+2. **State Emission**
+
+   - Always emit Loading before operations
+   - Always emit Loaded/Error after operations
+   - Don't skip state emissions
+
+3. **Error Handling**
+
+   - Store error messages in variables: `String errorMessage = '';`
+   - Emit Error state for failures
+   - Provide user-friendly error messages
+
+4. **Validation**
+
+   - Use validation counter pattern for form validation
+   - Track field touched state with private variables
+   - Return nullable String for error messages
+
+5. **Code Organization**
+   - Group related variables together
+   - Use section comments to organize variables by type
+   - Keep methods focused and single-purpose
+
+## What NOT to Do
+
+❌ **DON'T store data in state classes**
+
+```dart
+// ❌ WRONG
+class ExampleLoaded extends ExampleState {
+  final String data;
+  final List<String> items;
+}
+```
+
+❌ **DON'T access data from state**
+
+```dart
+// ❌ WRONG
+Text(state.data)
+```
+
+❌ **DON'T pass data through state constructors**
+
+```dart
+// ❌ WRONG
+emit(ExampleLoaded(data: value));
+```
+
+❌ **DON'T skip state emissions**
+
+```dart
+// ❌ WRONG
+void update() {
+  value = 'new';  // Missing emit
+}
+```
+
+✅ **DO store data in variables**
+
+```dart
+// ✅ CORRECT
+String data = '';
+List<String> items = [];
+```
+
+✅ **DO access data from Cubit**
+
+```dart
+// ✅ CORRECT
+Text(cubit.data)
+```
+
+✅ **DO emit states for UI updates**
+
+```dart
+// ✅ CORRECT
+void update() {
+  emit(ExampleLoading());
+  data = 'new';
+  emit(ExampleLoaded());
+}
+```
+
+## Project-Specific Patterns
+
+### Dependency Injection
+
+- All Cubits registered in `lib/core/di_container.dart`
+- Access via `Di().sl<CubitType>()`
+- Use lazy singletons
+
+### Asset Management
+
+- Use generated assets: `Assets.icons.iconName.path`
+- Import: `import 'package:fennac_app/generated/assets.gen.dart';`
+
+### Theme
+
+- Use `ColorPalette` for colors
+- Use `TextStyles` for text styles
+- Import: `import 'package:fennac_app/app/theme/app_colors.dart';`
+
+### Responsive Design
+
+- Use `ScreenUtil` for responsive sizing
+- Import: `import 'package:flutter_screenutil/flutter_screenutil.dart';`
+
+## When Creating New Cubits
+
+1. Create state file with lightweight state classes (Initial, Loading, Loaded, Error)
+2. Create cubit file with:
+   - Data variables organized by type
+   - Methods that emit states and update variables
+   - Proper controller disposal if needed
+3. Register in `di_container.dart` as lazy singleton
+4. Access via `Di().sl<CubitType>()` in widgets
+
+## Summary
+
+**Key Rule**: Store data in variables, use state classes only for UI state transitions (Initial, Loading, Loaded, Error). Access data directly from Cubit instances, not from state objects.
+
+For detailed documentation, see `CUBIT_RULES.md`.
