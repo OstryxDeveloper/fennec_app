@@ -1,6 +1,7 @@
 // import 'dart:math';
 
 import 'package:fennac_app/app/theme/app_colors.dart';
+import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/cubit/kyc_prompt_cubit.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/state/kyc_prompt_state.dart';
@@ -31,22 +32,20 @@ class AudioModeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = BlocProvider.of<KycPromptCubit>(context);
     return BlocBuilder<KycPromptCubit, KycPromptState>(
-      bloc: cubit,
+      bloc: _kycPromptCubit,
       builder: (context, state) {
         // Preview mode: audio has been recorded
-        if (cubit.isRecorded) {
+        if (_kycPromptCubit.isRecorded) {
           return _buildPreviewUI(
             context,
-            cubit,
             existingAudioPath ?? "",
             existingAudioData,
           );
         }
 
         // Recording mode: capture live waveform
-        return _buildRecordingUI(context, cubit);
+        return _buildRecordingUI(context);
       },
     );
   }
@@ -54,7 +53,6 @@ class AudioModeWidget extends StatelessWidget {
   /// Build UI for recorded audio preview
   Widget _buildPreviewUI(
     BuildContext context,
-    KycPromptCubit cubit,
     String audioPath,
     AudioPromptData? audioData,
   ) {
@@ -65,8 +63,7 @@ class AudioModeWidget extends StatelessWidget {
           height: 80.h,
           child: Center(
             child: _buildWaveformPreview(
-              cubit,
-              cubit.recordingPath ?? existingAudioPath!,
+              _kycPromptCubit.recordingPath ?? existingAudioPath!,
               existingAudioData,
             ),
           ),
@@ -75,9 +72,9 @@ class AudioModeWidget extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildPlayButton(context, cubit),
+            _buildPlayButton(context),
             const CustomSizedBox(width: 24),
-            _buildDeleteButton(context, cubit),
+            _buildDeleteButton(context),
           ],
         ),
       ],
@@ -85,7 +82,7 @@ class AudioModeWidget extends StatelessWidget {
   }
 
   /// Build UI for active recording
-  Widget _buildRecordingUI(BuildContext context, KycPromptCubit cubit) {
+  Widget _buildRecordingUI(BuildContext context) {
     final ScrollController scrollController = ScrollController();
 
     return Column(
@@ -94,7 +91,7 @@ class AudioModeWidget extends StatelessWidget {
         SizedBox(
           height: 32.h,
           child: BlocBuilder<KycPromptCubit, KycPromptState>(
-            bloc: cubit,
+            bloc: _kycPromptCubit,
             builder: (context, state) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (scrollController.hasClients) {
@@ -110,7 +107,7 @@ class AudioModeWidget extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: cubit.recordedWaveformData.map((sample) {
+                  children: _kycPromptCubit.recordedWaveformData.map((sample) {
                     // Map 0..100 or 0..1 to visual height (8..32)
                     final normalized = sample > 1.0 ? sample / 100.0 : sample;
                     final boosted = (normalized * 1.25).clamp(0.0, 1.0);
@@ -179,19 +176,19 @@ class AudioModeWidget extends StatelessWidget {
         //   ),
         // ),
         const CustomSizedBox(height: 16),
-        _buildRecordButton(context, cubit),
+        _buildRecordButton(context),
       ],
     );
   }
 
   /// Record/Stop button (mic icon or stop icon)
-  Widget _buildRecordButton(BuildContext context, KycPromptCubit cubit) {
+  Widget _buildRecordButton(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        if (cubit.isRecording) {
-          await cubit.stopRecording();
+        if (_kycPromptCubit.isRecording) {
+          await _kycPromptCubit.stopRecording();
         } else {
-          await cubit.startRecording();
+          await _kycPromptCubit.startRecording();
         }
       },
       child: Container(
@@ -199,18 +196,23 @@ class AudioModeWidget extends StatelessWidget {
         height: 96,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: cubit.isRecording ? Colors.red : ColorPalette.primary,
+          color: _kycPromptCubit.isRecording
+              ? Colors.red
+              : ColorPalette.primary,
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: (cubit.isRecording ? Colors.red : ColorPalette.primary)
-                  .withValues(alpha: 0.5),
+              color:
+                  (_kycPromptCubit.isRecording
+                          ? Colors.red
+                          : ColorPalette.primary)
+                      .withValues(alpha: 0.5),
               blurRadius: 30,
               spreadRadius: 10,
             ),
           ],
         ),
-        child: cubit.isRecording
+        child: _kycPromptCubit.isRecording
             ? const Icon(Icons.stop, color: Colors.white, size: 40)
             : SvgPicture.asset(
                 Assets.icons.mic.path,
@@ -226,13 +228,13 @@ class AudioModeWidget extends StatelessWidget {
   }
 
   /// Play/Stop button for preview
-  Widget _buildPlayButton(BuildContext context, KycPromptCubit cubit) {
+  Widget _buildPlayButton(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        if (cubit.isPlaying) {
-          await cubit.pausePreview();
+        if (_kycPromptCubit.isPlaying) {
+          await _kycPromptCubit.pausePreview();
         } else {
-          await cubit.playPreview();
+          await _kycPromptCubit.playPreview();
         }
       },
       child: Container(
@@ -243,7 +245,7 @@ class AudioModeWidget extends StatelessWidget {
           color: ColorPalette.primary,
           shape: BoxShape.circle,
         ),
-        child: cubit.isPlaying
+        child: _kycPromptCubit.isPlaying
             ? const Icon(Icons.stop, color: Colors.white, size: 32)
             : SvgPicture.asset(
                 Assets.icons.play.path,
@@ -257,10 +259,10 @@ class AudioModeWidget extends StatelessWidget {
   }
 
   /// Delete button
-  Widget _buildDeleteButton(BuildContext context, KycPromptCubit cubit) {
+  Widget _buildDeleteButton(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        cubit.deleteAudio();
+        _kycPromptCubit.deleteAudio();
       },
       child: Container(
         width: 48,
@@ -277,12 +279,8 @@ class AudioModeWidget extends StatelessWidget {
   }
 
   /// Waveform display for recorded audio
-  Widget _buildWaveformPreview(
-    KycPromptCubit cubit,
-    String audioPath,
-    AudioPromptData? audioData,
-  ) {
-    if (cubit.recordedWaveformData.isEmpty) {
+  Widget _buildWaveformPreview(String audioPath, AudioPromptData? audioData) {
+    if (_kycPromptCubit.recordedWaveformData.isEmpty) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -302,11 +300,11 @@ class AudioModeWidget extends StatelessWidget {
     }
 
     return PromptAudioRow(
-      audioPath: existingAudioPath ?? cubit.recordingPath ?? "",
+      audioPath: existingAudioPath ?? _kycPromptCubit.recordingPath ?? "",
       waveformData: audioData?.waveformData.isNotEmpty ?? false
           ? audioData?.waveformData ?? []
-          : cubit.recordedWaveformData,
-      duration: audioData?.duration ?? cubit.recordedDuration,
+          : _kycPromptCubit.recordedWaveformData,
+      duration: audioData?.duration ?? _kycPromptCubit.recordedDuration,
       height: 80,
       backgroundColor: Colors.transparent,
       playButtonColor: ColorPalette.primary,
@@ -314,3 +312,5 @@ class AudioModeWidget extends StatelessWidget {
     );
   }
 }
+
+final _kycPromptCubit = Di().sl<KycPromptCubit>();

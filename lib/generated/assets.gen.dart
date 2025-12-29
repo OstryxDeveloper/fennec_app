@@ -104,40 +104,98 @@ class $AssetsAnimationsGen {
 class $AssetsDummyGen {
   const $AssetsDummyGen();
 
-  /// File path: assets/dummy/boy_sitting.png
-  AssetGenImage get boySitting =>
-      const AssetGenImage('assets/dummy/boy_sitting.png');
+  /// File path: assets/dummy/a1.png
+  AssetGenImage get a1 => const AssetGenImage('assets/dummy/a1.png');
 
-  /// File path: assets/dummy/girl_blackdress.png
-  AssetGenImage get girlBlackdress =>
-      const AssetGenImage('assets/dummy/girl_blackdress.png');
+  /// File path: assets/dummy/a2.png
+  AssetGenImage get a2 => const AssetGenImage('assets/dummy/a2.png');
+
+  /// File path: assets/dummy/a3.png
+  AssetGenImage get a3 => const AssetGenImage('assets/dummy/a3.png');
+
+  /// File path: assets/dummy/a4.png
+  AssetGenImage get a4 => const AssetGenImage('assets/dummy/a4.png');
+
+  /// File path: assets/dummy/a5.png
+  AssetGenImage get a5 => const AssetGenImage('assets/dummy/a5.png');
+
+  /// File path: assets/dummy/a6.png
+  AssetGenImage get a6 => const AssetGenImage('assets/dummy/a6.png');
+
+  /// File path: assets/dummy/b1.png
+  AssetGenImage get b1 => const AssetGenImage('assets/dummy/b1.png');
+
+  /// File path: assets/dummy/b2.png
+  AssetGenImage get b2 => const AssetGenImage('assets/dummy/b2.png');
+
+  /// File path: assets/dummy/b3.png
+  AssetGenImage get b3 => const AssetGenImage('assets/dummy/b3.png');
+
+  /// File path: assets/dummy/b4.png
+  AssetGenImage get b4 => const AssetGenImage('assets/dummy/b4.png');
+
+  /// File path: assets/dummy/b5.png
+  AssetGenImage get b5 => const AssetGenImage('assets/dummy/b5.png');
+
+  /// File path: assets/dummy/b6.png
+  AssetGenImage get b6 => const AssetGenImage('assets/dummy/b6.png');
+
+  /// File path: assets/dummy/c1.png
+  AssetGenImage get c1 => const AssetGenImage('assets/dummy/c1.png');
+
+  /// File path: assets/dummy/c2.png
+  AssetGenImage get c2 => const AssetGenImage('assets/dummy/c2.png');
+
+  /// File path: assets/dummy/c3.png
+  AssetGenImage get c3 => const AssetGenImage('assets/dummy/c3.png');
+
+  /// File path: assets/dummy/c4.png
+  AssetGenImage get c4 => const AssetGenImage('assets/dummy/c4.png');
+
+  /// File path: assets/dummy/c5.png
+  AssetGenImage get c5 => const AssetGenImage('assets/dummy/c5.png');
+
+  /// File path: assets/dummy/c6.png
+  AssetGenImage get c6 => const AssetGenImage('assets/dummy/c6.png');
+
+  /// File path: assets/dummy/d1.png
+  AssetGenImage get d1 => const AssetGenImage('assets/dummy/d1.png');
+
+  /// File path: assets/dummy/d2.png
+  AssetGenImage get d2 => const AssetGenImage('assets/dummy/d2.png');
+
+  /// File path: assets/dummy/d3.png
+  AssetGenImage get d3 => const AssetGenImage('assets/dummy/d3.png');
+
+  /// File path: assets/dummy/d4.png
+  AssetGenImage get d4 => const AssetGenImage('assets/dummy/d4.png');
+
+  /// File path: assets/dummy/d5.png
+  AssetGenImage get d5 => const AssetGenImage('assets/dummy/d5.png');
+
+  /// File path: assets/dummy/d6.png
+  AssetGenImage get d6 => const AssetGenImage('assets/dummy/d6.png');
+
+  /// File path: assets/dummy/e1.png
+  AssetGenImage get e1 => const AssetGenImage('assets/dummy/e1.png');
+
+  /// File path: assets/dummy/e2.png
+  AssetGenImage get e2 => const AssetGenImage('assets/dummy/e2.png');
+
+  /// File path: assets/dummy/e3.png
+  AssetGenImage get e3 => const AssetGenImage('assets/dummy/e3.png');
+
+  /// File path: assets/dummy/e4.png
+  AssetGenImage get e4 => const AssetGenImage('assets/dummy/e4.png');
+
+  /// File path: assets/dummy/e5.png
+  AssetGenImage get e5 => const AssetGenImage('assets/dummy/e5.png');
+
+  /// File path: assets/dummy/e6.png
+  AssetGenImage get e6 => const AssetGenImage('assets/dummy/e6.png');
 
   /// File path: assets/dummy/girl_car.png
   AssetGenImage get girlCar => const AssetGenImage('assets/dummy/girl_car.png');
-
-  /// File path: assets/dummy/girl_coat.png
-  AssetGenImage get girlCoat =>
-      const AssetGenImage('assets/dummy/girl_coat.png');
-
-  /// File path: assets/dummy/girl_golf.png
-  AssetGenImage get girlGolf =>
-      const AssetGenImage('assets/dummy/girl_golf.png');
-
-  /// File path: assets/dummy/girl_home.png
-  AssetGenImage get girlHome =>
-      const AssetGenImage('assets/dummy/girl_home.png');
-
-  /// File path: assets/dummy/girl_orange_portrait.png
-  AssetGenImage get girlOrangePortrait =>
-      const AssetGenImage('assets/dummy/girl_orange_portrait.png');
-
-  /// File path: assets/dummy/girl_smile.png
-  AssetGenImage get girlSmile =>
-      const AssetGenImage('assets/dummy/girl_smile.png');
-
-  /// File path: assets/dummy/girl_wall.png
-  AssetGenImage get girlWall =>
-      const AssetGenImage('assets/dummy/girl_wall.png');
 
   /// File path: assets/dummy/group_fire.png
   AssetGenImage get groupFire =>
@@ -171,41 +229,43 @@ class $AssetsDummyGen {
   AssetGenImage get portrait =>
       const AssetGenImage('assets/dummy/portrait.png');
 
-  /// File path: assets/dummy/portrait1.png
-  AssetGenImage get portrait1 =>
-      const AssetGenImage('assets/dummy/portrait1.png');
-
-  /// File path: assets/dummy/portrait2.png
-  AssetGenImage get portrait2 =>
-      const AssetGenImage('assets/dummy/portrait2.png');
-
-  /// File path: assets/dummy/portrait3.png
-  AssetGenImage get portrait3 =>
-      const AssetGenImage('assets/dummy/portrait3.png');
-
-  /// File path: assets/dummy/portrait4.png
-  AssetGenImage get portrait4 =>
-      const AssetGenImage('assets/dummy/portrait4.png');
-
-  /// File path: assets/dummy/portrait5.png
-  AssetGenImage get portrait5 =>
-      const AssetGenImage('assets/dummy/portrait5.png');
-
   /// File path: assets/dummy/portrait_orange.png
   AssetGenImage get portraitOrange =>
       const AssetGenImage('assets/dummy/portrait_orange.png');
 
   /// List of all assets
   List<AssetGenImage> get values => [
-    boySitting,
-    girlBlackdress,
+    a1,
+    a2,
+    a3,
+    a4,
+    a5,
+    a6,
+    b1,
+    b2,
+    b3,
+    b4,
+    b5,
+    b6,
+    c1,
+    c2,
+    c3,
+    c4,
+    c5,
+    c6,
+    d1,
+    d2,
+    d3,
+    d4,
+    d5,
+    d6,
+    e1,
+    e2,
+    e3,
+    e4,
+    e5,
+    e6,
     girlCar,
-    girlCoat,
-    girlGolf,
-    girlHome,
-    girlOrangePortrait,
-    girlSmile,
-    girlWall,
     groupFire,
     groupGlasses,
     groupNight,
@@ -214,11 +274,6 @@ class $AssetsDummyGen {
     groupSunset,
     groupSwiming,
     portrait,
-    portrait1,
-    portrait2,
-    portrait3,
-    portrait4,
-    portrait5,
     portraitOrange,
   ];
 }

@@ -74,7 +74,7 @@ class CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                                     end: Alignment.bottomCenter,
                                     colors: [
                                       ColorPalette.primary,
-                                      ColorPalette.secondry,
+                                      ColorPalette.secondary,
                                     ],
                                   )
                                 : null,

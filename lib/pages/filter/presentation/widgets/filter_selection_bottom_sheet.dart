@@ -43,7 +43,7 @@ class _FilterSelectionBottomSheetState
       height: getHeight(context) * 0.5,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [ColorPalette.secondry, ColorPalette.black],
+          colors: [ColorPalette.secondary, ColorPalette.black],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),

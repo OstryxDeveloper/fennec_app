@@ -124,7 +124,7 @@ class _CreatePromptBottomSheetState extends State<CreatePromptBottomSheet> {
             : getHeight(context) * 0.55,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [ColorPalette.secondry, ColorPalette.black],
+            colors: [ColorPalette.secondary, ColorPalette.black],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),

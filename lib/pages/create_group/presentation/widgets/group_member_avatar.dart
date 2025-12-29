@@ -41,7 +41,7 @@ class GroupMemberAvatar extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: isAddButton
-                      ? ColorPalette.secondry
+                      ? ColorPalette.secondary
                       : ColorPalette.primary,
                 ),
                 child: isAddButton

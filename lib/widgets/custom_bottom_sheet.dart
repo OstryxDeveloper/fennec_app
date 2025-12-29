@@ -52,7 +52,7 @@ class CustomBottomSheet extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [ColorPalette.secondry, ColorPalette.black],
+          colors: [ColorPalette.secondary, ColorPalette.black],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),

@@ -91,10 +91,10 @@ class _LandingScreenState extends State<LandingScreen>
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: ColorPalette.secondry,
+        color: ColorPalette.secondary,
         boxShadow: [
           BoxShadow(
-            color: ColorPalette.secondry.withValues(alpha: 0.6),
+            color: ColorPalette.secondary.withValues(alpha: 0.6),
             spreadRadius: 2,
             blurRadius: 8,
             offset: const Offset(0, 3),

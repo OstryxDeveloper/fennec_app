@@ -154,7 +154,7 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [ColorPalette.secondry, ColorPalette.black],
+                  colors: [ColorPalette.secondary, ColorPalette.black],
                 ),
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(32),
@@ -302,7 +302,7 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [ColorPalette.secondry, ColorPalette.black],
+                  colors: [ColorPalette.secondary, ColorPalette.black],
                 ),
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(32),

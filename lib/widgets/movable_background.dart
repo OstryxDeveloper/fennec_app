@@ -11,9 +11,9 @@ class MovableBackground extends StatefulWidget {
   final List<AssetGenImage> assets;
 
   static List<AssetGenImage> get defaultAssets => [
-    Assets.images.background.bg4,
-    Assets.images.background.bg5,
-    Assets.images.background.bg6,
+    Assets.images.background.bg1,
+    Assets.images.background.bg2,
+    Assets.images.background.bg3,
   ];
 
   MovableBackground({
@@ -114,6 +114,13 @@ class _MovableBackgroundState extends State<MovableBackground>
 
                               return Stack(
                                 children: [
+                                  Positioned.fill(
+                                    child: Container(
+                                      color: Color(
+                                        0xFF111111,
+                                      ).withValues(alpha: 1.0),
+                                    ),
+                                  ),
                                   AnimatedBuilder(
                                     animation: _animation,
                                     builder: (context, child) {
@@ -136,26 +143,23 @@ class _MovableBackgroundState extends State<MovableBackground>
                                         key: _rowKey,
                                         mainAxisSize: MainAxisSize.min,
                                         children: widget.assets.map((asset) {
-                                          return SizedBox(
-                                            height: size.height,
-                                            child: asset.image(
-                                              fit: BoxFit.fitHeight,
+                                          return Opacity(
+                                            opacity: 0.3,
+                                            child: SizedBox(
                                               height: size.height,
-                                              alignment: Alignment.center,
+                                              child: asset.image(
+                                                fit: BoxFit.fitHeight,
+                                                height: size.height,
+                                                alignment: Alignment.center,
+                                              ),
                                             ),
                                           );
                                         }).toList(),
                                       ),
                                     ),
                                   ),
+
                                   // Add static white overlay here
-                                  // Positioned.fill(
-                                  //   child: Container(
-                                  //     color: Color(
-                                  //       0xFF111111,
-                                  //     ).withValues(alpha: 0.05),
-                                  //   ),
-                                  // ),`
                                 ],
                               );
                             },

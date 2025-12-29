@@ -311,7 +311,7 @@ class KycGalleryScreen extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [ColorPalette.secondry, ColorPalette.black],
+              colors: [ColorPalette.secondary, ColorPalette.black],
             ),
           ),
           child: SafeArea(

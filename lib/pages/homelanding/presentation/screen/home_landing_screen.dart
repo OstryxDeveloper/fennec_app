@@ -26,7 +26,7 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorPalette.secondry,
+      backgroundColor: ColorPalette.secondary,
       body: MovableBackground(
         child: BlocBuilder<HomeLandingCubit, HomeLandingState>(
           bloc: _homeLandingCubit,

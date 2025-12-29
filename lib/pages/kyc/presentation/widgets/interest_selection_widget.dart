@@ -55,7 +55,7 @@ class InterestSelectionWidget extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: isSelected
                               ? ColorPalette.primary
-                              : ColorPalette.secondry.withValues(alpha: 0.5),
+                              : ColorPalette.secondary.withValues(alpha: 0.5),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
                             color: isSelected

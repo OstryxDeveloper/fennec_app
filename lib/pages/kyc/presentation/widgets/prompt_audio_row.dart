@@ -55,6 +55,20 @@ class _PromptAudioRowState extends State<PromptAudioRow> {
       debugPrint(
         'Preparing audio player for: ${widget.audioPath} :: waveform samples: ${widget.waveformData?.length ?? 0}',
       );
+
+      // If no audio path, skip player prep and use provided/default waveform
+      if (widget.audioPath.isEmpty) {
+        final source = widget.waveformData ?? _imageWaveform;
+        final normalized = _normalizeWaveform(source);
+        if (mounted) {
+          setState(() {
+            _isPrepared = true;
+            data = normalized;
+          });
+        }
+        return;
+      }
+
       await _playerController.preparePlayer(path: widget.audioPath);
 
       List<double> waveformData;
@@ -106,7 +120,7 @@ class _PromptAudioRowState extends State<PromptAudioRow> {
           widget.padding ??
           const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: widget.backgroundColor ?? ColorPalette.secondry,
+        color: widget.backgroundColor ?? ColorPalette.secondary,
         borderRadius: widget.borderRadius ?? BorderRadius.circular(48),
       ),
       child: Row(
@@ -125,6 +139,9 @@ class _PromptAudioRowState extends State<PromptAudioRow> {
     return GestureDetector(
       onTap: () async {
         widget.onPlay?.call();
+
+        // If there is no audio source, just return after callback
+        if (widget.audioPath.isEmpty || !_isPrepared) return;
 
         if (_playerController.playerState == PlayerState.playing) {
           await _playerController.pausePlayer();
@@ -175,3 +192,109 @@ class _PromptAudioRowState extends State<PromptAudioRow> {
     );
   }
 }
+
+// Fallback waveform used when no audio path is provided.
+const List<double> _imageWaveform = [
+  0.16,
+  0.28,
+  0.42,
+  0.56,
+  0.72,
+  0.88,
+  0.98,
+  0.86,
+  0.72,
+  0.58,
+  0.42,
+  0.30,
+  0.18,
+  0.10,
+  0.22,
+  0.38,
+  0.54,
+  0.70,
+  0.86,
+  0.98,
+  0.88,
+  0.72,
+  0.54,
+  0.36,
+  0.24,
+  0.14,
+  0.24,
+  0.38,
+  0.54,
+  0.70,
+  0.86,
+  0.98,
+  0.90,
+  0.78,
+  0.62,
+  0.46,
+  0.32,
+  0.20,
+  0.12,
+  0.24,
+  0.40,
+  0.58,
+  0.74,
+  0.90,
+  0.98,
+  0.88,
+  0.72,
+  0.56,
+  0.40,
+  0.26,
+  0.16,
+  0.16,
+  0.26,
+  0.40,
+  0.56,
+  0.72,
+  0.88,
+  0.98,
+  0.90,
+  0.74,
+  0.58,
+  0.40,
+  0.24,
+  0.14,
+  0.22,
+  0.36,
+  0.54,
+  0.70,
+  0.86,
+  0.98,
+  0.88,
+  0.70,
+  0.52,
+  0.36,
+  0.22,
+  0.12,
+  0.18,
+  0.30,
+  0.42,
+  0.58,
+  0.74,
+  0.90,
+  0.98,
+  0.86,
+  0.70,
+  0.54,
+  0.38,
+  0.24,
+  0.16,
+  0.16,
+  0.24,
+  0.38,
+  0.54,
+  0.70,
+  0.86,
+  0.98,
+  0.88,
+  0.72,
+  0.58,
+  0.42,
+  0.28,
+  0.16,
+];

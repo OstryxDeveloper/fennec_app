@@ -250,7 +250,7 @@ class _KycPromptScreenState extends State<KycPromptScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: ColorPalette.secondry,
+          backgroundColor: ColorPalette.secondary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),

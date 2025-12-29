@@ -19,15 +19,16 @@ class CategoryPill extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+        height: 44,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.transparent,
+          color: ColorPalette.secondary,
           borderRadius: BorderRadius.circular(28),
           border: Border.all(color: ColorPalette.primary, width: 1),
         ),
         child: Text(
           label,
-          style: AppTextStyles.bodyLarge(
+          style: AppTextStyles.chipLabel(
             context,
           ).copyWith(color: Colors.white, fontWeight: FontWeight.w600),
         ),

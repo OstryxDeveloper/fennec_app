@@ -25,7 +25,7 @@ class InterestChip extends StatelessWidget {
         height: 44,
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? ColorPalette.primary : ColorPalette.secondry,
+          color: isSelected ? ColorPalette.primary : ColorPalette.secondary,
           borderRadius: BorderRadius.circular(28),
           border: Border.all(color: ColorPalette.primary, width: 1),
         ),

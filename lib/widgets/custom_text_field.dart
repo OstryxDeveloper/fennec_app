@@ -168,7 +168,7 @@ class CustomLabelTextField extends StatelessWidget {
                 hintStyle: hintStyle,
                 border: InputBorder.none,
                 filled: true,
-                fillColor: fillColor ?? ColorPalette.secondry,
+                fillColor: fillColor ?? ColorPalette.secondary,
                 suffixIcon: suffixIcon,
                 prefixIcon: prefixIcon,
                 suffix: suffix,

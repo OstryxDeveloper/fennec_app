@@ -1,3 +1,4 @@
+import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/core/di_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,8 +7,9 @@ import '../bloc/cubit/home_cubit.dart';
 
 class AvatarStrip extends StatefulWidget {
   final List<String> avatarPaths;
+  final List<String>? avatarIds;
 
-  const AvatarStrip({super.key, required this.avatarPaths});
+  const AvatarStrip({super.key, required this.avatarPaths, this.avatarIds});
 
   @override
   State<AvatarStrip> createState() => _AvatarStripState();
@@ -22,7 +24,7 @@ class _AvatarStripState extends State<AvatarStrip> {
     const double spacing = 8;
 
     return BlocBuilder(
-      bloc: homeCubit,
+      bloc: _homeCubit,
       builder: (context, state) {
         return SizedBox(
           height: selectedSize.toDouble(),
@@ -31,12 +33,12 @@ class _AvatarStripState extends State<AvatarStrip> {
               final totalAvatars = widget.avatarPaths.length;
 
               double totalWidth;
-              if (homeCubit.selectedIndex == null) {
+              if (_homeCubit.selectedIndex == null) {
                 totalWidth = baseSize + (totalAvatars - 1) * overlap;
               } else {
                 totalWidth = 0;
                 for (int i = 0; i < totalAvatars; i++) {
-                  totalWidth += (homeCubit.selectedIndex == i
+                  totalWidth += (_homeCubit.selectedIndex == i
                       ? selectedSize
                       : baseSize);
                   if (i != totalAvatars - 1) totalWidth += spacing;
@@ -47,16 +49,17 @@ class _AvatarStripState extends State<AvatarStrip> {
 
               return Stack(
                 children: List.generate(totalAvatars, (index) {
-                  final bool isSelected = homeCubit.selectedIndex == index;
+                  final bool isSelected = _homeCubit.selectedIndex == index;
                   final double size = isSelected ? selectedSize : baseSize;
+                  final bool hasSelection = _homeCubit.selectedIndex != null;
 
                   double left = startLeft;
-                  if (homeCubit.selectedIndex == null) {
+                  if (_homeCubit.selectedIndex == null) {
                     left += index * overlap;
                   } else {
                     for (int i = 0; i < index; i++) {
                       left +=
-                          (homeCubit.selectedIndex == i
+                          (_homeCubit.selectedIndex == i
                               ? selectedSize
                               : baseSize) +
                           spacing;
@@ -72,19 +75,39 @@ class _AvatarStripState extends State<AvatarStrip> {
                     height: size,
                     child: GestureDetector(
                       onTap: () {
-                        setState(() {
-                          homeCubit.selectGroupIndex(isSelected ? null : index);
-                        });
+                        if (widget.avatarIds != null &&
+                            index < (widget.avatarIds!.length)) {
+                          final id = widget.avatarIds![index];
+                          _homeCubit.selectProfileById(isSelected ? null : id);
+                        } else {
+                          _homeCubit.selectGroupIndex(
+                            isSelected ? null : index,
+                          );
+                        }
                       },
                       child: Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.black, width: 3),
+                          border: Border.all(color: Colors.black, width: 2),
                         ),
-                        child: CircleAvatar(
-                          backgroundImage: AssetImage(
-                            widget.avatarPaths[index],
-                          ),
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            CircleAvatar(
+                              backgroundImage: AssetImage(
+                                widget.avatarPaths[index],
+                              ),
+                            ),
+                            if (hasSelection && !isSelected)
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: ColorPalette.primary.withValues(
+                                    alpha: 0.4,
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
                       ),
                     ),
@@ -99,4 +122,4 @@ class _AvatarStripState extends State<AvatarStrip> {
   }
 }
 
-final HomeCubit homeCubit = Di().sl<HomeCubit>();
+final HomeCubit _homeCubit = Di().sl<HomeCubit>();

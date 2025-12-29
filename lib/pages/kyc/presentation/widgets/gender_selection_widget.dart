@@ -54,7 +54,7 @@ class _GenderSelectionWidgetState extends State<GenderSelectionWidget> {
             decoration: BoxDecoration(
               color: isSelected
                   ? ColorPalette.primary
-                  : ColorPalette.secondry.withValues(alpha: 0.3),
+                  : ColorPalette.secondary.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Center(

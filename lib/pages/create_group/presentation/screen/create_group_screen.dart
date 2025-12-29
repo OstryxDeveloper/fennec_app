@@ -22,7 +22,7 @@ class CreateGroupScreen extends StatelessWidget {
     return BlocProvider.value(
       value: cubit,
       child: Scaffold(
-        backgroundColor: ColorPalette.secondry,
+        backgroundColor: ColorPalette.secondary,
         body: MovableBackground(
           child: Column(
             children: [

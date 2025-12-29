@@ -132,10 +132,10 @@ class HomeLandingBanner extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               for (final entry in [
-                Assets.dummy.portrait1.path,
-                Assets.dummy.portrait2.path,
-                Assets.dummy.portrait3.path,
-                Assets.dummy.portrait4.path,
+                Assets.dummy.a1.path,
+                Assets.dummy.b1.path,
+                Assets.dummy.c1.path,
+                Assets.dummy.d1.path,
               ].indexed)
                 Transform.translate(
                   offset: Offset(-12.0 * entry.$1, 0),

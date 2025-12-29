@@ -22,7 +22,7 @@ class TermsBottomSheet extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.85,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [ColorPalette.secondry, ColorPalette.black],
+          colors: [ColorPalette.secondary, ColorPalette.black],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),

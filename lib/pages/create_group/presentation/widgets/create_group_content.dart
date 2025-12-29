@@ -194,7 +194,7 @@ class _MembersWrap extends StatelessWidget {
     final allSlots = [
       _MemberSlot(
         isAdmin: true,
-        imagePath: Assets.dummy.portrait1.path,
+        imagePath: Assets.dummy.a1.path,
         label: 'You',
         roleLabel: 'Admin',
       ),
@@ -278,7 +278,7 @@ class _MemberSlot extends StatelessWidget {
                       ? LinearGradient(
                           colors: [
                             ColorPalette.primary.withValues(alpha: 0.85),
-                            ColorPalette.secondry.withValues(alpha: 0.9),
+                            ColorPalette.secondary.withValues(alpha: 0.9),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -286,7 +286,7 @@ class _MemberSlot extends StatelessWidget {
                       : null,
                   color: imagePath != null
                       ? Colors.transparent
-                      : ColorPalette.secondry,
+                      : ColorPalette.secondary,
                 ),
                 child: isAdd
                     ? Assets.icons.userPlus.svg(width: 34, height: 34)

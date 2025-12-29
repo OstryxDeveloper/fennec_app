@@ -35,7 +35,7 @@ class LifestyleSelectionWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: isSelected
                       ? ColorPalette.primary
-                      : ColorPalette.secondry,
+                      : ColorPalette.secondary,
                   borderRadius: BorderRadius.circular(48),
                   border: Border.all(
                     color: isSelected
