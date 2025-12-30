@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/core/di_container.dart';
+import 'package:fennac_app/helpers/gradient_toast.dart';
 import 'package:fennac_app/pages/create_group/presentation/bloc/cubit/create_group_cubit.dart';
 import 'package:fennac_app/pages/create_group/presentation/widgets/create_group_content.dart';
 import 'package:fennac_app/widgets/custom_back_button.dart';
@@ -54,7 +55,7 @@ class CreateGroupScreen extends StatelessWidget {
           child: CustomElevatedButton(
             text: 'Add Group Photos/Videos',
             onTap: () {
-              // Handle add photos
+              VxToast.show(message: 'Coming Soon!');
             },
           ),
         ),

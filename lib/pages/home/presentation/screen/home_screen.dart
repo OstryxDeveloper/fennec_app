@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
@@ -14,8 +15,11 @@ import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../app/theme/app_colors.dart';
+import '../../../../app/theme/app_emojis.dart';
 import '../../../../generated/assets.gen.dart';
+import '../widgets/all_caught_up_widget.dart';
 import '../widgets/home_card_design.dart';
+import '../widgets/send_poke_bottomsheet.dart';
 
 @RoutePage()
 class HomeScreen extends StatefulWidget {
@@ -28,7 +32,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late final AnimationController crossAnimationController;
   late final AnimationController checkAnimationController;
+  bool isEnd = false;
   final cardSwiperController = CardSwiperController();
+  late final AnimationController endFadeController;
+  late final Animation<double> endFadeAnimation;
 
   late Animation<double> crossSizeAnimation;
   late Animation<double> crossFadeAnimation;
@@ -54,6 +61,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         parent: crossAnimationController,
         curve: Curves.easeOutBack,
       ),
+    );
+
+    endFadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+
+    endFadeAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: endFadeController, curve: Curves.easeInOut),
     );
 
     crossFadeAnimation = Tween<double>(begin: 0, end: 1).animate(
@@ -122,6 +138,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    endFadeController.dispose();
     crossAnimationController.dispose();
     checkAnimationController.dispose();
     super.dispose();
@@ -132,16 +149,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: MovableBackground(
+        backgroundType: MovableBackgroundType.dark,
         child: BlocListener(
           bloc: homeCubit,
           listener: (context, state) {
             final cardX = homeCubit.xAxisCardValue;
-
             // Normalize to 0..1
             final progress = (cardX.abs() / 800).clamp(0.0, 1.0);
-
             if (cardX > 10) {
               // LIKE → move check animation
               checkAnimationController.value = progress;
@@ -168,82 +183,90 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               Expanded(
                 child: Stack(
                   children: [
-                    AnimatedBuilder(
-                      animation: crossAnimationController,
-                      builder: (context, child) {
-                        return Transform.translate(
-                          offset: crossSlideAnimation.value,
-                          child: Transform.scale(
-                            scale: crossSizeAnimation.value,
-                            child: Opacity(
-                              opacity: crossFadeAnimation.value,
-                              child: child,
+                    AnimatedOpacity(
+                      duration: const Duration(milliseconds: 500),
+                      opacity: isEnd ? 0.0 : 1.0,
+                      child: AnimatedBuilder(
+                        animation: crossAnimationController,
+                        builder: (context, child) {
+                          return Transform.translate(
+                            offset: crossSlideAnimation.value,
+                            child: Transform.scale(
+                              scale: crossSizeAnimation.value,
+                              child: Opacity(
+                                opacity: crossFadeAnimation.value,
+                                child: child,
+                              ),
                             ),
+                          );
+                        },
+                        child: Container(
+                          height: 40,
+                          width: 40,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: ColorPalette.error.withValues(alpha: .1),
+                                blurRadius: 5,
+                                offset: const Offset(0, 5),
+                              ),
+                            ],
+                            shape: BoxShape.circle,
+                            color: ColorPalette.error.withValues(alpha: .1),
                           ),
-                        );
-                      },
-                      child: Container(
-                        height: 40,
-                        width: 40,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: ColorPalette.error.withValues(alpha: .1),
-                              blurRadius: 5,
-                              offset: const Offset(0, 5),
+                          child: SvgPicture.asset(
+                            Assets.icons.error.path,
+                            height: 30,
+                            width: 30,
+                            colorFilter: ColorFilter.mode(
+                              ColorPalette.error,
+                              BlendMode.srcIn,
                             ),
-                          ],
-                          shape: BoxShape.circle,
-                          color: ColorPalette.error.withValues(alpha: .1),
-                        ),
-                        child: SvgPicture.asset(
-                          Assets.icons.error.path,
-                          height: 30,
-                          width: 30,
-                          colorFilter: ColorFilter.mode(
-                            ColorPalette.error,
-                            BlendMode.srcIn,
                           ),
                         ),
                       ),
                     ),
 
                     // CHECK ANIMATION
-                    AnimatedBuilder(
-                      animation: checkAnimationController,
-                      builder: (context, child) {
-                        return Transform.translate(
-                          offset: checkSlideAnimation.value,
-                          child: Transform.scale(
-                            scale: checkSizeAnimation.value,
-                            child: Opacity(
-                              opacity: checkFadeAnimation.value,
-                              child: child,
+                    AnimatedOpacity(
+                      duration: const Duration(milliseconds: 500),
+                      opacity: isEnd ? 0.0 : 1.0,
+                      child: AnimatedBuilder(
+                        animation: checkAnimationController,
+                        builder: (context, child) {
+                          return Transform.translate(
+                            offset: checkSlideAnimation.value,
+                            child: Transform.scale(
+                              scale: checkSizeAnimation.value,
+                              child: Opacity(
+                                opacity: checkFadeAnimation.value,
+                                child: child,
+                              ),
                             ),
+                          );
+                        },
+                        child: Container(
+                          height: 40,
+                          width: 40,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: ColorPalette.green.withValues(alpha: .1),
+                                blurRadius: 5,
+                                offset: const Offset(0, 5),
+                              ),
+                            ],
+                            shape: BoxShape.circle,
+                            color: ColorPalette.green.withValues(alpha: .1),
                           ),
-                        );
-                      },
-                      child: Container(
-                        height: 40,
-                        width: 40,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: ColorPalette.green.withValues(alpha: .1),
-                              blurRadius: 5,
-                              offset: const Offset(0, 5),
-                            ),
-                          ],
-                          shape: BoxShape.circle,
-                          color: ColorPalette.green.withValues(alpha: .1),
-                        ),
-                        child: Image.asset(
-                          Assets.icons.checkGreen.path,
-                          height: 30,
-                          width: 30,
-                          color: ColorPalette.green,
+                          child: Image.asset(
+                            Assets.icons.checkGreen.path,
+                            height: 30,
+                            width: 30,
+                            color: ColorPalette.green,
+                          ),
                         ),
                       ),
                     ),
@@ -253,10 +276,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       builder: (context, state) {
                         return AnimatedOpacity(
                           duration: const Duration(milliseconds: 300),
-                          opacity: homeCubit.selectedIndex != null ? 1.0 : 0.0,
+                          opacity: homeCubit.selectedProfileIndex != null
+                              ? 1.0
+                              : 0.0,
                           child: BackdropFilter(
                             filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                             child: MovableBackground(
+                              backgroundType: MovableBackgroundType.dark,
                               child: Container(
                                 color: Colors.black.withValues(alpha: 0),
                               ),
@@ -265,12 +291,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         );
                       },
                     ),
-
+                    if (isEnd)
+                      Align(
+                        alignment: Alignment.center,
+                        child: FadeTransition(
+                          opacity: endFadeAnimation,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            child: AllCaughtUpWidget(
+                              onAllow: () {
+                                resetAnimations();
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
                     // CARD SWIPER
                     CardSwiper(
-                      cardsCount: 5,
-                      numberOfCardsDisplayed: 5,
-                      isLoop: true,
+                      cardsCount: homeCubit.groups.length,
+                      numberOfCardsDisplayed: homeCubit.groups.length,
+                      isLoop: false,
                       controller: cardSwiperController,
                       backCardOffset: Offset(0, getHeight(context) * 0.5),
                       padding: const EdgeInsets.symmetric(horizontal: 0),
@@ -280,22 +320,35 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           const AllowedSwipeDirection.symmetric(
                             horizontal: true,
                           ),
+                      onEnd: () {
+                        setState(() {
+                          isEnd = true;
+                        });
+                        // Fade in AllCaughtUp
+                        endFadeController.forward();
+
+                        // Instantly hide swipe icons
+                        crossAnimationController.reset();
+                        checkAnimationController.reset();
+                      },
                       // Reset animation when swipe ends
                       onSwipe: (previousIndex, currentIndex, direction) {
+                        log('Swiped to $currentIndex from $previousIndex');
+                        homeCubit.selectGroupIndex(currentIndex);
                         return true;
                       },
                       cardBuilder: (context, index, percentX, percentY) {
                         homeCubit.updateCardPosition(percentX.toDouble());
-
                         return Stack(
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(24),
                               child: MovableBackground(
+                                backgroundType: MovableBackgroundType.dark,
                                 child: SizedBox.expand(),
                               ),
                             ),
-                            const HomeCardDesign(),
+                            HomeCardDesign(group: homeCubit.groups[index]),
                           ],
                         );
                       },
@@ -311,18 +364,31 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         bloc: homeCubit,
         builder: (context, state) {
           if (homeCubit.selectedProfile != null) {
-            return Container(
-              height: 56,
-              width: 56,
-              margin: const EdgeInsets.only(bottom: 80, right: 16),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: ColorPalette.primary,
-                shape: BoxShape.circle,
+            return GestureDetector(
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  backgroundColor: Colors.transparent,
+                  isScrollControlled: true,
+                  builder: (context) => const SendPokeBottomSheet(),
+                );
+              },
+              child: Container(
+                height: 56,
+                width: 56,
+                margin: const EdgeInsets.only(bottom: 80, right: 16),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: ColorPalette.primary,
+                  shape: BoxShape.circle,
+                ),
+                child: Text(
+                  AppEmojis.pointingRight,
+                  style: AppTextStyles.h4(context),
+                ),
               ),
-              child: Text('👉', style: AppTextStyles.h4(context)),
             );
-          } else {}
+          }
           return SizedBox.shrink();
         },
       ),

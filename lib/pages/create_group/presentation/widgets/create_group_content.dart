@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
+import 'package:fennac_app/app/theme/app_emojis.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
@@ -116,37 +117,37 @@ class _CreateGroupContentState extends State<CreateGroupContent> {
             runSpacing: 8,
             children: [
               InterestChip(
-                emoji: '🏔️',
+                emoji: AppEmojis.mountain,
                 label: 'Travel & Adventure',
                 isSelected: _selectedInterests.contains('travel'),
                 onTap: () => _toggleInterest('travel'),
               ),
               InterestChip(
-                emoji: '🎵',
+                emoji: AppEmojis.musicalNote,
                 label: 'Music & Arts',
                 isSelected: _selectedInterests.contains('music'),
                 onTap: () => _toggleInterest('music'),
               ),
               InterestChip(
-                emoji: '🍔',
+                emoji: AppEmojis.hamburger,
                 label: 'Food & Drink',
                 isSelected: _selectedInterests.contains('food'),
                 onTap: () => _toggleInterest('food'),
               ),
               InterestChip(
-                emoji: '🧘',
+                emoji: AppEmojis.yoga,
                 label: 'Wellness & Lifestyle',
                 isSelected: _selectedInterests.contains('wellness'),
                 onTap: () => _toggleInterest('wellness'),
               ),
               InterestChip(
-                emoji: '⚽',
+                emoji: AppEmojis.football,
                 label: 'Sports & Outdoors',
                 isSelected: _selectedInterests.contains('sports'),
                 onTap: () => _toggleInterest('sports'),
               ),
               InterestChip(
-                emoji: '🎉',
+                emoji: AppEmojis.partyPopper,
                 label: 'Events & Parties',
                 isSelected: _selectedInterests.contains('events'),
                 onTap: () => _toggleInterest('events'),

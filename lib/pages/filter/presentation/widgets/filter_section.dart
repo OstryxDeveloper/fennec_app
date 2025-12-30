@@ -12,6 +12,8 @@ class FilterSection extends StatelessWidget {
   final List<String> options;
   final String selectedOption;
   final ValueChanged<String> onOptionChanged;
+  final Widget Function(BuildContext context)? bottomSheetBuilder;
+  final ValueNotifier<bool>? blurNotifier;
 
   const FilterSection({
     super.key,
@@ -19,21 +21,30 @@ class FilterSection extends StatelessWidget {
     required this.options,
     required this.selectedOption,
     required this.onOptionChanged,
+    this.bottomSheetBuilder,
+    this.blurNotifier,
   });
 
-  void _showFilterBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
+  Future<void> _showFilterBottomSheet(BuildContext context) async {
+    blurNotifier?.value = true;
 
-      isScrollControlled: true,
-      builder: (context) => FilterSelectionBottomSheet(
-        title: title,
-        options: options,
-        selectedOption: selectedOption,
-        onOptionSelected: onOptionChanged,
-      ),
-    );
+    try {
+      await showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        builder: (context) =>
+            bottomSheetBuilder?.call(context) ??
+            FilterSelectionBottomSheet(
+              title: title,
+              options: options,
+              selectedOption: selectedOption,
+              onOptionSelected: onOptionChanged,
+            ),
+      );
+    } finally {
+      blurNotifier?.value = false;
+    }
   }
 
   @override

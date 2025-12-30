@@ -4,7 +4,7 @@ import 'package:fast_contacts/fast_contacts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:fennac_app/widgets/gradient_toast.dart';
+import 'package:fennac_app/helpers/gradient_toast.dart';
 
 import '../state/create_group_state.dart';
 

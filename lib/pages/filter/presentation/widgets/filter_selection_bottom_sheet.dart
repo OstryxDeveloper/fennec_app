@@ -41,6 +41,7 @@ class _FilterSelectionBottomSheetState
     return Container(
       width: double.infinity,
       height: getHeight(context) * 0.5,
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [ColorPalette.secondary, ColorPalette.black],
@@ -55,46 +56,21 @@ class _FilterSelectionBottomSheetState
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Header with title
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: AppText(
-                    text: widget.title,
-                    style: AppTextStyles.h1(context).copyWith(
-                      color: ColorPalette.white,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 28,
-                    ),
-                  ),
-                ),
-                CustomSizedBox(width: 12),
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white10,
-                      shape: BoxShape.circle,
-                    ),
-                    padding: const EdgeInsets.all(8),
-                    child: const Icon(
-                      Icons.close,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
-                ),
-              ],
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: AppText(
+              text: widget.title,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.h3(
+                context,
+              ).copyWith(fontWeight: FontWeight.bold),
             ),
           ),
 
-          // Filter options
+          CustomSizedBox(height: 32),
+
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Wrap(
                 spacing: 12,
                 runSpacing: 12,
@@ -118,16 +94,13 @@ class _FilterSelectionBottomSheetState
           CustomSizedBox(height: 24),
 
           // Done button
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-            child: CustomElevatedButton(
-              text: 'Done',
-              onTap: () {
-                widget.onOptionSelected(_tempSelectedOption);
-                Navigator.pop(context);
-              },
-              width: double.infinity,
-            ),
+          CustomElevatedButton(
+            text: 'Done',
+            onTap: () {
+              widget.onOptionSelected(_tempSelectedOption);
+              Navigator.pop(context);
+            },
+            width: double.infinity,
           ),
         ],
       ),

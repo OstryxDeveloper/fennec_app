@@ -28,6 +28,7 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
     return Scaffold(
       backgroundColor: ColorPalette.secondary,
       body: MovableBackground(
+        backgroundType: MovableBackgroundType.dark,
         child: BlocBuilder<HomeLandingCubit, HomeLandingState>(
           bloc: _homeLandingCubit,
           builder: (context, state) {

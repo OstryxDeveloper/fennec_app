@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
+import 'package:fennac_app/helpers/gradient_toast.dart';
 import 'package:fennac_app/routes/routes_imports.gr.dart';
 import 'package:fennac_app/widgets/custom_elevated_button.dart';
 import 'package:fennac_app/widgets/custom_outlined_button.dart';
@@ -51,7 +52,7 @@ class DeclineWidget extends StatelessWidget {
                 child: CustomOutlinedButton(
                   text: 'Find a Group',
                   onPressed: () {
-                    // TODO: Navigate to find/browse groups
+                    VxToast.show(message: 'Coming Soon!');
                   },
                   borderColor: Colors.white70,
                   textColor: Colors.white,

@@ -5,15 +5,20 @@ import 'package:fennac_app/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 
 class TermsBottomSheet extends StatelessWidget {
-  const TermsBottomSheet({super.key});
+  final ValueNotifier<bool>? blurNotifier;
 
-  static void show(BuildContext context) {
+  const TermsBottomSheet({super.key, this.blurNotifier});
+
+  static void show(BuildContext context, {ValueNotifier<bool>? blurNotifier}) {
+    blurNotifier?.value = true;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => const TermsBottomSheet(),
-    );
+      builder: (context) => TermsBottomSheet(blurNotifier: blurNotifier),
+    ).then((_) {
+      blurNotifier?.value = false;
+    });
   }
 
   @override
@@ -101,6 +106,75 @@ class TermsBottomSheet extends StatelessWidget {
                     context,
                     'You agree to communicate respectfully and refrain from harassment, hate speech, or inappropriate content.',
                   ),
+                  CustomSizedBox(height: 24),
+                  _buildSectionTitle(context, '4. Premium Features'),
+                  CustomSizedBox(height: 12),
+                  _buildText(
+                    context,
+                    'Some features (such as joining multiple groups or private chats) are available through Fennec Premium. Payments are processed securely through our partners, and all subscriptions automatically renew unless canceled before the renewal date.',
+                  ),
+                  CustomSizedBox(height: 24),
+                  _buildSectionTitle(context, '5. Content Ownership'),
+                  CustomSizedBox(height: 12),
+                  _buildBulletPoint(
+                    context,
+                    'You retain ownership of any content you share (photos, messages, etc.).',
+                  ),
+                  _buildBulletPoint(
+                    context,
+                    'By posting on Fennec, you grant us a non-exclusive, worldwide, royalty-free license to display and distribute that content within the app.',
+                  ),
+                  _buildBulletPoint(
+                    context,
+                    'We may remove content that violates our guidelines or community standards.',
+                  ),
+                  CustomSizedBox(height: 24),
+                  _buildSectionTitle(context, '6. Safety and Reporting'),
+                  CustomSizedBox(height: 12),
+                  _buildBulletPoint(
+                    context,
+                    'Fennec is committed to keeping users safe.',
+                  ),
+                  _buildBulletPoint(
+                    context,
+                    'You can report users or groups that violate our policies through in-app reporting tools.',
+                  ),
+                  _buildBulletPoint(
+                    context,
+                    'We may take action including warnings, suspensions, or permanent bans.',
+                  ),
+                  CustomSizedBox(height: 24),
+                  _buildSectionTitle(context, '7. Disclaimers'),
+                  CustomSizedBox(height: 12),
+                  _buildBulletPoint(
+                    context,
+                    'Fennec is provided "as is" without warranties of any kind.',
+                  ),
+                  _buildBulletPoint(
+                    context,
+                    'We do not guarantee that the app will always function without interruptions or errors, or that all users are who they claim to be.',
+                  ),
+                  CustomSizedBox(height: 24),
+                  _buildSectionTitle(context, '8. Limitation of Liability'),
+                  CustomSizedBox(height: 12),
+                  _buildText(
+                    context,
+                    'Fennec and its affiliates are not responsible for any direct, indirect, or incidental damages arising from your use of the platform.',
+                  ),
+                  CustomSizedBox(height: 24),
+                  _buildSectionTitle(context, '9. Changes to the Terms'),
+                  CustomSizedBox(height: 12),
+                  _buildText(
+                    context,
+                    'We may update these Terms occasionally. Updates will take effect once posted in the app. Continued use of Fennec means you accept the new Terms.',
+                  ),
+                  CustomSizedBox(height: 24),
+                  _buildSectionTitle(context, '10. Contact Us'),
+                  CustomSizedBox(height: 12),
+                  _buildText(
+                    context,
+                    'If you have questions or concerns, contact us at: support@fennec.app',
+                  ),
                   CustomSizedBox(height: 40),
                 ],
               ),
@@ -125,9 +199,7 @@ class TermsBottomSheet extends StatelessWidget {
   Widget _buildText(BuildContext context, String text) {
     return AppText(
       text: text,
-      style: AppTextStyles.bodyLarge(
-        context,
-      ).copyWith(color: Colors.white70, fontSize: 14, height: 1.5),
+      style: AppTextStyles.body(context).copyWith(color: Colors.white),
     );
   }
 

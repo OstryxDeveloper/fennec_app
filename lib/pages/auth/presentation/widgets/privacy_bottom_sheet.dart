@@ -5,15 +5,20 @@ import 'package:fennac_app/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 
 class PrivacyBottomSheet extends StatelessWidget {
-  const PrivacyBottomSheet({super.key});
+  final ValueNotifier<bool>? blurNotifier;
 
-  static void show(BuildContext context) {
+  const PrivacyBottomSheet({super.key, this.blurNotifier});
+
+  static void show(BuildContext context, {ValueNotifier<bool>? blurNotifier}) {
+    blurNotifier?.value = true;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => const PrivacyBottomSheet(),
-    );
+      builder: (context) => PrivacyBottomSheet(blurNotifier: blurNotifier),
+    ).then((_) {
+      blurNotifier?.value = false;
+    });
   }
 
   @override
@@ -108,6 +113,77 @@ class PrivacyBottomSheet extends StatelessWidget {
                   _buildSectionTitle(context, '3. Sharing Your Information'),
                   CustomSizedBox(height: 12),
                   _buildText(context, 'We never sell your personal data.'),
+                  CustomSizedBox(height: 12),
+                  _buildText(context, 'We may share limited information with:'),
+                  CustomSizedBox(height: 8),
+                  _buildBulletPoint(
+                    context,
+                    'Verified partners (for payments or analytics)',
+                  ),
+                  _buildBulletPoint(
+                    context,
+                    'Law enforcement (if required by law)',
+                  ),
+                  _buildBulletPoint(
+                    context,
+                    'Other users, only as part of normal app functionality (e.g., your name, profile photo, and interests)',
+                  ),
+                  CustomSizedBox(height: 24),
+                  _buildSectionTitle(context, '4. Data Retention'),
+                  CustomSizedBox(height: 12),
+                  _buildText(
+                    context,
+                    'We keep your information for as long as necessary to provide our services. You can request deletion of your account at any time from within the app.',
+                  ),
+                  CustomSizedBox(height: 24),
+                  _buildSectionTitle(context, '5. Security'),
+                  CustomSizedBox(height: 12),
+                  _buildBulletPoint(
+                    context,
+                    'We use encryption, secure servers, and access controls to protect your data.',
+                  ),
+                  _buildBulletPoint(
+                    context,
+                    'However, no digital system is 100% secure — use caution when sharing information online.',
+                  ),
+                  CustomSizedBox(height: 24),
+                  _buildSectionTitle(context, '6. Your Rights'),
+                  CustomSizedBox(height: 12),
+                  _buildText(context, 'You can:'),
+                  CustomSizedBox(height: 8),
+                  _buildBulletPoint(
+                    context,
+                    'Access or edit your personal data',
+                  ),
+                  _buildBulletPoint(
+                    context,
+                    'Request deletion of your account',
+                  ),
+                  _buildBulletPoint(
+                    context,
+                    'Manage visibility of your profile and group membership',
+                  ),
+                  CustomSizedBox(height: 24),
+                  _buildSectionTitle(context, '7. Cookies & Analytics'),
+                  CustomSizedBox(height: 12),
+                  _buildText(
+                    context,
+                    'We use cookies and analytics tools to understand how users engage with Fennec and to improve app performance.',
+                  ),
+                  CustomSizedBox(height: 24),
+                  _buildSectionTitle(context, '8. Changes to This Policy'),
+                  CustomSizedBox(height: 12),
+                  _buildText(
+                    context,
+                    'We may update this policy periodically. The latest version will always be available within the app.',
+                  ),
+                  CustomSizedBox(height: 24),
+                  _buildSectionTitle(context, '9. Contact Us'),
+                  CustomSizedBox(height: 12),
+                  _buildText(
+                    context,
+                    'For privacy-related questions: privacy@fennec.app',
+                  ),
                   CustomSizedBox(height: 40),
                 ],
               ),

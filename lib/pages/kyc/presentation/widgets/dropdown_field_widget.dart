@@ -229,7 +229,7 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
                                   decoration: BoxDecoration(
                                     color: isSelected
                                         ? ColorPalette.white
-                                        : Colors.black,
+                                        : ColorPalette.cardBlack,
                                     border: Border.all(
                                       color: Colors.white,
                                       width: 1,
@@ -389,9 +389,9 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
                                       Container(
                                         width: 22,
                                         height: 22,
-                                        decoration: const BoxDecoration(
+                                        decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: Colors.black,
+                                          color: ColorPalette.cardBlack,
                                         ),
                                       ),
                                       // Inner fill toggles selected state
@@ -401,9 +401,7 @@ class _DropdownFieldWidgetState extends State<DropdownFieldWidget>
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           color: !isSelected
-                                              ? Colors.black.withValues(
-                                                  alpha: 0.9,
-                                                )
+                                              ? ColorPalette.cardBlack
                                               : Colors.white,
                                         ),
                                       ),

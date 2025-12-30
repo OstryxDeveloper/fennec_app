@@ -1,4 +1,5 @@
 import 'package:fennac_app/core/di_container.dart';
+import 'package:fennac_app/pages/home/data/models/group_model.dart';
 import 'package:fennac_app/pages/home/presentation/bloc/cubit/home_cubit.dart';
 import 'package:fennac_app/widgets/custom_chips.dart';
 import 'package:flutter/material.dart';
@@ -12,17 +13,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeCardDesign extends StatelessWidget {
-  const HomeCardDesign({super.key});
+  final GroupModel? group;
+  const HomeCardDesign({super.key, this.group});
 
   @override
   Widget build(BuildContext context) {
-    final List<String> _avatarPaths = [
-      Assets.dummy.a1.path,
-      Assets.dummy.b1.path,
-      Assets.dummy.c1.path,
-      Assets.dummy.d1.path,
-      Assets.dummy.e1.path,
-    ];
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: BlocBuilder(
@@ -32,15 +27,19 @@ class HomeCardDesign extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               HeroSection(
-                imagePath: Assets.dummy.groupSelfie.path,
-                avatarPaths: _avatarPaths,
+                imagePath: group?.coverImage ?? '',
+                avatarPaths:
+                    group?.members
+                        .map((member) => member.coverImage ?? "")
+                        .toList() ??
+                    [],
               ),
               const SizedBox(height: 32),
               if (_homeCubit.selectedProfile == null) ...[
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Text(
-                    'Brenda, Jack, Nancy, Jeff, Anna',
+                    group?.members.map((e) => e.name ?? "").join(", ") ?? '',
                     textAlign: TextAlign.center,
                     style: AppTextStyles.h1Large(context).copyWith(
                       color: Colors.white,
@@ -53,7 +52,7 @@ class HomeCardDesign extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Text(
-                    "Just a bunch of friends who love spontaneous road trips, rooftop sunsets, concerts, and pretending we're outdoorsy (until it rains).",
+                    group?.description ?? '',
                     textAlign: TextAlign.center,
                     style: AppTextStyles.bodyRegular(
                       context,
@@ -63,7 +62,7 @@ class HomeCardDesign extends StatelessWidget {
                 const CustomSizedBox(height: 20),
                 CategoryPill(
                   iconPath: Assets.icons.navigation.path,
-                  label: '🧳 Travel & Adventure',
+                  label: group?.groupTag ?? '',
                 ),
               ],
 

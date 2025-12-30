@@ -1,8 +1,10 @@
 import 'package:fennac_app/app/theme/app_colors.dart';
+import 'package:fennac_app/app/theme/app_emojis.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:fennac_app/pages/home/presentation/bloc/cubit/home_cubit.dart';
+import 'package:fennac_app/pages/home/presentation/widgets/report_and_block_bottomsheet.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/cubit/kyc_prompt_cubit.dart';
 import 'package:fennac_app/pages/kyc/presentation/widgets/prompt_audio_row.dart';
 import 'package:fennac_app/widgets/custom_chips.dart';
@@ -131,9 +133,19 @@ class GroupGalleryWidget extends StatelessWidget {
           ],
         ),
         const CustomSizedBox(height: 80),
-        AppText(
-          text: 'Report and block',
-          style: AppTextStyles.bodyLarge(context).copyWith(),
+        InkWell(
+          onTap: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (context) => const ReportAndBlockBottomSheet(),
+            );
+          },
+          child: AppText(
+            text: 'Report and block',
+            style: AppTextStyles.bodyLarge(context).copyWith(),
+          ),
         ),
         const CustomSizedBox(height: 80),
       ],
@@ -178,7 +190,7 @@ class GroupGalleryWidget extends StatelessWidget {
                               color: ColorPalette.primary,
                               shape: BoxShape.circle,
                             ),
-                            child: Text('👉'),
+                            child: Text(AppEmojis.pointingRight),
                           ),
                         ),
                       ],
@@ -313,9 +325,19 @@ class GroupGalleryWidget extends StatelessWidget {
           ],
         ),
         const CustomSizedBox(height: 80),
-        AppText(
-          text: 'Report and block',
-          style: AppTextStyles.bodyLarge(context).copyWith(),
+        InkWell(
+          onTap: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (context) => const ReportAndBlockBottomSheet(),
+            );
+          },
+          child: AppText(
+            text: 'Report and block',
+            style: AppTextStyles.bodyLarge(context).copyWith(),
+          ),
         ),
         const CustomSizedBox(height: 80),
       ],
@@ -390,16 +412,22 @@ class _GroupPromptCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppText(
-            text: prompt ?? "Our group's guilty pleasure ...",
-            style: AppTextStyles.bodyLarge(context),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AppText(
+                text: prompt ?? "Our group's guilty pleasure ...",
+                style: AppTextStyles.subHeading(context),
+              ),
+              Text('\u{1F449}'),
+            ],
           ),
           const SizedBox(height: 14),
           AppText(
-            text: answer ?? 'Bottomless mimosas and board games🎲',
-            style: AppTextStyles.h1(
+            text: answer ?? 'Bottomless mimosas and board games 🎲',
+            style: AppTextStyles.h3(
               context,
-            ).copyWith(fontWeight: FontWeight.bold, fontSize: 22),
+            ).copyWith(fontWeight: FontWeight.bold),
           ),
         ],
       ),

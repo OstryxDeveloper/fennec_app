@@ -5,7 +5,10 @@ import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/pages/filter/presentation/bloc/cubit/filter_cubit.dart';
 import 'package:fennac_app/pages/filter/presentation/bloc/state/filter_state.dart';
+import 'package:fennac_app/pages/filter/presentation/widgets/age_range_bottom_sheet.dart';
 import 'package:fennac_app/pages/filter/presentation/widgets/filter_section.dart';
+import 'package:fennac_app/pages/filter/presentation/widgets/group_size_bottom_sheet.dart';
+import 'package:fennac_app/pages/filter/presentation/widgets/gender_filter_bottom_sheet.dart';
 import 'package:fennac_app/widgets/custom_back_button.dart';
 import 'package:fennac_app/widgets/custom_elevated_button.dart';
 import 'package:fennac_app/widgets/custom_outlined_button.dart';
@@ -25,6 +28,13 @@ class FilterScreen extends StatefulWidget {
 
 class _FilterScreenState extends State<FilterScreen> {
   final _filterCubit = Di().sl<FilterCubit>();
+  final ValueNotifier<bool> _isBlurNotifier = ValueNotifier(false);
+
+  @override
+  void dispose() {
+    _isBlurNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,94 +84,65 @@ class _FilterScreenState extends State<FilterScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // What kind of groups section
-                                AppText(
-                                  text: '',
-                                  style: AppTextStyles.bodyLarge(context)
-                                      .copyWith(
-                                        color: Colors.white70,
-                                        fontSize: 13,
-                                      ),
-                                ),
-                                CustomSizedBox(height: 12),
                                 FilterSection(
                                   title:
                                       'What kind of groups are you looking for?',
                                   options: _filterCubit.categories,
                                   selectedOption: _filterCubit.selectedCategory,
                                   onOptionChanged: _filterCubit.updateCategory,
-                                ),
-
-                                // Who's in the Group section
-                                AppText(
-                                  text: "Who's in the Group?",
-                                  style: AppTextStyles.bodyLarge(context)
-                                      .copyWith(
-                                        color: Colors.white70,
-                                        fontSize: 13,
-                                      ),
+                                  blurNotifier: _isBlurNotifier,
                                 ),
                                 CustomSizedBox(height: 12),
+
                                 FilterSection(
-                                  title: 'All genders',
+                                  title: "Who's in the Group?",
                                   options: _filterCubit.genders,
                                   selectedOption: _filterCubit.selectedGender,
                                   onOptionChanged: _filterCubit.updateGender,
-                                ),
-
-                                // Choose ideal group size
-                                AppText(
-                                  text: 'Choose the ideal group size',
-                                  style: AppTextStyles.bodyLarge(context)
-                                      .copyWith(
-                                        color: Colors.white70,
-                                        fontSize: 13,
+                                  blurNotifier: _isBlurNotifier,
+                                  bottomSheetBuilder: (context) =>
+                                      GenderFilterBottomSheet(
+                                        filterCubit: _filterCubit,
+                                        blurNotifier: _isBlurNotifier,
                                       ),
                                 ),
                                 CustomSizedBox(height: 12),
                                 FilterSection(
-                                  title: 'Max 3 people',
+                                  title: 'Choose the ideal group size',
                                   options: _filterCubit.groupSizes,
                                   selectedOption:
                                       _filterCubit.selectedGroupSize,
                                   onOptionChanged: _filterCubit.updateGroupSize,
-                                ),
-
-                                // Distance Range
-                                AppText(
-                                  text: 'Distance Range',
-                                  style: AppTextStyles.bodyLarge(context)
-                                      .copyWith(
-                                        color: Colors.white70,
-                                        fontSize: 13,
+                                  blurNotifier: _isBlurNotifier,
+                                  bottomSheetBuilder: (context) =>
+                                      GroupSizeBottomSheet(
+                                        filterCubit: _filterCubit,
                                       ),
                                 ),
+
                                 CustomSizedBox(height: 12),
                                 FilterSection(
-                                  title: 'Max 15 miles',
+                                  title: 'Distance Range',
                                   options: _filterCubit.distances,
                                   selectedOption: _filterCubit.selectedDistance,
                                   onOptionChanged: _filterCubit.updateDistance,
+                                  blurNotifier: _isBlurNotifier,
                                 ),
 
-                                // Age Range
-                                AppText(
-                                  text: 'Age Range',
-                                  style: AppTextStyles.bodyLarge(context)
-                                      .copyWith(
-                                        color: Colors.white70,
-                                        fontSize: 13,
-                                      ),
-                                ),
                                 CustomSizedBox(height: 12),
                                 FilterSection(
-                                  title: '25 - 35 years old',
+                                  title: 'Age Range',
                                   options: _filterCubit.ageRanges,
                                   selectedOption: _filterCubit.selectedAgeRange,
                                   onOptionChanged: _filterCubit.updateAgeRange,
+                                  blurNotifier: _isBlurNotifier,
+                                  bottomSheetBuilder: (context) =>
+                                      AgeRangeBottomSheet(
+                                        filterCubit: _filterCubit,
+                                      ),
                                 ),
 
-                                CustomSizedBox(height: 32),
+                                CustomSizedBox(height: 50),
                               ],
                             ),
                           ),
@@ -172,6 +153,24 @@ class _FilterScreenState extends State<FilterScreen> {
                 },
               ),
             ),
+          ),
+          ValueListenableBuilder<bool>(
+            valueListenable: _isBlurNotifier,
+            builder: (context, isBlurred, _) {
+              return IgnorePointer(
+                ignoring: !isBlurred,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 200),
+                  opacity: isBlurred ? 1 : 0,
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                    child: Container(
+                      color: Colors.black.withValues(alpha: 0.05),
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ],
       ),

@@ -33,12 +33,12 @@ class _AvatarStripState extends State<AvatarStrip> {
               final totalAvatars = widget.avatarPaths.length;
 
               double totalWidth;
-              if (_homeCubit.selectedIndex == null) {
+              if (_homeCubit.selectedProfileIndex == null) {
                 totalWidth = baseSize + (totalAvatars - 1) * overlap;
               } else {
                 totalWidth = 0;
                 for (int i = 0; i < totalAvatars; i++) {
-                  totalWidth += (_homeCubit.selectedIndex == i
+                  totalWidth += (_homeCubit.selectedProfileIndex == i
                       ? selectedSize
                       : baseSize);
                   if (i != totalAvatars - 1) totalWidth += spacing;
@@ -49,17 +49,19 @@ class _AvatarStripState extends State<AvatarStrip> {
 
               return Stack(
                 children: List.generate(totalAvatars, (index) {
-                  final bool isSelected = _homeCubit.selectedIndex == index;
+                  final bool isSelected =
+                      _homeCubit.selectedProfileIndex == index;
                   final double size = isSelected ? selectedSize : baseSize;
-                  final bool hasSelection = _homeCubit.selectedIndex != null;
+                  final bool hasSelection =
+                      _homeCubit.selectedProfileIndex != null;
 
                   double left = startLeft;
-                  if (_homeCubit.selectedIndex == null) {
+                  if (_homeCubit.selectedProfileIndex == null) {
                     left += index * overlap;
                   } else {
                     for (int i = 0; i < index; i++) {
                       left +=
-                          (_homeCubit.selectedIndex == i
+                          (_homeCubit.selectedProfileIndex == i
                               ? selectedSize
                               : baseSize) +
                           spacing;
@@ -80,7 +82,7 @@ class _AvatarStripState extends State<AvatarStrip> {
                           final id = widget.avatarIds![index];
                           _homeCubit.selectProfileById(isSelected ? null : id);
                         } else {
-                          _homeCubit.selectGroupIndex(
+                          _homeCubit.selectProfileIndex(
                             isSelected ? null : index,
                           );
                         }

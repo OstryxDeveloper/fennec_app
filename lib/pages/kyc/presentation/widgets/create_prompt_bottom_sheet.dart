@@ -3,7 +3,7 @@ import 'package:fennac_app/app/constants/media_query_constants.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/core/di_container.dart';
-import 'package:fennac_app/helpers/toast_helper.dart';
+import 'package:fennac_app/helpers/gradient_toast.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/cubit/kyc_prompt_cubit.dart';
 import 'package:fennac_app/pages/kyc/presentation/widgets/audio_mode_widget.dart';
 import 'package:fennac_app/widgets/custom_elevated_button.dart';
@@ -93,7 +93,7 @@ class _CreatePromptBottomSheetState extends State<CreatePromptBottomSheet> {
 
         AutoRouter.of(context).pop();
       } else {
-        showCustomToast(context, 'Please record your answer.');
+        VxToast.show(message: 'Please record your answer.');
       }
     } else {
       // Handle text submission

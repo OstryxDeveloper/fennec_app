@@ -37,7 +37,7 @@ class HeroSection extends StatelessWidget {
                   AnimatedOpacity(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
-                    opacity: homeCubit.selectedIndex != null ? 1.0 : 0.0,
+                    opacity: homeCubit.selectedProfileIndex != null ? 1.0 : 0.0,
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
                       child: Container(

@@ -1,3 +1,4 @@
+import 'package:fennac_app/app/theme/app_emojis.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/state/kyc_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,43 +49,43 @@ class KycCubit extends Cubit<KycState> {
   ];
 
   final lifestyles = [
-    'Adventure seeker 🏞️',
-    'Coffee enthusiast ☕',
-    'Foodie 🍽️',
-    'Gym lover 💪',
-    'Dog parent 🐶',
-    'Early riser 🌅',
-    'Nature explorer 🌲',
-    'Gamer 🎮',
-    'Cyclist 🚴‍♀️',
-    'Movie buff 🎥',
+    'Adventure seeker ${AppEmojis.mountain}',
+    'Coffee enthusiast ${AppEmojis.coffee}',
+    'Foodie ${AppEmojis.plateWithCutlery}',
+    'Gym lover ${AppEmojis.flexedBiceps}',
+    'Dog parent ${AppEmojis.dogFace}',
+    'Early riser ${AppEmojis.sunrise}',
+    'Nature explorer ${AppEmojis.evergreenTree}',
+    'Gamer ${AppEmojis.gameController}',
+    'Cyclist ${AppEmojis.personBiking}',
+    'Movie buff ${AppEmojis.movieCamera}',
   ];
 
   // Interest categories
   final Map<String, List<String>> interestCategories = {
     'Sports & Outdoors': [
-      '🏔️ Hiking',
-      '🧘 Yoga',
-      '🏄 Surfing',
-      '⚽ Football',
-      '🏀 Basketball',
-      '🚴 Cycling',
-      '⛺ Camping',
-      '🎣 Fishing',
-      '🏃 Trail Running',
-      '🏂 Snowboarding',
-      '🎸 Music Festivals',
-      '⛷️ Skiing',
-      '🐴 Horse Riding',
-      '🛶 Kayaking',
-      '🏊 Swimming',
-      '🧗 Rock Climbing',
+      '${AppEmojis.hiking} Hiking',
+      '${AppEmojis.yoga} Yoga',
+      '${AppEmojis.surfing} Surfing',
+      '${AppEmojis.football} Football',
+      '${AppEmojis.basketball} Basketball',
+      '${AppEmojis.cycling} Cycling',
+      '${AppEmojis.camping} Camping',
+      '${AppEmojis.fishing} Fishing',
+      '${AppEmojis.trailRunning} Trail Running',
+      '${AppEmojis.snowboarding} Snowboarding',
+      '${AppEmojis.musicFestivals} Music Festivals',
+      '${AppEmojis.skiing} Skiing',
+      '${AppEmojis.horseRiding} Horse Riding',
+      '${AppEmojis.kayaking} Kayaking',
+      '${AppEmojis.swimming} Swimming',
+      '${AppEmojis.rockClimbing} Rock Climbing',
     ],
     'Food & Drink': [
-      '☕ Coffee Lover',
-      '🍣 Sushi Nights',
-      '🍕 Pizza Fridays',
-      '🍷 Wine Tasting',
+      '${AppEmojis.coffeeLover} Coffee Lover',
+      '${AppEmojis.sushiNights} Sushi Nights',
+      '${AppEmojis.pizzaFridays} Pizza Fridays',
+      '${AppEmojis.wineTasting} Wine Tasting',
       '🚚 Street Food Explorer',
       '🧁 Baking',
     ],

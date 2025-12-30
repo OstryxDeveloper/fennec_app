@@ -6,21 +6,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
 
+enum MovableBackgroundType {
+  light,
+  medium,
+  dark;
+
+  List<AssetGenImage> get assets {
+    switch (this) {
+      case MovableBackgroundType.light:
+        return [
+          Assets.images.background.bg115,
+          Assets.images.background.bg215,
+          Assets.images.background.bg315,
+        ];
+      case MovableBackgroundType.medium:
+        return [
+          Assets.images.background.bg130,
+          Assets.images.background.bg230,
+          Assets.images.background.bg330,
+        ];
+      case MovableBackgroundType.dark:
+        return [
+          Assets.images.background.bg150,
+          Assets.images.background.bg250,
+          Assets.images.background.bg350,
+        ];
+    }
+  }
+}
+
 class MovableBackground extends StatefulWidget {
   final Widget child;
-  final List<AssetGenImage> assets;
+  final MovableBackgroundType backgroundType;
 
-  static List<AssetGenImage> get defaultAssets => [
-    Assets.images.background.bg1,
-    Assets.images.background.bg2,
-    Assets.images.background.bg3,
-  ];
+  static const defaultBackgroundType = MovableBackgroundType.medium;
 
-  MovableBackground({
+  const MovableBackground({
     super.key,
     required this.child,
-    List<AssetGenImage>? assets,
-  }) : assets = assets ?? defaultAssets;
+    this.backgroundType = defaultBackgroundType,
+  });
 
   @override
   State<MovableBackground> createState() => _MovableBackgroundState();
@@ -106,7 +131,8 @@ class _MovableBackgroundState extends State<MovableBackground>
 
                               final totalWidth = _rowWidth > 0
                                   ? _rowWidth
-                                  : size.width * widget.assets.length;
+                                  : size.width *
+                                        widget.backgroundType.assets.length;
 
                               final maxOffset = totalWidth > size.width
                                   ? totalWidth - size.width
@@ -114,13 +140,13 @@ class _MovableBackgroundState extends State<MovableBackground>
 
                               return Stack(
                                 children: [
-                                  Positioned.fill(
-                                    child: Container(
-                                      color: Color(
-                                        0xFF111111,
-                                      ).withValues(alpha: 1.0),
-                                    ),
-                                  ),
+                                  // Positioned.fill(
+                                  //   child: Container(
+                                  //     color: Color(
+                                  //       0xFF111111,
+                                  //     ).withValues(alpha: 1.0),
+                                  //   ),
+                                  // ),
                                   AnimatedBuilder(
                                     animation: _animation,
                                     builder: (context, child) {
@@ -142,19 +168,18 @@ class _MovableBackgroundState extends State<MovableBackground>
                                       child: Row(
                                         key: _rowKey,
                                         mainAxisSize: MainAxisSize.min,
-                                        children: widget.assets.map((asset) {
-                                          return Opacity(
-                                            opacity: 0.3,
-                                            child: SizedBox(
-                                              height: size.height,
-                                              child: asset.image(
-                                                fit: BoxFit.fitHeight,
+                                        children: widget.backgroundType.assets
+                                            .map((asset) {
+                                              return SizedBox(
                                                 height: size.height,
-                                                alignment: Alignment.center,
-                                              ),
-                                            ),
-                                          );
-                                        }).toList(),
+                                                child: asset.image(
+                                                  fit: BoxFit.fitHeight,
+                                                  height: size.height,
+                                                  alignment: Alignment.center,
+                                                ),
+                                              );
+                                            })
+                                            .toList(),
                                       ),
                                     ),
                                   ),

@@ -460,6 +460,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/facebook.svg
   SvgGenImage get facebook => const SvgGenImage('assets/icons/facebook.svg');
 
+  /// File path: assets/icons/fork.svg
+  SvgGenImage get fork => const SvgGenImage('assets/icons/fork.svg');
+
   /// File path: assets/icons/google.svg
   SvgGenImage get google => const SvgGenImage('assets/icons/google.svg');
 
@@ -599,6 +602,7 @@ class $AssetsIconsGen {
     eyeClose,
     eyeEmoji,
     facebook,
+    fork,
     google,
     handshake,
     heart,
@@ -653,13 +657,49 @@ class $AssetsImagesGen {
 class $AssetsImagesBackgroundGen {
   const $AssetsImagesBackgroundGen();
 
+  /// File path: assets/images/background/BG - 1 - 15%.png
+  AssetGenImage get bg115 =>
+      const AssetGenImage('assets/images/background/BG - 1 - 15%.png');
+
+  /// File path: assets/images/background/BG - 1 - 30%.png
+  AssetGenImage get bg130 =>
+      const AssetGenImage('assets/images/background/BG - 1 - 30%.png');
+
+  /// File path: assets/images/background/BG - 1 - 50%.png
+  AssetGenImage get bg150 =>
+      const AssetGenImage('assets/images/background/BG - 1 - 50%.png');
+
   /// File path: assets/images/background/BG - 1.png
   AssetGenImage get bg1 =>
       const AssetGenImage('assets/images/background/BG - 1.png');
 
+  /// File path: assets/images/background/BG - 2 - 15%.png
+  AssetGenImage get bg215 =>
+      const AssetGenImage('assets/images/background/BG - 2 - 15%.png');
+
+  /// File path: assets/images/background/BG - 2 - 30%.png
+  AssetGenImage get bg230 =>
+      const AssetGenImage('assets/images/background/BG - 2 - 30%.png');
+
+  /// File path: assets/images/background/BG - 2 - 50%.png
+  AssetGenImage get bg250 =>
+      const AssetGenImage('assets/images/background/BG - 2 - 50%.png');
+
   /// File path: assets/images/background/BG - 2.png
   AssetGenImage get bg2 =>
       const AssetGenImage('assets/images/background/BG - 2.png');
+
+  /// File path: assets/images/background/BG - 3 - 15%.png
+  AssetGenImage get bg315 =>
+      const AssetGenImage('assets/images/background/BG - 3 - 15%.png');
+
+  /// File path: assets/images/background/BG - 3 - 30%.png
+  AssetGenImage get bg330 =>
+      const AssetGenImage('assets/images/background/BG - 3 - 30%.png');
+
+  /// File path: assets/images/background/BG - 3 - 50%.png
+  AssetGenImage get bg350 =>
+      const AssetGenImage('assets/images/background/BG - 3 - 50%.png');
 
   /// File path: assets/images/background/BG - 3.png
   AssetGenImage get bg3 =>
@@ -678,7 +718,23 @@ class $AssetsImagesBackgroundGen {
       const AssetGenImage('assets/images/background/BG - 6.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [bg1, bg2, bg3, bg4, bg5, bg6];
+  List<AssetGenImage> get values => [
+    bg115,
+    bg130,
+    bg150,
+    bg1,
+    bg215,
+    bg230,
+    bg250,
+    bg2,
+    bg315,
+    bg330,
+    bg350,
+    bg3,
+    bg4,
+    bg5,
+    bg6,
+  ];
 }
 
 class Assets {

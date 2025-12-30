@@ -11,6 +11,8 @@ import 'package:fennac_app/pages/kyc/presentation/bloc/cubit/kyc_prompt_cubit.da
 import 'package:fennac_app/pages/splash/presentation/bloc/cubit/background_cubit.dart';
 import 'package:get_it/get_it.dart';
 
+import '../bloc/cubit/background_cubit.dart';
+
 class Di {
   final sl = GetIt.I;
 
@@ -27,5 +29,8 @@ class Di {
     sl.registerLazySingleton<LoginCubit>(() => LoginCubit());
     sl.registerLazySingleton<HomeLandingCubit>(() => HomeLandingCubit());
     sl.registerLazySingleton<CreateGroupCubit>(() => CreateGroupCubit());
+    sl.registerLazySingleton<MoveAbleBackgroundCubit>(
+      () => MoveAbleBackgroundCubit(),
+    );
   }
 }
