@@ -45,6 +45,14 @@ class AppTextStyles {
         letterSpacing: 0,
       );
 
+  static TextStyle chipLabel(BuildContext context) =>
+      _sfProTextStyle().copyWith(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+        height: 1.25,
+        letterSpacing: 0,
+      );
+
   static TextStyle body(BuildContext context) => _sfProTextStyle().copyWith(
     fontSize: 16,
     fontWeight: FontWeight.w400,

@@ -59,7 +59,7 @@ class PromptCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? ColorPalette.primary
-              : ColorPalette.secondry.withValues(alpha: 0.3),
+              : ColorPalette.secondary.withValues(alpha: 0.3),
           borderRadius: BorderRadius.circular(16),
 
           boxShadow: [
@@ -173,7 +173,7 @@ class PromptCard extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: ColorPalette.secondry,
+          backgroundColor: ColorPalette.secondary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),

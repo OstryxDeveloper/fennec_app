@@ -4,6 +4,7 @@ import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/routes/routes_imports.gr.dart';
 import 'package:fennac_app/widgets/custom_elevated_button.dart';
 import 'package:fennac_app/widgets/custom_outlined_button.dart';
+import 'package:fennac_app/widgets/custom_sized_box.dart';
 import 'package:fennac_app/widgets/custom_text.dart';
 import 'package:fennac_app/widgets/movable_background.dart';
 import 'package:flutter/material.dart';
@@ -91,10 +92,10 @@ class _LandingScreenState extends State<LandingScreen>
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: ColorPalette.secondry,
+        color: ColorPalette.secondary,
         boxShadow: [
           BoxShadow(
-            color: ColorPalette.secondry.withValues(alpha: 0.6),
+            color: ColorPalette.secondary.withValues(alpha: 0.6),
             spreadRadius: 2,
             blurRadius: 8,
             offset: const Offset(0, 3),
@@ -134,7 +135,7 @@ class _LandingScreenState extends State<LandingScreen>
                   ],
                 ),
               ),
-              const SizedBox(height: 40),
+              const CustomSizedBox(height: 100),
               FadeTransition(
                 opacity: _fade,
                 child: SlideTransition(
@@ -152,7 +153,7 @@ class _LandingScreenState extends State<LandingScreen>
                             ).push(const OnBoardingRoute1());
                           },
                         ),
-                        const SizedBox(height: 16),
+                        const CustomSizedBox(height: 16),
                         CustomOutlinedButton(
                           width: 0.9.sw,
                           onPressed: () {
@@ -160,7 +161,7 @@ class _LandingScreenState extends State<LandingScreen>
                           },
                           text: 'Login with Email',
                         ),
-                        const SizedBox(height: 24),
+                        const CustomSizedBox(height: 24),
                         AppText(
                           text: 'Or continue with',
                           style: AppTextStyles.bodyLarge(context).copyWith(
@@ -168,18 +169,18 @@ class _LandingScreenState extends State<LandingScreen>
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(height: 24),
+                        const CustomSizedBox(height: 24),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             _socialIcon(
                               Assets.icons.google.svg(width: 24, height: 24),
                             ),
-                            const SizedBox(width: 16),
+                            const CustomSizedBox(width: 16),
                             _socialIcon(
                               Assets.icons.facebook.svg(width: 24, height: 24),
                             ),
-                            const SizedBox(width: 16),
+                            const CustomSizedBox(width: 16),
                             _socialIcon(
                               Assets.icons.apple.svg(
                                 width: 24,

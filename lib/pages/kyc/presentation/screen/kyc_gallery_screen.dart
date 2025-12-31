@@ -27,6 +27,7 @@ class KycGalleryScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF1A1B2E),
       body: MovableBackground(
+        backgroundType: MovableBackgroundType.dark,
         child: SafeArea(
           child: BlocListener<ImagePickerCubit, ImagePickerState>(
             bloc: imagePickerCubit,
@@ -311,7 +312,7 @@ class KycGalleryScreen extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [ColorPalette.secondry, ColorPalette.black],
+              colors: [ColorPalette.secondary, ColorPalette.black],
             ),
           ),
           child: SafeArea(

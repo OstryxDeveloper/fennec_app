@@ -108,7 +108,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
             decoration: BoxDecoration(
-              color: ColorPalette.secondry.withValues(alpha: 0.7),
+              color: ColorPalette.secondary.withValues(alpha: 0.7),
               borderRadius: BorderRadius.circular(24),
             ),
             child: Stack(

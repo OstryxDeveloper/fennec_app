@@ -120,7 +120,7 @@ class _MediaContainerWidgetState extends State<MediaContainerWidget> {
         height: widget.height,
         width: widget.width,
         decoration: BoxDecoration(
-          color: ColorPalette.secondry.withValues(alpha: 0.5),
+          color: ColorPalette.secondary.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: Colors.white.withValues(alpha: 0.2),
@@ -284,7 +284,7 @@ class _MediaContainerWidgetState extends State<MediaContainerWidget> {
 
   Widget _buildVideoPlaceholder({bool isLoading = false}) {
     return Container(
-      color: ColorPalette.secondry.withValues(alpha: 0.3),
+      color: ColorPalette.secondary.withValues(alpha: 0.3),
       child: Center(
         child: isLoading
             ? const SizedBox(
@@ -306,7 +306,7 @@ class _MediaContainerWidgetState extends State<MediaContainerWidget> {
 
   Widget _buildErrorWidget() {
     return Container(
-      color: ColorPalette.secondry.withValues(alpha: 0.5),
+      color: ColorPalette.secondary.withValues(alpha: 0.5),
       child: const Icon(Icons.broken_image, color: Colors.white54, size: 30),
     );
   }

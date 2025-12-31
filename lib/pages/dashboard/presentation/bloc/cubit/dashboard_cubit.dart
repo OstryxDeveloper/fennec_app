@@ -1,6 +1,6 @@
 import 'package:fennac_app/pages/dashboard/presentation/bloc/state/dashboard_state.dart';
 import 'package:fennac_app/pages/home/presentation/screen/home_screen.dart';
-import 'package:fennac_app/pages/home/presentation/screen/home_landing_screen.dart';
+import 'package:fennac_app/pages/homelanding/presentation/screen/home_landing_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

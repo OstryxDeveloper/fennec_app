@@ -111,11 +111,11 @@ class CustomLabelTextField extends StatelessWidget {
               hintText: hintText,
               hintStyle:
                   hintStyle ??
-                  AppTextStyles.inputLabel(
-                    context,
-                  ).copyWith(color: ColorPalette.textPrimary),
+                  AppTextStyles.inputLabel(context).copyWith(
+                    color: ColorPalette.textSecondary.withValues(alpha: 0.6),
+                  ),
               filled: filled ?? false,
-              fillColor: fillColor,
+              fillColor: fillColor ?? Colors.transparent,
               suffixIcon: suffixIcon,
               prefixIcon: prefixIcon,
               suffix: suffix,
@@ -168,7 +168,7 @@ class CustomLabelTextField extends StatelessWidget {
                 hintStyle: hintStyle,
                 border: InputBorder.none,
                 filled: true,
-                fillColor: fillColor ?? ColorPalette.secondry,
+                fillColor: fillColor ?? Colors.transparent,
                 suffixIcon: suffixIcon,
                 prefixIcon: prefixIcon,
                 suffix: suffix,

@@ -8,11 +8,13 @@ import 'package:flutter/material.dart';
 class GenderSelectionWidget extends StatefulWidget {
   final String? selectedGender;
   final Function(String)? onGenderSelected;
+  final List<String>? genders;
 
   const GenderSelectionWidget({
     super.key,
     this.selectedGender,
     this.onGenderSelected,
+    this.genders,
   });
 
   @override
@@ -21,15 +23,26 @@ class GenderSelectionWidget extends StatefulWidget {
 
 class _GenderSelectionWidgetState extends State<GenderSelectionWidget> {
   final KycCubit _kycCubit = Di().sl<KycCubit>();
+  String? _selectedGender;
 
   @override
   void initState() {
     super.initState();
-    _kycCubit.selectedGender = widget.selectedGender;
+    _selectedGender =
+        widget.selectedGender ??
+        (_usesKycCubit ? _kycCubit.selectedGender : null);
+
+    if (_usesKycCubit) {
+      _kycCubit.selectedGender = _selectedGender;
+    }
   }
+
+  bool get _usesKycCubit => widget.genders == null;
 
   @override
   Widget build(BuildContext context) {
+    final genderOptions = widget.genders ?? _kycCubit.genders;
+
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -39,22 +52,28 @@ class _GenderSelectionWidgetState extends State<GenderSelectionWidget> {
         mainAxisSpacing: 12,
         childAspectRatio: 3.5,
       ),
-      itemCount: _kycCubit.genders.length,
+      itemCount: genderOptions.length,
       itemBuilder: (context, index) {
-        final gender = _kycCubit.genders[index];
-        final isSelected = _kycCubit.selectedGender == gender;
+        final gender = genderOptions[index];
+        final isSelected = _selectedGender == gender;
 
         return InkWell(
           borderRadius: BorderRadius.circular(16),
           onTap: () {
-            _kycCubit.selectedGender = gender;
+            setState(() {
+              _selectedGender = gender;
+            });
+
+            if (_usesKycCubit) {
+              _kycCubit.selectedGender = gender;
+            }
             widget.onGenderSelected?.call(gender);
           },
           child: Container(
             decoration: BoxDecoration(
               color: isSelected
                   ? ColorPalette.primary
-                  : ColorPalette.secondry.withValues(alpha: 0.3),
+                  : ColorPalette.secondary.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Center(

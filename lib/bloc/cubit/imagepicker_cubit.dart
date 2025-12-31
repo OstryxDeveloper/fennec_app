@@ -32,8 +32,8 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
         aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
         uiSettings: [
           AndroidUiSettings(
-            backgroundColor: ColorPalette.secondry,
-            toolbarColor: ColorPalette.secondry,
+            backgroundColor: ColorPalette.secondary,
+            toolbarColor: ColorPalette.secondary,
             toolbarTitle: 'Crop Image',
             lockAspectRatio: true,
             hideBottomControls: true,

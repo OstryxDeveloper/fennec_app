@@ -24,7 +24,7 @@ class GalleryGridSlot extends StatelessWidget {
         width: 124,
         height: 124,
         decoration: BoxDecoration(
-          color: ColorPalette.secondry.withValues(alpha: 0.5),
+          color: ColorPalette.secondary.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: Colors.white.withValues(alpha: 0.2),

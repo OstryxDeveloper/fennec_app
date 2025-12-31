@@ -24,7 +24,7 @@ class GalleryUploadWidget extends StatelessWidget {
             width: 258,
             height: 260,
             decoration: BoxDecoration(
-              color: ColorPalette.secondry.withValues(alpha: 0.5),
+              color: ColorPalette.secondary.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: Colors.white.withValues(alpha: 0.2),
@@ -102,7 +102,7 @@ class GalleryUploadWidget extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [ColorPalette.secondry, ColorPalette.black],
+            colors: [ColorPalette.secondary, ColorPalette.black],
           ),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(24),

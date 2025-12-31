@@ -132,7 +132,7 @@ class _OnBoardingWidget1State extends State<OnBoardingWidget1> {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         gradient: LinearGradient(
-          colors: [ColorPalette.primary, ColorPalette.secondry],
+          colors: [ColorPalette.primary, ColorPalette.secondary],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

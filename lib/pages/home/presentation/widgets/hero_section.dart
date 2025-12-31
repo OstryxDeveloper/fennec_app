@@ -1,5 +1,6 @@
 import 'dart:ui';
-
+import 'package:fennac_app/core/di_container.dart';
+import 'package:fennac_app/pages/home/presentation/bloc/cubit/home_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'avatar_strip.dart';
@@ -21,7 +22,6 @@ class HeroSection extends StatelessWidget {
       builder: (context, state) {
         return Stack(
           clipBehavior: Clip.none,
-
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(28),
@@ -37,7 +37,7 @@ class HeroSection extends StatelessWidget {
                   AnimatedOpacity(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
-                    opacity: homeCubit.selectedIndex != null ? 1.0 : 0.0,
+                    opacity: homeCubit.selectedProfileIndex != null ? 1.0 : 0.0,
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
                       child: Container(
@@ -60,3 +60,5 @@ class HeroSection extends StatelessWidget {
     );
   }
 }
+
+final HomeCubit homeCubit = Di().sl<HomeCubit>();

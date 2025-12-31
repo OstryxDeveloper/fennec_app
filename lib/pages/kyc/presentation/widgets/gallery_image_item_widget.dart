@@ -35,7 +35,7 @@ class GalleryImageItemWidget extends StatelessWidget {
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
-                  color: ColorPalette.secondry.withValues(alpha: 0.5),
+                  color: ColorPalette.secondary.withValues(alpha: 0.5),
                   child: const Icon(
                     Icons.broken_image,
                     color: Colors.white54,
@@ -85,7 +85,7 @@ class GalleryImageItemWidget extends StatelessWidget {
                     width: 124,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
-                        color: ColorPalette.secondry.withValues(alpha: 0.5),
+                        color: ColorPalette.secondary.withValues(alpha: 0.5),
                         child: const Icon(
                           Icons.broken_image,
                           color: Colors.white54,
