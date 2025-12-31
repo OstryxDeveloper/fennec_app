@@ -1,8 +1,10 @@
+import 'package:fennac_app/app/constants/app_enums.dart';
+import 'package:fennac_app/app/constants/dummy_constants.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/pages/filter/presentation/bloc/cubit/filter_cubit.dart';
-import 'package:fennac_app/pages/kyc/presentation/widgets/dropdown_field_widget.dart';
-import 'package:fennac_app/pages/kyc/presentation/widgets/gender_selection_widget.dart';
+import 'package:fennac_app/reusable_widgets/dropdown_field_widget.dart';
+import 'package:fennac_app/reusable_widgets/gender_selection_widget.dart';
 import 'package:fennac_app/widgets/custom_elevated_button.dart';
 import 'package:fennac_app/widgets/custom_sized_box.dart';
 import 'package:fennac_app/widgets/custom_text.dart';
@@ -74,7 +76,7 @@ class GenderFilterBottomSheet extends StatelessWidget {
                   ),
                   CustomSizedBox(height: 12),
                   GenderSelectionWidget(
-                    genders: filterCubit.genders,
+                    genders: DummyConstants.genders,
                     selectedGender: filterCubit.selectedGender,
                     onGenderSelected: filterCubit.updateGender,
                   ),
@@ -83,7 +85,7 @@ class GenderFilterBottomSheet extends StatelessWidget {
                     label: 'Your Sexual Orientation',
                     subtitle: 'Select',
                     selectedValues: filterCubit.selectedSexualOrientations,
-                    options: filterCubit.sexualOrientations,
+                    options: DummyConstants.sexualOrientations,
                     selectionType: SelectionType.multiple,
                     onMultipleSelected: filterCubit.updateSexualOrientations,
                     blurNotifier: blurNotifier,
@@ -93,7 +95,7 @@ class GenderFilterBottomSheet extends StatelessWidget {
                     label: 'Your Pronouns',
                     subtitle: 'Select',
                     selectedValue: filterCubit.selectedPronoun,
-                    options: filterCubit.pronouns,
+                    options: DummyConstants.pronouns,
                     selectionType: SelectionType.single,
                     onSelected: filterCubit.updatePronoun,
                     blurNotifier: blurNotifier,

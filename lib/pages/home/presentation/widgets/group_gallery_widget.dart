@@ -1,3 +1,4 @@
+import 'package:fennac_app/app/constants/dummy_constants.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/app/theme/app_emojis.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
@@ -12,6 +13,7 @@ import 'package:fennac_app/widgets/custom_sized_box.dart';
 import 'package:fennac_app/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_svg/svg.dart';
 
 class GroupGalleryWidget extends StatelessWidget {
@@ -40,7 +42,7 @@ class GroupGalleryWidget extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           padding: EdgeInsets.zero,
           shrinkWrap: true,
-          itemCount: _homeCubit.groupImages.length,
+          itemCount: DummyConstants.groupImages.length,
           itemBuilder: (context, index) {
             final bool showAudio = _homeCubit.isGroupAudioAvailable;
             return Padding(
@@ -50,7 +52,7 @@ class GroupGalleryWidget extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(24),
                     child: Image.asset(
-                      _homeCubit.groupImages[index],
+                      DummyConstants.groupImages[index],
                       // height: 408,
                       width: double.infinity,
                       fit: BoxFit.cover,
@@ -65,7 +67,7 @@ class GroupGalleryWidget extends StatelessWidget {
                     _GroupPromptCard(),
                   ],
 
-                  if (index == _homeCubit.groupImages.length - 1) ...[
+                  if (index == DummyConstants.groupImages.length - 1) ...[
                     const SizedBox(height: 12),
                     _GroupPromptCard(
                       prompt: "What we bring to a group trip...",
@@ -82,52 +84,64 @@ class GroupGalleryWidget extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              height: 66,
-              width: 66,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: ColorPalette.error.withValues(alpha: .1),
-                    blurRadius: 5,
-                    offset: const Offset(0, 5),
+            GestureDetector(
+              onTap: () {
+                _homeCubit.cardSwiperController.swipe(CardSwiperDirection.left);
+              },
+              child: Container(
+                height: 66,
+                width: 66,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: ColorPalette.error.withValues(alpha: .1),
+                      blurRadius: 5,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                  shape: BoxShape.circle,
+                  color: ColorPalette.error.withValues(alpha: .1),
+                ),
+                child: SvgPicture.asset(
+                  Assets.icons.error.path,
+                  height: 42,
+                  width: 42,
+                  colorFilter: ColorFilter.mode(
+                    ColorPalette.error,
+                    BlendMode.srcIn,
                   ),
-                ],
-                shape: BoxShape.circle,
-                color: ColorPalette.error.withValues(alpha: .1),
-              ),
-              child: SvgPicture.asset(
-                Assets.icons.error.path,
-                height: 42,
-                width: 42,
-                colorFilter: ColorFilter.mode(
-                  ColorPalette.error,
-                  BlendMode.srcIn,
                 ),
               ),
             ),
             const CustomSizedBox(width: 32),
-            Container(
-              height: 66,
-              width: 66,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: ColorPalette.green.withValues(alpha: .1),
-                    blurRadius: 5,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-                shape: BoxShape.circle,
-                color: ColorPalette.green.withValues(alpha: .1),
-              ),
-              child: Image.asset(
-                Assets.icons.checkGreen.path,
-                height: 42,
-                width: 42,
-                color: ColorPalette.green,
+            GestureDetector(
+              onTap: () {
+                _homeCubit.cardSwiperController.swipe(
+                  CardSwiperDirection.right,
+                );
+              },
+              child: Container(
+                height: 66,
+                width: 66,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: ColorPalette.green.withValues(alpha: .1),
+                      blurRadius: 5,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                  shape: BoxShape.circle,
+                  color: ColorPalette.green.withValues(alpha: .1),
+                ),
+                child: Image.asset(
+                  Assets.icons.checkGreen.path,
+                  height: 42,
+                  width: 42,
+                  color: ColorPalette.green,
+                ),
               ),
             ),
           ],
@@ -274,52 +288,64 @@ class GroupGalleryWidget extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              height: 66,
-              width: 66,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: ColorPalette.error.withValues(alpha: .1),
-                    blurRadius: 5,
-                    offset: const Offset(0, 5),
+            GestureDetector(
+              onTap: () {
+                _homeCubit.cardSwiperController.swipe(CardSwiperDirection.left);
+              },
+              child: Container(
+                height: 66,
+                width: 66,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: ColorPalette.error.withValues(alpha: .1),
+                      blurRadius: 5,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                  shape: BoxShape.circle,
+                  color: ColorPalette.error.withValues(alpha: .1),
+                ),
+                child: SvgPicture.asset(
+                  Assets.icons.error.path,
+                  height: 42,
+                  width: 42,
+                  colorFilter: ColorFilter.mode(
+                    ColorPalette.error,
+                    BlendMode.srcIn,
                   ),
-                ],
-                shape: BoxShape.circle,
-                color: ColorPalette.error.withValues(alpha: .1),
-              ),
-              child: SvgPicture.asset(
-                Assets.icons.error.path,
-                height: 42,
-                width: 42,
-                colorFilter: ColorFilter.mode(
-                  ColorPalette.error,
-                  BlendMode.srcIn,
                 ),
               ),
             ),
             const CustomSizedBox(width: 32),
-            Container(
-              height: 66,
-              width: 66,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: ColorPalette.green.withValues(alpha: .1),
-                    blurRadius: 5,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-                shape: BoxShape.circle,
-                color: ColorPalette.green.withValues(alpha: .1),
-              ),
-              child: Image.asset(
-                Assets.icons.checkGreen.path,
-                height: 42,
-                width: 42,
-                color: ColorPalette.green,
+            GestureDetector(
+              onTap: () {
+                _homeCubit.cardSwiperController.swipe(
+                  CardSwiperDirection.right,
+                );
+              },
+              child: Container(
+                height: 66,
+                width: 66,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: ColorPalette.green.withValues(alpha: .1),
+                      blurRadius: 5,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                  shape: BoxShape.circle,
+                  color: ColorPalette.green.withValues(alpha: .1),
+                ),
+                child: Image.asset(
+                  Assets.icons.checkGreen.path,
+                  height: 42,
+                  width: 42,
+                  color: ColorPalette.green,
+                ),
               ),
             ),
           ],
@@ -350,7 +376,7 @@ final HomeCubit _homeCubit = Di().sl<HomeCubit>();
 class _GroupAudioCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final KycPromptCubit _kycPromptCubit = Di().sl<KycPromptCubit>();
+    final KycPromptCubit kycPromptCubit = Di().sl<KycPromptCubit>();
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -374,7 +400,7 @@ class _GroupAudioCard extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           PromptAudioRow(
-            audioPath: _kycPromptCubit.recordingPath ?? "",
+            audioPath: kycPromptCubit.recordingPath ?? "",
             duration: "0:16",
             height: 64,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

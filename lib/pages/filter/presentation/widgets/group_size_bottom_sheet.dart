@@ -3,7 +3,6 @@ import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:fennac_app/pages/filter/presentation/bloc/cubit/filter_cubit.dart';
 import 'package:fennac_app/widgets/custom_elevated_button.dart';
-import 'package:fennac_app/widgets/custom_sized_box.dart';
 import 'package:fennac_app/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

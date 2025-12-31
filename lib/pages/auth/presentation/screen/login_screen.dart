@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:fennac_app/pages/auth/presentation/bloc/cubit/login_cubit.dart';
+import 'package:fennac_app/pages/dashboard/presentation/bloc/cubit/dashboard_cubit.dart';
+import 'package:fennac_app/pages/home/presentation/screen/home_screen.dart';
 import 'package:fennac_app/routes/routes_imports.gr.dart';
 import 'package:fennac_app/widgets/custom_back_button.dart';
 import 'package:fennac_app/widgets/custom_text_field.dart';
@@ -125,7 +127,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             if (_formKey.currentState!.validate()) {
                               // _loginCubit.email.clear();
                               // _loginCubit.password.clear();
-                              AutoRouter.of(context).push(KycRoute());
+                              Di().sl<DashboardCubit>().changePage(
+                                0,
+                                HomeScreen(),
+                              );
+                              AutoRouter.of(context).push(DashboardRoute());
                             }
                           },
                           text: 'Login',

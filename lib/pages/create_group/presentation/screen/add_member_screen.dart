@@ -5,6 +5,7 @@ import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:fennac_app/pages/create_group/presentation/bloc/cubit/create_group_cubit.dart';
 import 'package:fennac_app/pages/create_group/presentation/bloc/state/create_group_state.dart';
+import 'package:fennac_app/reusable_widgets/animated_background_container.dart';
 import 'package:fennac_app/widgets/custom_back_button.dart';
 import 'package:fennac_app/widgets/custom_elevated_button.dart';
 import 'package:fennac_app/widgets/custom_outlined_button.dart';
@@ -153,26 +154,7 @@ class _PermissionCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(
-            width: 120,
-            height: 120,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Lottie.asset(
-                  Assets.animations.iconBg,
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
-                ),
-                SvgPicture.asset(
-                  Assets.icons.union.path,
-                  height: 48,
-                  width: 45,
-                ),
-              ],
-            ),
-          ),
+          AnimatedBackgroundContainer(icon: Assets.icons.union.path),
           const SizedBox(height: 24),
 
           Text(

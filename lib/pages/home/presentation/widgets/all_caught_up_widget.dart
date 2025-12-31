@@ -1,3 +1,4 @@
+import 'package:fennac_app/reusable_widgets/animated_background_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
@@ -30,26 +31,7 @@ class AllCaughtUpWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            width: 120,
-            height: 120,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Lottie.asset(
-                  Assets.animations.iconBg,
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
-                ),
-                SvgPicture.asset(
-                  Assets.icons.alertTriangle.path,
-                  height: 48,
-                  width: 45,
-                ),
-              ],
-            ),
-          ),
+          AnimatedBackgroundContainer(icon: Assets.icons.alertTriangle.path),
           const SizedBox(height: 24),
 
           Text(

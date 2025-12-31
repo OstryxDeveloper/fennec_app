@@ -1,3 +1,4 @@
+import 'package:fennac_app/app/constants/dummy_constants.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/core/di_container.dart';
@@ -19,7 +20,7 @@ class InterestSelectionWidget extends StatelessWidget {
       builder: (context, state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: cubit.interestCategories.entries.map((entry) {
+          children: DummyConstants.interestCategories.entries.map((entry) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

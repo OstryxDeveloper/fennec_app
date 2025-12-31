@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:fennac_app/app/constants/dummy_constants.dart';
 import 'package:fennac_app/app/constants/media_query_constants.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/pages/home/presentation/widgets/hero_section.dart';
@@ -33,7 +34,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late final AnimationController crossAnimationController;
   late final AnimationController checkAnimationController;
   bool isEnd = false;
-  final cardSwiperController = CardSwiperController();
   late final AnimationController endFadeController;
   late final Animation<double> endFadeAnimation;
 
@@ -308,10 +308,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ),
                     // CARD SWIPER
                     CardSwiper(
-                      cardsCount: homeCubit.groups.length,
-                      numberOfCardsDisplayed: homeCubit.groups.length,
+                      cardsCount: DummyConstants.groups.length,
+                      numberOfCardsDisplayed: DummyConstants.groups.length,
                       isLoop: false,
-                      controller: cardSwiperController,
+                      controller: homeCubit.cardSwiperController,
                       backCardOffset: Offset(0, getHeight(context) * 0.5),
                       padding: const EdgeInsets.symmetric(horizontal: 0),
                       duration: const Duration(seconds: 1),
@@ -348,7 +348,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 child: SizedBox.expand(),
                               ),
                             ),
-                            HomeCardDesign(group: homeCubit.groups[index]),
+                            HomeCardDesign(group: DummyConstants.groups[index]),
                           ],
                         );
                       },

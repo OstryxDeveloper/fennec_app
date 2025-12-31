@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:auto_route/auto_route.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:fennac_app/pages/auth/presentation/widgets/tile_widget.dart';
+import 'package:fennac_app/reusable_widgets/animated_background_container.dart';
 import 'package:fennac_app/routes/routes_imports.gr.dart';
 
 import 'package:fennac_app/widgets/custom_back_button.dart';
@@ -91,27 +92,17 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
         context: context,
         barrierColor: Colors.transparent,
         title: 'Phone Number Verified',
+
         description:
             "Your phone number has been verified. Continue to complete your profile.",
         buttonText: 'Continue',
         onButtonPressed: () {
-          AutoRouter.of(context).push(OnBoardingRoute());
+          AutoRouter.of(context).push(KycRoute());
         },
-        icon: SizedBox(
-          width: 100,
-          height: 100,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Lottie.asset(
-                Assets.animations.iconBg,
-                width: 100,
-                height: 100,
-                fit: BoxFit.cover,
-              ),
-              Image.asset(Assets.icons.checkGreen.path, height: 60, width: 60),
-            ],
-          ),
+
+        icon: AnimatedBackgroundContainer(
+          icon: Assets.icons.checkGreen.path,
+          isPng: true,
         ),
       );
       _isBlurNotifier.value = false;
@@ -151,25 +142,8 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
                         child: CustomBackButton(),
                       ),
                       CustomSizedBox(height: 40),
-                      SizedBox(
-                        width: 100,
-                        height: 100,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Lottie.asset(
-                              Assets.animations.iconBg,
-                              width: 100,
-                              height: 100,
-                              fit: BoxFit.cover,
-                            ),
-                            SvgPicture.asset(
-                              Assets.icons.vector.path,
-                              height: 40,
-                              width: 40,
-                            ),
-                          ],
-                        ),
+                      AnimatedBackgroundContainer(
+                        icon: Assets.icons.vector.path,
                       ),
                       CustomSizedBox(height: 40),
                       AppText(

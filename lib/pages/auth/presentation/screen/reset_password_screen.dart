@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:fennac_app/pages/auth/presentation/bloc/cubit/auth_cubit.dart';
+import 'package:fennac_app/reusable_widgets/animated_background_container.dart';
 import 'package:fennac_app/widgets/custom_back_button.dart';
 import 'package:fennac_app/widgets/custom_country_field.dart';
 import 'package:fennac_app/widgets/custom_text_field.dart';
@@ -56,25 +57,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
                             CustomBackButton(),
 
-                            SizedBox(
-                              width: 100,
-                              height: 100,
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  Lottie.asset(
-                                    Assets.animations.iconBg,
-                                    width: 100,
-                                    height: 100,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  SvgPicture.asset(
-                                    Assets.icons.vector3.path,
-                                    height: 40,
-                                    width: 40,
-                                  ),
-                                ],
-                              ),
+                            AnimatedBackgroundContainer(
+                              icon: Assets.icons.vector3.path,
                             ),
 
                             CustomSizedBox(height: 40),
@@ -132,6 +116,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
                                   await CustomBottomSheet.show(
                                     context: context,
+
                                     barrierColor: Colors.transparent,
                                     title: 'Reset code sent!',
                                     description:
@@ -143,25 +128,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                         context,
                                       ).push(OtpVerificationRoute());
                                     },
-                                    icon: SizedBox(
-                                      width: 100,
-                                      height: 100,
-                                      child: Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          Lottie.asset(
-                                            Assets.animations.iconBg,
-                                            width: 100,
-                                            height: 100,
-                                            fit: BoxFit.cover,
-                                          ),
-                                          Image.asset(
-                                            Assets.icons.checkGreen.path,
-                                            height: 72,
-                                            width: 72,
-                                          ),
-                                        ],
-                                      ),
+                                    icon: AnimatedBackgroundContainer(
+                                      icon: Assets.icons.checkGreen.path,
+                                      isPng: true,
                                     ),
                                   );
 

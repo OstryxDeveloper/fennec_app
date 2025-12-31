@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fennac_app/app/constants/app_enums.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/pages/homelanding/presentation/bloc/cubit/home_landing_cubit.dart';

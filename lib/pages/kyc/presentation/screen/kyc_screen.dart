@@ -1,13 +1,15 @@
 import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:fennac_app/app/constants/app_enums.dart';
+import 'package:fennac_app/app/constants/dummy_constants.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/cubit/kyc_cubit.dart';
 import 'package:fennac_app/pages/kyc/presentation/widgets/continue_button.dart';
 import 'package:fennac_app/pages/kyc/presentation/widgets/date_picker_widget.dart';
-import 'package:fennac_app/pages/kyc/presentation/widgets/dropdown_field_widget.dart';
-import 'package:fennac_app/pages/kyc/presentation/widgets/gender_selection_widget.dart';
+import 'package:fennac_app/reusable_widgets/dropdown_field_widget.dart';
+import 'package:fennac_app/reusable_widgets/gender_selection_widget.dart';
 import 'package:fennac_app/routes/routes_imports.gr.dart';
 import 'package:fennac_app/widgets/custom_sized_box.dart';
 import 'package:fennac_app/widgets/custom_text.dart';
@@ -111,7 +113,7 @@ class _KycScreenState extends State<KycScreen> {
                             subtitle: 'Choose all that describe you best.',
                             selectedValues:
                                 _kycCubit.selectedSexualOrientations,
-                            options: _kycCubit.sexualOrientations,
+                            options: DummyConstants.sexualOrientations,
                             selectionType: SelectionType.multiple,
                             onMultipleSelected: (values) {
                               _kycCubit.selectSexualOrientations(values);
@@ -125,7 +127,7 @@ class _KycScreenState extends State<KycScreen> {
                             label: 'Your Pronouns',
                             subtitle: 'Select what feels right for you.',
                             selectedValue: _kycCubit.selectedPronoun,
-                            options: _kycCubit.pronouns,
+                            options: DummyConstants.pronouns,
                             selectionType: SelectionType.single,
                             onSelected: (value) {
                               _kycCubit.selectPronouns(value);
