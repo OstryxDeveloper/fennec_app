@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:fennac_app/app/constants/dummy_constants.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/core/di_container.dart';
@@ -205,7 +206,7 @@ class _KycPromptScreenState extends State<KycPromptScreen> {
                                     ),
                                     CustomSizedBox(height: 16),
                                     // Predefined Prompts
-                                    ..._kycPromptCubit.predefinedPrompts.map((
+                                    ...DummyConstants.predefinedPrompts.map((
                                       prompt,
                                     ) {
                                       return PromptCard(

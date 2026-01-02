@@ -193,4 +193,15 @@ class DummyConstants {
           'A space for artists, writers, and creators to collaborate and inspire.',
     ),
   ];
+  // List of predefined prompts
+  static final List<String> predefinedPrompts = [
+    'A perfect weekend for me looks like...',
+    'The most spontaneous thing I\'ve done...',
+    'My friends describe me as...',
+    'Two truths and a lie...',
+    'What I\'d bring to a group trip...',
+    'The fastest way to make me smile...',
+    'How my group describes me in one word...',
+    'My ideal group activity is...',
+  ];
 }

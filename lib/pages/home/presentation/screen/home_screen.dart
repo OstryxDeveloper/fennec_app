@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:fennac_app/app/constants/app_enums.dart';
 import 'package:fennac_app/app/constants/dummy_constants.dart';
 import 'package:fennac_app/app/constants/media_query_constants.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
@@ -370,7 +371,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   context: context,
                   backgroundColor: Colors.transparent,
                   isScrollControlled: true,
-                  builder: (context) => const SendPokeBottomSheet(),
+                  builder: (context) => SendPokeBottomSheet(
+                    pokeType: PokeType.floating,
+                    image: homeCubit.selectedProfile?.images?.first,
+                    promptTitle: homeCubit.selectedProfile?.promptTitle,
+                    promptAnswer: homeCubit.selectedProfile?.promptAnswer,
+                  ),
                 );
               },
               child: Container(

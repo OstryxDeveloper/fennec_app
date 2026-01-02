@@ -1,4 +1,6 @@
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:fennac_app/bloc/cubit/imagepicker_cubit.dart';
+import 'package:fennac_app/bloc/cubit/wave_form_cubit.dart';
 import 'package:fennac_app/pages/auth/presentation/bloc/cubit/auth_cubit.dart';
 import 'package:fennac_app/pages/auth/presentation/bloc/cubit/login_cubit.dart';
 import 'package:fennac_app/pages/dashboard/presentation/bloc/cubit/dashboard_cubit.dart';
@@ -17,6 +19,10 @@ class Di {
   final sl = GetIt.I;
 
   Future<void> init() async {
+    // External / controllers
+    sl.registerLazySingleton<WaveformExtractionController>(
+      () => WaveformExtractionController(),
+    );
     // Cubits
     sl.registerLazySingleton<AuthCubit>(() => AuthCubit());
     sl.registerLazySingleton<BackgroundCubit>(() => BackgroundCubit());
@@ -31,6 +37,9 @@ class Di {
     sl.registerLazySingleton<CreateGroupCubit>(() => CreateGroupCubit());
     sl.registerLazySingleton<MoveAbleBackgroundCubit>(
       () => MoveAbleBackgroundCubit(),
+    );
+    sl.registerLazySingleton<WaveformCubit>(
+      () => WaveformCubit(sl<WaveformExtractionController>()),
     );
   }
 }

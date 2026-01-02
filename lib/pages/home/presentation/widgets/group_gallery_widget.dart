@@ -2,10 +2,12 @@ import 'package:fennac_app/app/constants/dummy_constants.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/app/theme/app_emojis.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
+import 'package:fennac_app/bloc/cubit/wave_form_cubit.dart';
 import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:fennac_app/pages/home/presentation/bloc/cubit/home_cubit.dart';
 import 'package:fennac_app/pages/home/presentation/widgets/report_and_block_bottomsheet.dart';
+import 'package:fennac_app/pages/home/presentation/widgets/send_poke_bottomsheet.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/cubit/kyc_prompt_cubit.dart';
 import 'package:fennac_app/pages/kyc/presentation/widgets/prompt_audio_row.dart';
 import 'package:fennac_app/widgets/custom_chips.dart';
@@ -15,6 +17,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_svg/svg.dart';
+
+import '../../../../app/constants/app_enums.dart';
 
 class GroupGalleryWidget extends StatelessWidget {
   const GroupGalleryWidget({super.key});
@@ -196,15 +200,30 @@ class GroupGalleryWidget extends StatelessWidget {
                         Positioned(
                           right: 10,
                           top: 10,
-                          child: Container(
-                            height: 34,
-                            width: 34,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: ColorPalette.primary,
-                              shape: BoxShape.circle,
+                          child: GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                backgroundColor: Colors.transparent,
+                                isScrollControlled: true,
+                                builder: (context) => SendPokeBottomSheet(
+                                  pokeType: PokeType.image,
+                                  image: images[index],
+                                  promptTitle: profile?.promptTitle,
+                                  promptAnswer: profile?.promptAnswer,
+                                ),
+                              );
+                            },
+                            child: Container(
+                              height: 34,
+                              width: 34,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: ColorPalette.primary,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Text(AppEmojis.pointingRight),
                             ),
-                            child: Text(AppEmojis.pointingRight),
                           ),
                         ),
                       ],
@@ -374,6 +393,13 @@ class GroupGalleryWidget extends StatelessWidget {
 final HomeCubit _homeCubit = Di().sl<HomeCubit>();
 
 class _GroupAudioCard extends StatelessWidget {
+  String _formatDuration(int milliseconds) {
+    final duration = Duration(milliseconds: milliseconds);
+    final minutes = duration.inMinutes;
+    final seconds = duration.inSeconds % 60;
+    return '$minutes:${seconds.toString().padLeft(2, '0')}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final KycPromptCubit kycPromptCubit = Di().sl<KycPromptCubit>();
@@ -394,20 +420,55 @@ class _GroupAudioCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'If our group had a theme song...',
-            style: AppTextStyles.bodyLarge(context),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'If our group had a theme song...',
+                style: AppTextStyles.bodyLarge(context),
+              ),
+              GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    backgroundColor: Colors.transparent,
+                    isScrollControlled: true,
+                    builder: (context) => SendPokeBottomSheet(
+                      pokeType: PokeType.audio,
+                      promptTitle: 'If our group had a theme song...',
+                      audioPath:
+                          kycPromptCubit.recordingPath ??
+                          Assets.dummy.audio.group,
+                      audioDuration: kycPromptCubit.recordedDuration,
+                    ),
+                  );
+                },
+                child: Text(
+                  AppEmojis.pointingRight,
+                  style: AppTextStyles.bodyLarge(context),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 14),
-          PromptAudioRow(
-            audioPath: kycPromptCubit.recordingPath ?? "",
-            duration: "0:16",
-            height: 64,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            backgroundColor: ColorPalette.secondary,
-            playButtonColor: ColorPalette.primary,
-            waveformColor: Colors.white,
-            borderRadius: BorderRadius.circular(40),
+          BlocBuilder(
+            bloc: Di().sl<WaveformCubit>(),
+            builder: (context, state) {
+              return PromptAudioRow(
+                audioPath:
+                    kycPromptCubit.recordingPath ?? Assets.dummy.audio.group,
+                duration: kycPromptCubit.recordedDuration,
+                height: 64,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                backgroundColor: ColorPalette.secondary,
+                playButtonColor: ColorPalette.primary,
+                waveformColor: Colors.white,
+                borderRadius: BorderRadius.circular(40),
+              );
+            },
           ),
         ],
       ),
@@ -445,7 +506,24 @@ class _GroupPromptCard extends StatelessWidget {
                 text: prompt ?? "Our group's guilty pleasure ...",
                 style: AppTextStyles.subHeading(context),
               ),
-              Text('\u{1F449}'),
+              GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    backgroundColor: Colors.transparent,
+                    isScrollControlled: true,
+                    builder: (context) => SendPokeBottomSheet(
+                      pokeType: PokeType.text,
+                      promptTitle: prompt,
+                      promptAnswer: answer,
+                    ),
+                  );
+                },
+                child: Text(
+                  AppEmojis.pointingRight,
+                  style: AppTextStyles.bodyLarge(context),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 14),

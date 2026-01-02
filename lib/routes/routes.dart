@@ -6,7 +6,7 @@ class AppRouter extends RootStackRouter {
   List<AutoRoute> get routes => [
     CustomRoute(
       page: SplashRoute.page,
-      initial: true,
+      // initial: true,
       transitionsBuilder: AppTransitions.fade,
       barrierColor: Colors.transparent,
       duration: const Duration(milliseconds: 300),
@@ -20,7 +20,7 @@ class AppRouter extends RootStackRouter {
 
     CustomRoute(
       page: DashboardRoute.page,
-      // initial: true,
+      initial: true,
       barrierColor: Colors.transparent,
       transitionsBuilder: AppTransitions.noTransition,
     ),
