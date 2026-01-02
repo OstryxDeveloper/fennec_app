@@ -108,15 +108,11 @@ class AudioModeWidget extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: _kycPromptCubit.recordedWaveformData.map((sample) {
-                    // Map 0..100 or 0..1 to visual height (8..32)
-                    final normalized = sample > 1.0 ? sample / 100.0 : sample;
-                    final boosted = (normalized * 1.25).clamp(0.0, 1.0);
-                    final barHeight = (8 + (24 * boosted)).clamp(8.0, 32.h);
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 1),
                       child: Container(
                         width: 3,
-                        height: barHeight,
+                        height: sample,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(1.5),

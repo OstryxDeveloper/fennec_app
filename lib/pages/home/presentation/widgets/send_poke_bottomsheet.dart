@@ -1,9 +1,16 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:fennac_app/app/constants/app_enums.dart';
 import 'package:fennac_app/app/constants/media_query_constants.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
+import 'package:fennac_app/app/theme/app_emojis.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
+import 'package:fennac_app/helpers/gradient_toast.dart';
 import 'package:fennac_app/pages/home/presentation/bloc/cubit/home_cubit.dart';
+import 'package:fennac_app/pages/kyc/presentation/widgets/prompt_audio_row.dart';
+import 'package:fennac_app/reusable_widgets/animated_background_container.dart';
+import 'package:fennac_app/widgets/custom_bottom_sheet.dart';
 import 'package:fennac_app/widgets/custom_elevated_button.dart';
 import 'package:fennac_app/widgets/custom_sized_box.dart';
 import 'package:fennac_app/widgets/custom_text.dart';
@@ -13,7 +20,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
 class SendPokeBottomSheet extends StatefulWidget {
-  const SendPokeBottomSheet({super.key});
+  final String? image;
+  final PokeType pokeType;
+  final String? promptTitle;
+  final String? promptAnswer;
+  final String? audioPath;
+  final String? audioDuration;
+  final List<double>? waveformData;
+
+  const SendPokeBottomSheet({
+    super.key,
+    this.image,
+    required this.pokeType,
+    this.promptTitle,
+    this.promptAnswer,
+    this.audioPath,
+    this.audioDuration,
+    this.waveformData,
+  });
 
   @override
   State<SendPokeBottomSheet> createState() => _SendPokeBottomSheetState();
@@ -22,6 +46,7 @@ class SendPokeBottomSheet extends StatefulWidget {
 class _SendPokeBottomSheetState extends State<SendPokeBottomSheet> {
   late final TextEditingController _messageController;
   final _homeCubit = Di().sl<HomeCubit>();
+  final ValueNotifier<bool> _blurNotifier = ValueNotifier(false);
 
   @override
   void initState() {
@@ -35,16 +60,27 @@ class _SendPokeBottomSheetState extends State<SendPokeBottomSheet> {
     super.dispose();
   }
 
-  void _sendPoke() {
-    // Validation: at least one character or message is optional
+  Future<void> _sendPoke() async {
     if (_messageController.text.trim().isNotEmpty) {
-      // Send poke with message
-      debugPrint('Sending poke with message: ${_messageController.text}');
+      Navigator.pop(context);
+      await CustomBottomSheet.show(
+        blurNotifier: _blurNotifier,
+        context: context,
+        title: 'Poke Sent!',
+        description: "Let's see if they poke back.",
+        buttonText: 'Done',
+        onButtonPressed: () {
+          AutoRouter.of(context).pop();
+        },
+        icon: AnimatedBackgroundContainer(
+          icon: Assets.icons.checkGreen.path,
+          isPng: true,
+        ),
+      );
     } else {
-      // Send poke without message
-      debugPrint('Sending poke without message');
+      VxToast.show(message: 'Please enter a message to send a poke.');
+      Navigator.pop(context);
     }
-    Navigator.pop(context);
   }
 
   @override
@@ -70,90 +106,28 @@ class _SendPokeBottomSheetState extends State<SendPokeBottomSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Profile Section
               BlocBuilder(
                 bloc: _homeCubit,
                 builder: (context, state) {
                   final profile = _homeCubit.selectedProfile;
-                  return Column(
-                    children: [
-                      // Profile Image with Status Icon
-                      Stack(
-                        alignment: Alignment.bottomRight,
-                        children: [
-                          Container(
-                            width: 120,
-                            height: 120,
-                            decoration: BoxDecoration(shape: BoxShape.circle),
-                            child: ClipOval(
-                              child: Image.asset(
-                                profile?.images?.first ?? '',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: ColorPalette.primary,
-                              border: Border.all(color: Colors.white, width: 2),
-                            ),
-                            child: SvgPicture.asset(
-                              Assets.icons.fork.path,
-                              width: 20,
-                              height: 20,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const CustomSizedBox(height: 16),
-                      // Name and Age with Verified Badge
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          AppText(
-                            textAlign: TextAlign.center,
-                            text: '${profile?.name}, ${profile?.age}',
-                            style: AppTextStyles.h3(
-                              context,
-                            ).copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(width: 6),
-                          SvgPicture.asset(
-                            Assets.icons.verified.path,
-                            height: 24,
-                            width: 24,
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
+                  return _buildPokeContent(context, profile);
                 },
               ),
-              const CustomSizedBox(height: 24),
-
-              // Message Section Label
+              const CustomSizedBox(height: 32),
               CustomLabelTextField(
                 label: 'Add a short message',
                 controller: _messageController,
-
                 hintText: 'Type here...',
+                filled: false,
+                maxLines: 2,
+                labelStyle: AppTextStyles.inputLabel(context),
               ),
-
               const CustomSizedBox(height: 24),
-
-              // Info Banner
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.1),
-                    width: 1,
-                  ),
+                  color: ColorPalette.primary.withValues(alpha: 0.4),
+                  borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(
                   children: [
@@ -161,34 +135,229 @@ class _SendPokeBottomSheetState extends State<SendPokeBottomSheet> {
                       child: AppText(
                         text:
                             'Pokes let you stand out! Send one to show interest and invite someone to chat privately.',
-                        style: AppTextStyles.bodyRegular(context).copyWith(
-                          color: Colors.white.withValues(alpha: 0.7),
-                          fontSize: 14,
-                          height: 1.4,
-                        ),
+                        style: AppTextStyles.label(context),
                         maxLines: 3,
                       ),
                     ),
                     const SizedBox(width: 12),
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
-                      child: Icon(
-                        Icons.close,
-                        color: Colors.white.withValues(alpha: 0.5),
-                        size: 20,
+                      child: SvgPicture.asset(
+                        Assets.icons.cancel.path,
+                        width: 24,
+                        height: 24,
                       ),
                     ),
                   ],
                 ),
               ),
               const CustomSizedBox(height: 24),
-
-              // Send Poke Button
               CustomElevatedButton(onTap: _sendPoke, text: 'Send Poke'),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildPokeContent(BuildContext context, dynamic profile) {
+    final promptTitle =
+        widget.promptTitle ??
+        profile?.promptTitle ??
+        'A perfect weekend for me looks like...';
+    final promptAnswer =
+        widget.promptAnswer ??
+        profile?.promptAnswer ??
+        'A morning hike, brunch with friends, and a movie marathon.';
+    final audioPath = widget.audioPath ?? Assets.dummy.audio.group;
+    final audioDuration = widget.audioDuration ?? '00:16';
+    final displayName = profile?.name ?? profile?.firstName ?? 'User';
+    final displayAge = profile?.age != null ? ', ${profile?.age}' : '';
+
+    switch (widget.pokeType) {
+      case PokeType.floating:
+        return Column(
+          children: [
+            Container(
+              width: 120,
+              height: 120,
+              decoration: const BoxDecoration(shape: BoxShape.circle),
+              child: ClipOval(
+                child: Image.asset(
+                  widget.image ?? profile?.images?.first ?? '',
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            const CustomSizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AppText(
+                  textAlign: TextAlign.center,
+                  text: '$displayName$displayAge',
+                  style: AppTextStyles.h3(
+                    context,
+                  ).copyWith(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(width: 6),
+                SvgPicture.asset(
+                  Assets.icons.verified.path,
+                  height: 24,
+                  width: 24,
+                ),
+              ],
+            ),
+          ],
+        );
+
+      case PokeType.audio:
+        return Transform.rotate(
+          angle: -0.05,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: ColorPalette.primary.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AppText(
+                      text: promptTitle,
+                      style: AppTextStyles.subHeading(context),
+                    ),
+                    const CustomSizedBox(height: 12),
+                    PromptAudioRow(
+                      audioPath: audioPath,
+                      duration: audioDuration,
+                      waveformData: widget.waveformData,
+                      height: 64,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      backgroundColor: ColorPalette.secondary,
+                      playButtonColor: ColorPalette.primary,
+                      waveformColor: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+
+      case PokeType.text:
+        return Transform.rotate(
+          angle: -0.05,
+          child: Column(
+            children: [
+              Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  Container(
+                    height: 130,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: ColorPalette.primary.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AppText(
+                          text: promptTitle,
+                          style: AppTextStyles.subHeading(context),
+                        ),
+                        const CustomSizedBox(height: 12),
+                        AppText(
+                          text: promptAnswer,
+                          style: AppTextStyles.h3(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: Container(
+                      width: 48,
+                      height: 48,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: ColorPalette.primary,
+                        border: Border.all(color: Colors.white, width: 2),
+                      ),
+                      child: Text(
+                        AppEmojis.pointingRight,
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.body(context),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+
+      case PokeType.image:
+        return Column(
+          children: [
+            Stack(
+              alignment: Alignment.bottomRight,
+              children: [
+                Transform.rotate(
+                  angle: -0.05,
+                  child: Container(
+                    width: 240,
+                    height: 240,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(color: ColorPalette.primary, width: 1),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(24),
+                      child: Image.asset(
+                        widget.image ?? profile?.images?.first ?? '',
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 40,
+                  height: 40,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: ColorPalette.primary,
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                  child: Text(
+                    AppEmojis.pointingRight,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.body(context),
+                  ),
+                ),
+              ],
+            ),
+            const CustomSizedBox(height: 16),
+            AppText(
+              textAlign: TextAlign.center,
+              text: '$displayName$displayAge',
+              style: AppTextStyles.h3(
+                context,
+              ).copyWith(fontWeight: FontWeight.bold),
+            ),
+          ],
+        );
+    }
   }
 }

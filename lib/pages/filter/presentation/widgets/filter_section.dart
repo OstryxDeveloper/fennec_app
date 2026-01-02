@@ -55,8 +55,8 @@ class FilterSection extends StatelessWidget {
         GestureDetector(
           onTap: () => _showFilterBottomSheet(context),
           child: Container(
-            height: 138,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            height: 110,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
               color: ColorPalette.black.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12),

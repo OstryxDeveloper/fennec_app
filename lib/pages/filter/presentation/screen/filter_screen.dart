@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:fennac_app/app/constants/dummy_constants.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/pages/filter/presentation/bloc/cubit/filter_cubit.dart';
@@ -39,10 +40,10 @@ class _FilterScreenState extends State<FilterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1B2E),
       body: Stack(
         children: [
           MovableBackground(
+            backgroundType: MovableBackgroundType.dark,
             child: SafeArea(
               child: BlocBuilder<FilterCubit, FilterState>(
                 bloc: _filterCubit,
@@ -71,7 +72,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                 const SizedBox(width: 48),
                               ],
                             ),
-                            CustomSizedBox(height: 24),
+                            CustomSizedBox(height: 32),
                           ],
                         ),
                       ),
@@ -87,7 +88,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                 FilterSection(
                                   title:
                                       'What kind of groups are you looking for?',
-                                  options: _filterCubit.categories,
+                                  options: DummyConstants.categories,
                                   selectedOption: _filterCubit.selectedCategory,
                                   onOptionChanged: _filterCubit.updateCategory,
                                   blurNotifier: _isBlurNotifier,
@@ -96,7 +97,7 @@ class _FilterScreenState extends State<FilterScreen> {
 
                                 FilterSection(
                                   title: "Who's in the Group?",
-                                  options: _filterCubit.genders,
+                                  options: DummyConstants.genders,
                                   selectedOption: _filterCubit.selectedGender,
                                   onOptionChanged: _filterCubit.updateGender,
                                   blurNotifier: _isBlurNotifier,
@@ -109,7 +110,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                 CustomSizedBox(height: 12),
                                 FilterSection(
                                   title: 'Choose the ideal group size',
-                                  options: _filterCubit.groupSizes,
+                                  options: DummyConstants.groupSizes,
                                   selectedOption:
                                       _filterCubit.selectedGroupSize,
                                   onOptionChanged: _filterCubit.updateGroupSize,
@@ -123,7 +124,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                 CustomSizedBox(height: 12),
                                 FilterSection(
                                   title: 'Distance Range',
-                                  options: _filterCubit.distances,
+                                  options: DummyConstants.distances,
                                   selectedOption: _filterCubit.selectedDistance,
                                   onOptionChanged: _filterCubit.updateDistance,
                                   blurNotifier: _isBlurNotifier,
@@ -132,7 +133,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                 CustomSizedBox(height: 12),
                                 FilterSection(
                                   title: 'Age Range',
-                                  options: _filterCubit.ageRanges,
+                                  options: DummyConstants.ageRanges,
                                   selectedOption: _filterCubit.selectedAgeRange,
                                   onOptionChanged: _filterCubit.updateAgeRange,
                                   blurNotifier: _isBlurNotifier,

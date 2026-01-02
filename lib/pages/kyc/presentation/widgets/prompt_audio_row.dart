@@ -1,11 +1,18 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
+import 'package:fennac_app/bloc/cubit/wave_form_cubit.dart';
+import 'package:fennac_app/bloc/state/wave_form_state.dart';
+import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:path_provider/path_provider.dart';
 
 class PromptAudioRow extends StatefulWidget {
   final String audioPath;
@@ -39,71 +46,88 @@ class PromptAudioRow extends StatefulWidget {
 
 class _PromptAudioRowState extends State<PromptAudioRow> {
   late final PlayerController _playerController;
+  final waveformExtraction = WaveformExtractionController();
+  final WaveformCubit _waveformCubit = Di().sl<WaveformCubit>();
+
+  Future<void> _loadWaveform() async {
+    await _waveformCubit.loadWaveform(
+      audioPath: widget.audioPath,
+      samples: 200,
+    );
+  }
+
   bool _isPrepared = false;
+
+  int _totalDurationMs = 1;
+  double _progress = 0.0; // 0..1
 
   @override
   void initState() {
     super.initState();
     _playerController = PlayerController();
     _preparePlayer();
+    _listenToPlayer();
+    _loadWaveform();
   }
 
-  List<double> data = [];
-  final waveformExtraction = WaveformExtractionController();
-  Future<void> _preparePlayer() async {
-    try {
-      debugPrint(
-        'Preparing audio player for: ${widget.audioPath} :: waveform samples: ${widget.waveformData?.length ?? 0}',
-      );
+  Future<String> _loadAssetToTemp(String assetPath) async {
+    final tempDir = await getTemporaryDirectory();
+    final fileName = assetPath.split('/').last;
+    final file = File('${tempDir.path}/$fileName');
 
-      // If no audio path, skip player prep and use provided/default waveform
-      if (widget.audioPath.isEmpty) {
-        final source = widget.waveformData ?? _imageWaveform;
-        final normalized = _normalizeWaveform(source);
-        if (mounted) {
-          setState(() {
-            _isPrepared = true;
-            data = normalized;
-          });
-        }
-        return;
-      }
+    if (await file.exists()) return file.path;
 
-      await _playerController.preparePlayer(path: widget.audioPath);
+    final data = await rootBundle.load(assetPath);
+    await file.writeAsBytes(data.buffer.asUint8List(), flush: true);
+    return file.path;
+  }
 
-      List<double> waveformData;
-      if (widget.waveformData != null && widget.waveformData!.isNotEmpty) {
-        waveformData = _normalizeWaveform(widget.waveformData!);
-      } else {
-        waveformData = await waveformExtraction.extractWaveformData(
-          path: widget.audioPath,
-          noOfSamples: 200,
-        );
-      }
+  void _listenToPlayer() {
+    _playerController.onCurrentDurationChanged.listen((ms) {
+      if (!mounted) return;
+      setState(() {
+        _progress = ms / _totalDurationMs;
+      });
+    });
 
-      /// IMPORTANT: force rebuild after waveform extraction
-      if (mounted) {
+    _playerController.onPlayerStateChanged.listen((state) async {
+      if (!mounted) return;
+      if (state == PlayerState.playing) {
+        final duration = await _playerController.getDuration();
         setState(() {
-          _isPrepared = true;
-          data = waveformData;
-          log('Extracted waveform data length: ${data.length}');
+          _totalDurationMs = duration;
+        });
+      } else if (state == PlayerState.stopped) {
+        setState(() {
+          _progress = 0.0;
         });
       }
-    } catch (e) {
-      log("Error preparing player: $e");
-    }
+    });
   }
 
-  /// Normalize incoming waveform samples to 0..1 and apply a small boost.
-  List<double> _normalizeWaveform(List<double> input) {
-    if (input.isEmpty) return input;
-    // Detect typical ranges (0..1 or 0..100)
-    final maxVal = input.reduce((a, b) => a > b ? a : b);
-    final scale = maxVal == 0 ? 1.0 : maxVal;
-    // Map to 0..1 and apply 1.2x visual boost (clamped)
-    return input
-        .map((v) => ((v / scale) * 1.2).clamp(0.0, 1.0))
-        .toList(growable: false);
+  Future<void> _preparePlayer() async {
+    try {
+      if (widget.audioPath.isEmpty) return;
+
+      final isAsset = widget.audioPath.startsWith('assets/');
+      final path = isAsset
+          ? await _loadAssetToTemp(widget.audioPath)
+          : widget.audioPath;
+
+      // 🔥 FAST audio prepare
+      await _playerController.preparePlayer(
+        path: path,
+        shouldExtractWaveform: false,
+      );
+
+      final duration = await _playerController.getDuration();
+      setState(() {
+        _totalDurationMs = duration > 0 ? duration : 1;
+        _isPrepared = true;
+      });
+    } catch (e) {
+      log('Audio prepare error: $e');
+    }
   }
 
   @override
@@ -126,8 +150,19 @@ class _PromptAudioRowState extends State<PromptAudioRow> {
       child: Row(
         children: [
           _buildPlayButton(),
+
           const SizedBox(width: 12),
-          Expanded(child: _buildWaveform(context)),
+          Expanded(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SizedBox(
+                  width: constraints.maxWidth,
+                  height: 32,
+                  child: _buildWaveform(),
+                );
+              },
+            ),
+          ),
           const SizedBox(width: 12),
           Text(widget.duration, style: AppTextStyles.bodySmall(context)),
         ],
@@ -139,9 +174,7 @@ class _PromptAudioRowState extends State<PromptAudioRow> {
     return GestureDetector(
       onTap: () async {
         widget.onPlay?.call();
-
-        // If there is no audio source, just return after callback
-        if (widget.audioPath.isEmpty || !_isPrepared) return;
+        if (!_isPrepared || widget.audioPath.isEmpty) return;
 
         if (_playerController.playerState == PlayerState.playing) {
           await _playerController.pausePlayer();
@@ -162,139 +195,84 @@ class _PromptAudioRowState extends State<PromptAudioRow> {
     );
   }
 
-  Widget _buildWaveform(BuildContext context) {
+  Widget _buildWaveform() {
     if (!_isPrepared) {
       return const SizedBox(height: 34);
     }
 
-    // Compute an inner height based on the container height/padding.
-    final padding =
-        (widget.padding as EdgeInsets?) ??
-        const EdgeInsets.symmetric(horizontal: 12, vertical: 10);
-    final innerHeight = (widget.height - padding.vertical)
-        .clamp(24, widget.height.toInt())
-        .toDouble();
+    return BlocBuilder<WaveformCubit, WaveformState>(
+      bloc: _waveformCubit,
+      buildWhen: (prev, curr) =>
+          prev.waveforms[widget.audioPath] != curr.waveforms[widget.audioPath],
+      builder: (context, state) {
+        final waveform = state.waveforms[widget.audioPath];
 
-    return AudioFileWaveforms(
-      playerController: _playerController,
-      waveformData: data,
-      waveformType: WaveformType.fitWidth,
-      size: Size(double.infinity, innerHeight),
+        if (waveform == null || waveform.isEmpty) {
+          return _waveformPlaceholder();
+        }
 
-      playerWaveStyle: PlayerWaveStyle(
-        showTop: true,
-        fixedWaveColor: widget.waveformColor ?? Colors.white,
-        liveWaveColor: ColorPalette.primary,
-        waveCap: StrokeCap.round,
-        spacing: 4,
-        waveThickness: 2,
+        return _renderWaveform(waveform);
+      },
+    );
+  }
+
+  Widget _renderWaveform(List<double> waveform) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final barCount = waveform.length;
+        const maxVisibleBars = 120;
+        final visibleBars = barCount > maxVisibleBars
+            ? maxVisibleBars
+            : barCount;
+        final barWidth = constraints.maxWidth / visibleBars;
+
+        return GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTapDown: (details) {
+            final dx = details.localPosition.dx.clamp(0, constraints.maxWidth);
+            final ratio = dx / constraints.maxWidth;
+            _playerController.seekTo((_totalDurationMs * ratio).toInt());
+          },
+          onHorizontalDragUpdate: (details) {
+            final dx = details.localPosition.dx.clamp(0, constraints.maxWidth);
+            final ratio = dx / constraints.maxWidth;
+            _playerController.seekTo((_totalDurationMs * ratio).toInt());
+          },
+          child: Row(
+            children: List.generate(visibleBars, (index) {
+              final waveformIndex = (index * barCount / visibleBars).floor();
+              final playedBars = (_progress * visibleBars).floor();
+              final isPlayed = index <= playedBars;
+
+              return SizedBox(
+                width: barWidth,
+                child: Center(
+                  child: Container(
+                    width: barWidth * 0.7,
+                    height: waveform[waveformIndex] * 36,
+                    decoration: BoxDecoration(
+                      color: isPlayed
+                          ? ColorPalette.primary
+                          : (widget.waveformColor ?? Colors.white),
+                      borderRadius: BorderRadius.circular(1.5),
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _waveformPlaceholder() {
+    return Container(
+      height: 34,
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(4),
       ),
     );
   }
 }
-
-// Fallback waveform used when no audio path is provided.
-const List<double> _imageWaveform = [
-  0.16,
-  0.28,
-  0.42,
-  0.56,
-  0.72,
-  0.88,
-  0.98,
-  0.86,
-  0.72,
-  0.58,
-  0.42,
-  0.30,
-  0.18,
-  0.10,
-  0.22,
-  0.38,
-  0.54,
-  0.70,
-  0.86,
-  0.98,
-  0.88,
-  0.72,
-  0.54,
-  0.36,
-  0.24,
-  0.14,
-  0.24,
-  0.38,
-  0.54,
-  0.70,
-  0.86,
-  0.98,
-  0.90,
-  0.78,
-  0.62,
-  0.46,
-  0.32,
-  0.20,
-  0.12,
-  0.24,
-  0.40,
-  0.58,
-  0.74,
-  0.90,
-  0.98,
-  0.88,
-  0.72,
-  0.56,
-  0.40,
-  0.26,
-  0.16,
-  0.16,
-  0.26,
-  0.40,
-  0.56,
-  0.72,
-  0.88,
-  0.98,
-  0.90,
-  0.74,
-  0.58,
-  0.40,
-  0.24,
-  0.14,
-  0.22,
-  0.36,
-  0.54,
-  0.70,
-  0.86,
-  0.98,
-  0.88,
-  0.70,
-  0.52,
-  0.36,
-  0.22,
-  0.12,
-  0.18,
-  0.30,
-  0.42,
-  0.58,
-  0.74,
-  0.90,
-  0.98,
-  0.86,
-  0.70,
-  0.54,
-  0.38,
-  0.24,
-  0.16,
-  0.16,
-  0.24,
-  0.38,
-  0.54,
-  0.70,
-  0.86,
-  0.98,
-  0.88,
-  0.72,
-  0.58,
-  0.42,
-  0.28,
-  0.16,
-];

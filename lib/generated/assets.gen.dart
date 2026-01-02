@@ -122,6 +122,9 @@ class $AssetsDummyGen {
   /// File path: assets/dummy/a6.png
   AssetGenImage get a6 => const AssetGenImage('assets/dummy/a6.png');
 
+  /// Directory path: assets/dummy/audio
+  $AssetsDummyAudioGen get audio => const $AssetsDummyAudioGen();
+
   /// File path: assets/dummy/b1.png
   AssetGenImage get b1 => const AssetGenImage('assets/dummy/b1.png');
 
@@ -652,6 +655,16 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [boysGroup, girlsGroup, mobile];
+}
+
+class $AssetsDummyAudioGen {
+  const $AssetsDummyAudioGen();
+
+  /// File path: assets/dummy/audio/group.mp3
+  String get group => 'assets/dummy/audio/group.mp3';
+
+  /// List of all assets
+  List<String> get values => [group];
 }
 
 class $AssetsImagesBackgroundGen {

@@ -24,6 +24,8 @@ class ImagePickerLoaded extends ImagePickerState {
     : super(mediaList: mediaList ?? const [], errorMessage: null);
 }
 
+class ImagePickerSuccess extends ImagePickerState {}
+
 class ImagePickerError extends ImagePickerState {
   const ImagePickerError(String message)
     : super(mediaList: const [], errorMessage: message);

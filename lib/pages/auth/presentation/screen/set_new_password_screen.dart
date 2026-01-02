@@ -5,6 +5,7 @@ import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:fennac_app/pages/auth/presentation/bloc/cubit/auth_cubit.dart';
 import 'package:fennac_app/pages/auth/presentation/bloc/state/auth_state.dart';
+import 'package:fennac_app/reusable_widgets/animated_background_container.dart';
 import 'package:fennac_app/routes/routes_imports.gr.dart';
 import 'package:fennac_app/widgets/custom_back_button.dart';
 import 'package:fennac_app/widgets/custom_elevated_button.dart';
@@ -54,25 +55,8 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
                               child: CustomBackButton(),
                             ),
                             CustomSizedBox(height: 40),
-                            SizedBox(
-                              width: 100,
-                              height: 100,
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  Lottie.asset(
-                                    Assets.animations.iconBg,
-                                    width: 100,
-                                    height: 100,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  SvgPicture.asset(
-                                    Assets.icons.vector4.path,
-                                    height: 40,
-                                    width: 40,
-                                  ),
-                                ],
-                              ),
+                            AnimatedBackgroundContainer(
+                              icon: Assets.icons.vector4.path,
                             ),
                             CustomSizedBox(height: 40),
                             AppText(

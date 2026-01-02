@@ -1,3 +1,4 @@
+import 'package:fennac_app/app/constants/dummy_constants.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/core/di_container.dart';
@@ -41,7 +42,7 @@ class _GenderSelectionWidgetState extends State<GenderSelectionWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final genderOptions = widget.genders ?? _kycCubit.genders;
+    final genderOptions = widget.genders ?? DummyConstants.genders;
 
     return GridView.builder(
       shrinkWrap: true,

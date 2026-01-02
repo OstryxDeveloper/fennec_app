@@ -1,3 +1,4 @@
+import 'package:fennac_app/app/constants/dummy_constants.dart';
 import 'package:fennac_app/app/theme/app_emojis.dart';
 import 'package:fennac_app/pages/filter/presentation/bloc/state/filter_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,65 +17,6 @@ class FilterCubit extends Cubit<FilterState> {
   int selectedAgeMax = 35;
   List<String> selectedSexualOrientations = [];
   String? selectedPronoun;
-
-  // Available options
-  final List<String> categories = [
-    '${AppEmojis.backpack} Travel & Adventure',
-    '${AppEmojis.musicalNote} Music & Arts',
-    '${AppEmojis.hamburger} Food & Drink',
-    '${AppEmojis.yoga} Wellness & Lifestyle',
-    '${AppEmojis.football} Sports & Outdoors',
-    '${AppEmojis.partyPopper} Events & Parties',
-    '${AppEmojis.gameController} Tech & Gaming',
-    '${AppEmojis.books} Study & Learning',
-  ];
-
-  final List<String> genders = ['All genders', 'Male', 'Female', 'Non-binary'];
-
-  final List<String> groupSizes = [
-    'Max 3 people',
-    'Max 5 people',
-    'Max 10 people',
-    'Any size',
-  ];
-
-  final List<String> distances = [
-    'Max 5 miles',
-    'Max 10 miles',
-    'Max 15 miles',
-    'Max 25 miles',
-    'Any distance',
-  ];
-
-  final List<String> ageRanges = [
-    '18 - 25 years old',
-    '25 - 35 years old',
-    '35 - 45 years old',
-    '45 - 55 years old',
-    '55+ years old',
-  ];
-
-  final List<String> sexualOrientations = [
-    'Straight',
-    'Gay',
-    'Lesbian',
-    'Bisexual',
-    'Pansexual',
-    'Asexual',
-    'Queer',
-    'Questioning',
-    'Prefer not to say',
-  ];
-
-  final List<String> pronouns = [
-    'He/Him',
-    'She/Her',
-    'They/Them',
-    'He/They',
-    'She/They',
-    'Any pronouns',
-    'Prefer not to say',
-  ];
 
   // Filter update methods
   void updateCategory(String category) {
@@ -145,7 +87,7 @@ class FilterCubit extends Cubit<FilterState> {
   void resetFilters() {
     emit(FilterLoading());
 
-    selectedCategory = categories.first;
+    selectedCategory = DummyConstants.categories.first;
     selectedGender = 'All genders';
     selectedGroupSize = 'Max 3 people';
     selectedGroupSizeValue = 3;

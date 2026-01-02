@@ -1,3 +1,4 @@
+import 'package:fennac_app/app/constants/app_enums.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/core/di_container.dart';

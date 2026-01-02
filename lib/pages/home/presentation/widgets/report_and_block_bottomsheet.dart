@@ -2,6 +2,7 @@ import 'package:fennac_app/app/constants/media_query_constants.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
+import 'package:fennac_app/reusable_widgets/animated_background_container.dart';
 import 'package:fennac_app/widgets/custom_elevated_button.dart';
 import 'package:fennac_app/widgets/custom_sized_box.dart';
 import 'package:fennac_app/widgets/custom_text.dart';
@@ -52,26 +53,7 @@ class _ReportAndBlockBottomSheetState extends State<ReportAndBlockBottomSheet> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(
-                width: 100,
-                height: 100,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Lottie.asset(
-                      Assets.animations.iconBg,
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
-                    ),
-                    SvgPicture.asset(
-                      Assets.icons.slash.path,
-                      height: 44,
-                      width: 44,
-                    ),
-                  ],
-                ),
-              ),
+              AnimatedBackgroundContainer(icon: Assets.icons.slash.path),
               const CustomSizedBox(height: 24),
 
               AppText(

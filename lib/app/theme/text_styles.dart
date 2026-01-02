@@ -53,6 +53,14 @@ class AppTextStyles {
         letterSpacing: 0,
       );
 
+  static TextStyle label(BuildContext context) => _sfProTextStyle().copyWith(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontStyle: FontStyle.normal,
+    height: 1.0,
+    letterSpacing: -0.02 * 14,
+  );
+
   static TextStyle body(BuildContext context) => _sfProTextStyle().copyWith(
     fontSize: 16,
     fontWeight: FontWeight.w400,

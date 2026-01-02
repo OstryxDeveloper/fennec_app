@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:fennac_app/app/constants/dummy_constants.dart';
 import 'package:fennac_app/app/constants/media_query_constants.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
@@ -33,7 +34,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
   void _initializeWidget() {
     _currentDate = widget.initialDate ?? DateTime(2003, 4, 16);
     _kycCubit.selectedDate = _currentDate;
-    _months = _kycCubit.months;
+    _months = DummyConstants.months;
     _initializeControllers();
   }
 

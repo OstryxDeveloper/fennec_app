@@ -65,6 +65,7 @@ flutter:
     - assets/animations/
     - assets/images/background/
     - assets/dummy/
+    - assets/dummy/audio/
 
   fonts:
     - family: SFPro

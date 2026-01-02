@@ -79,7 +79,9 @@ class KycMatchScreen extends StatelessWidget {
                 Expanded(
                   child: CustomOutlinedButton(
                     onPressed: () {
-                      AutoRouter.of(context).push(KycPromptRoute());
+                      AutoRouter.of(
+                        context,
+                      ).push(KycPromptRoute(showSkipButton: true));
                     },
                     text: 'Skip',
                     width: double.infinity,
@@ -89,7 +91,9 @@ class KycMatchScreen extends StatelessWidget {
                 Expanded(
                   child: ContinueButton(
                     onTap: () {
-                      AutoRouter.of(context).push(KycPromptRoute());
+                      AutoRouter.of(
+                        context,
+                      ).push(KycPromptRoute(showSkipButton: true));
                     },
                     text: 'Continue',
                   ),

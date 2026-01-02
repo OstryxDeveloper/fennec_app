@@ -1,3 +1,4 @@
+import 'package:fennac_app/app/constants/app_enums.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:fennac_app/pages/homelanding/presentation/bloc/state/home_landing_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,5 +29,3 @@ class HomeLandingCubit extends Cubit<HomeLandingState> {
     emit(HomeLandingLoaded());
   }
 }
-
-enum InvitationStatus { pending, accepted, declined }

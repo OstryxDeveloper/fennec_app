@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/bloc/state/imagepicker_state.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +25,7 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
   final ImagePicker _imagePicker = ImagePicker();
   final ImageCropper _imageCropper = ImageCropper();
   List<MediaItem> mediaList = [];
+  File? selectedImage;
 
   /// Force square cropping for every image selection.
   Future<String?> _cropToSquare(String sourcePath) async {
@@ -80,13 +83,16 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
             );
 
             // Add to specific container if provided, otherwise append
-            if (containerIndex != null &&
-                containerIndex >= 0 &&
-                containerIndex < maxMediaItems) {
-              if (containerIndex < mediaList.length) {
-                mediaList[containerIndex] = newItem;
-              } else {
-                mediaList.add(newItem);
+            if (containerIndex != null) {
+              if (containerIndex == -1) {
+                selectedImage = File(newItem.path);
+              } else if (containerIndex >= 0 &&
+                  containerIndex < maxMediaItems) {
+                if (containerIndex < mediaList.length) {
+                  mediaList[containerIndex] = newItem;
+                } else {
+                  mediaList.add(newItem);
+                }
               }
             } else {
               mediaList.add(newItem);
@@ -197,10 +203,31 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
     }
   }
 
+  Future<void> pickImageFromGallery() async {
+    emit(ImagePickerLoading());
+    try {
+      final XFile? pickedFile = await _imagePicker.pickImage(
+        source: ImageSource.gallery,
+        requestFullMetadata: false,
+      );
+
+      if (pickedFile != null) {
+        selectedImage = File(pickedFile.path);
+        emit(ImagePickerSuccess());
+      }
+    } catch (e) {
+      emit(ImagePickerError('Error picking image from gallery: $e'));
+
+      debugPrint('Error picking image from gallery: $e');
+    }
+  }
+
   /// Remove media item by ID or by index
   void removeMedia(String? id, {int? index}) {
     emit(ImagePickerLoading());
-    if (id != null) {
+    if (id == 'header_image' || index == -1) {
+      selectedImage = null;
+    } else if (id != null) {
       mediaList.removeWhere((item) => item.id == id);
     } else if (index != null && index >= 0 && index < mediaList.length) {
       mediaList.removeAt(index);

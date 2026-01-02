@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/scheduler.dart';
@@ -20,19 +22,12 @@ class MoveAbleBackgroundCubit extends Cubit<BackgroundState> {
       vsync: const AppTickerProvider(),
       duration: const Duration(seconds: 20),
     )..repeat(reverse: true);
-
     animation = CurvedAnimation(parent: controller, curve: Curves.easeInOut);
   }
 
   void setManualProgress(double value) {
     controller.value = value;
     emit(BackgroundUpdated(manualProgress: value));
-  }
-
-  @override
-  Future<void> close() {
-    controller.dispose();
-    return super.close();
   }
 }
 

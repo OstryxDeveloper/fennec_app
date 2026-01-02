@@ -1,3 +1,4 @@
+import 'package:fennac_app/app/constants/dummy_constants.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/core/di_container.dart';
@@ -20,7 +21,7 @@ class LifestyleSelectionWidget extends StatelessWidget {
         return Wrap(
           spacing: 12,
           runSpacing: 12,
-          children: cubit.lifestyles.map((lifestyle) {
+          children: DummyConstants.lifestyles.map((lifestyle) {
             final isSelected = cubit.selectedLifestyles.contains(lifestyle);
 
             return InkWell(

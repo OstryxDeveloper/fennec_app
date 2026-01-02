@@ -5,6 +5,7 @@ import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/state/kyc_prompt_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 
@@ -22,18 +23,6 @@ class AudioPromptData {
 
 class KycPromptCubit extends Cubit<KycPromptState> {
   KycPromptCubit() : super(KycPromptInitial());
-
-  // List of predefined prompts
-  final List<String> predefinedPrompts = [
-    'A perfect weekend for me looks like...',
-    'The most spontaneous thing I\'ve done...',
-    'My friends describe me as...',
-    'Two truths and a lie...',
-    'What I\'d bring to a group trip...',
-    'The fastest way to make me smile...',
-    'How my group describes me in one word...',
-    'My ideal group activity is...',
-  ];
 
   final TextEditingController promptController = TextEditingController();
   final TextEditingController controller = TextEditingController();
@@ -188,16 +177,64 @@ class KycPromptCubit extends Cubit<KycPromptState> {
         .onAmplitudeChanged(const Duration(milliseconds: 60))
         .listen((amp) {
           emit(KycPromptLoading());
-          // Normalize amplitude for waveform (0–100)
-          final normalized = amp.current.clamp(-60, 0);
-          final waveValue = ((normalized + 60) / 60) * 100;
-          recordedWaveformData.add(waveValue);
-          if (recordedWaveformData.length > 100) {
-            recordedWaveformData.removeAt(0);
+          final barHeight = processWaveform(amp.current);
+          recordedWaveformData.add(barHeight);
+
+          // Keep buffer small (performance)
+          if (recordedWaveformData.length > 120) {
+            recordedWaveformData.removeAt(30);
           }
-          debugPrint('Amplitude: ${amp.current}, WaveValue: $waveValue');
+
+          // // Normalize amplitude for waveform (0–100)
+          // final normalized = amp.current.clamp(-60, 0);
+          // final waveValue = ((normalized + 60) / 60) * 100;
+          // final simplifying = waveValue > 1.0 ? waveValue / 100.0 : waveValue;
+          // final boosted = (simplifying * 1.25).clamp(0.0, 1.0);
+          // final barHeight = (8 + (24 * boosted)).clamp(8.0, 32.h);
+          // recordedWaveformData.add(barHeight);
+          // // if (recordedWaveformData.length > 150) {
+          // //   recordedWaveformData.removeAt(0);
+          // // }
+          debugPrint('Amplitude: ${amp.current}, WaveValue: $barHeight');
           emit(KycPromptLoaded());
         });
+  }
+
+  double _smoothedValue = 0.0;
+  double _previousHeight = 0.0;
+
+  double silenceThreshold = -55.0;
+  double smoothingFactor = 0.2; // 0.1–0.3 (lower = smoother)
+  double decayFactor = 0.85;
+
+  double processWaveform(double ampDb) {
+    // 1️⃣ Silence detection
+    if (ampDb <= silenceThreshold) {
+      _previousHeight *= decayFactor;
+      return _previousHeight < 0.5 ? 0.0 : _previousHeight;
+    }
+
+    // 2️⃣ Normalize (-60 → 0 dB → 0 → 1)
+    final normalized = ((ampDb.clamp(-60.0, 0.0) + 60) / 60);
+
+    // 3️⃣ Smooth (EMA)
+    _smoothedValue =
+        (_smoothedValue * (1 - smoothingFactor)) +
+        (normalized * smoothingFactor);
+
+    // 4️⃣ Boost like WhatsApp
+    final boosted = (_smoothedValue * 1.3).clamp(0.0, 1.0);
+
+    // 5️⃣ Convert to height
+    final targetHeight = 32.h * boosted;
+
+    // 6️⃣ Decay animation (fast rise, slow fall)
+    final height = targetHeight > _previousHeight
+        ? targetHeight
+        : _previousHeight * decayFactor;
+
+    _previousHeight = height;
+    return height;
   }
 
   /// Pause an active recording
@@ -343,21 +380,26 @@ class KycPromptCubit extends Cubit<KycPromptState> {
 
   /// Capture waveform data from the recorder controller
   void _captureWaveformData() {
-    if (_recorderController.waveData.isNotEmpty) {
-      final maxAmplitude = _recorderController.waveData
-          .reduce((a, b) => a > b ? a : b)
-          .toDouble();
-      recordedWaveformData = List<double>.from(
-        _recorderController.waveData.map(
-          (e) => maxAmplitude > 0 ? e / maxAmplitude : 0.0,
-        ),
-      );
-    } else {
-      recordedWaveformData = List.generate(100, (i) {
-        final t = i / 100.0;
-        return (0.3 + 0.7 * (1 - (2 * t - 1).abs())) *
-            (0.5 + 0.5 * (i % 3) / 3);
-      });
+    // if (_recorderController.waveData.isNotEmpty) {
+    //   final maxAmplitude = _recorderController.waveData
+    //       .reduce((a, b) => a > b ? a : b)
+    //       .toDouble();
+    //   recordedWaveformData = List<double>.from(
+    //     _recorderController.waveData.map(
+    //       (e) => maxAmplitude > 0 ? e / maxAmplitude : 0.0,
+    //     ),
+    //   );
+    // } else {
+    //   recordedWaveformData = List.generate(100, (i) {
+    //     final t = i / 100.0;
+    //     return (0.3 + 0.7 * (1 - (2 * t - 1).abs())) *
+    //         (0.5 + 0.5 * (i % 3) / 3);
+    //   });
+    // }
+
+    if (recordedWaveformData.length < 120) {
+      final additionalSamples = 120 - recordedWaveformData.length;
+      recordedWaveformData.addAll(List<double>.filled(additionalSamples, 1));
     }
 
     // Update duration from timer
