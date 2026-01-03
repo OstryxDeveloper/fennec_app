@@ -139,10 +139,7 @@ class _OnBoardingScreen1State extends State<OnBoardingScreen1>
                 animation: _buttonController,
                 builder: (context, child) {
                   return Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 24.w,
-                      vertical: 20.h,
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

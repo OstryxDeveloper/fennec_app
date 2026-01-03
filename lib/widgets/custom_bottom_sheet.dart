@@ -10,7 +10,7 @@ class CustomBottomSheet extends StatelessWidget {
   final String title;
   final String description;
   final String buttonText;
-  final VoidCallback onButtonPressed;
+  final VoidCallback? onButtonPressed;
   final Widget? icon;
   final String? secondaryButtonText;
   final VoidCallback? onSecondaryButtonPressed;
@@ -20,7 +20,7 @@ class CustomBottomSheet extends StatelessWidget {
     required this.title,
     required this.description,
     required this.buttonText,
-    required this.onButtonPressed,
+    this.onButtonPressed,
     this.icon,
     this.secondaryButtonText,
     this.onSecondaryButtonPressed,
@@ -31,7 +31,7 @@ class CustomBottomSheet extends StatelessWidget {
     required String title,
     required String description,
     required String buttonText,
-    required VoidCallback onButtonPressed,
+    VoidCallback? onButtonPressed,
     Widget? icon,
     Color? barrierColor,
     String? secondaryButtonText,
@@ -49,7 +49,12 @@ class CustomBottomSheet extends StatelessWidget {
           title: title,
           description: description,
           buttonText: buttonText,
-          onButtonPressed: onButtonPressed,
+          onButtonPressed: () {
+            if (onButtonPressed != null) {
+              onButtonPressed();
+            }
+            Navigator.of(context).maybePop();
+          },
           icon: icon,
           secondaryButtonText: secondaryButtonText,
           onSecondaryButtonPressed: onSecondaryButtonPressed,

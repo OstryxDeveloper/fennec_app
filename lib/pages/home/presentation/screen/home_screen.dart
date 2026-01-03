@@ -364,7 +364,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       floatingActionButton: BlocBuilder(
         bloc: homeCubit,
         builder: (context, state) {
-          if (homeCubit.selectedProfile != null) {
+          if (homeCubit.selectedProfile != null && !isEnd) {
             return GestureDetector(
               onTap: () {
                 showModalBottomSheet(

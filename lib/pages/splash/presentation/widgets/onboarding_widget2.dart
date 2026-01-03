@@ -37,7 +37,7 @@ class OnboardingWidget2 extends StatelessWidget {
                       context,
                     ).copyWith(fontWeight: FontWeight.bold),
                   ),
-                  CustomSizedBox(height: 20),
+                  CustomSizedBox(height: 16),
                   AppText(
                     text:
                         'Dive into a shared chat room,\t\tHave fun with your friends',

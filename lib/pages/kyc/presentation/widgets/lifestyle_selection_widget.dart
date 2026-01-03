@@ -47,9 +47,8 @@ class LifestyleSelectionWidget extends StatelessWidget {
                 ),
                 child: AppText(
                   text: lifestyle,
-                  style: AppTextStyles.bodyLarge(context).copyWith(
+                  style: AppTextStyles.chipLabel(context).copyWith(
                     color: Colors.white,
-                    fontSize: 14,
                     fontWeight: isSelected
                         ? FontWeight.w600
                         : FontWeight.normal,

@@ -92,11 +92,11 @@ class _MovableBackgroundState extends State<MovableBackground>
                 },
                 child: GestureDetector(
                   onPanUpdate: (details) {
-                    final dx = (details.localPosition.dx / size.width).clamp(
-                      0.0,
-                      1.0,
-                    );
-                    _cubit.setManualProgress(dx);
+                    // final dx = (details.localPosition.dx / size.width).clamp(
+                    //   0.0,
+                    //   1.0,
+                    // );
+                    // _cubit.setManualProgress(dx);
                   },
                   child: SizedBox.expand(
                     child: Stack(

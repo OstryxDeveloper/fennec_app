@@ -20,7 +20,7 @@ class AppRouter extends RootStackRouter {
 
     CustomRoute(
       page: DashboardRoute.page,
-      initial: true,
+      // initial: true,
       barrierColor: Colors.transparent,
       transitionsBuilder: AppTransitions.noTransition,
     ),
@@ -104,6 +104,8 @@ class AppRouter extends RootStackRouter {
 
     CustomRoute(
       page: KycRoute.page,
+      initial: true,
+
       transitionsBuilder: AppTransitions.slideRight,
       barrierColor: Colors.transparent,
       duration: const Duration(milliseconds: 400),

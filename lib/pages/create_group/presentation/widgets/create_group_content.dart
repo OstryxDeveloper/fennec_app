@@ -25,11 +25,13 @@ class CreateGroupContent extends StatefulWidget {
 class _CreateGroupContentState extends State<CreateGroupContent> {
   final Set<String> _selectedInterests = {};
   final TextEditingController _bioController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   final cubit = Di().sl<CreateGroupCubit>();
 
   @override
   void dispose() {
     _bioController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -95,7 +97,8 @@ class _CreateGroupContentState extends State<CreateGroupContent> {
           ),
           CustomLabelTextField(
             controller: _bioController,
-            keyboardType: TextInputType.emailAddress,
+            scrollController: _scrollController,
+            keyboardType: TextInputType.multiline,
             hintText: 'Type here...',
             hintStyle: AppTextStyles.body(
               context,

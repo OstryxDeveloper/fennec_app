@@ -60,7 +60,6 @@ class _KycScreenState extends State<KycScreen> {
                             style: AppTextStyles.h1(context).copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              fontSize: 32,
                             ),
                           ),
                           CustomSizedBox(height: 16),

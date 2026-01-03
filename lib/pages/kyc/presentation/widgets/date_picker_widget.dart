@@ -24,6 +24,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
   FixedExtentScrollController? _yearController;
   DateTime? _currentDate;
   List<String> _months = [];
+  int _previousDaysInMonth = 31;
 
   @override
   void initState() {
@@ -35,6 +36,11 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
     _currentDate = widget.initialDate ?? DateTime(2003, 4, 16);
     _kycCubit.selectedDate = _currentDate;
     _months = DummyConstants.months;
+    _previousDaysInMonth = DateTime(
+      _currentDate!.year,
+      _currentDate!.month + 1,
+      0,
+    ).day;
     _initializeControllers();
   }
 
@@ -64,6 +70,11 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
     if (widget.initialDate != oldWidget.initialDate) {
       _currentDate = widget.initialDate ?? DateTime(2003, 4, 16);
       _kycCubit.selectedDate = _currentDate;
+      _previousDaysInMonth = DateTime(
+        _currentDate!.year,
+        _currentDate!.month + 1,
+        0,
+      ).day;
       _initializeControllers();
       if (mounted) setState(() {});
     }
@@ -88,14 +99,8 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    final daysInMonth = DateTime(
-      _currentDate!.year,
-      _currentDate!.month + 1,
-      0,
-    ).day;
     final currentYear = DateTime.now().year;
     final years = List.generate(100, (i) => currentYear - i);
-    final days = List.generate(daysInMonth, (i) => i + 1);
 
     return Container(
       height: getWidth(context) > 500 ? 250 : 200,
@@ -120,7 +125,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
                     Expanded(
                       child: _buildPickerColumn(
                         controller: _dayController!,
-                        items: days,
+                        maxItems: _previousDaysInMonth,
                         formatter: (value) => value.toString().padLeft(2, '0'),
                         onChanged: () => _updateDate(),
                       ),
@@ -170,31 +175,35 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
     final year = DateTime.now().year - _yearController!.selectedItem;
 
     try {
-      final newDate = DateTime(year, month, day);
+      // Calculate days in the new month/year
+      final daysInMonth = DateTime(year, month + 1, 0).day;
+
+      // Adjust day if it exceeds the days in the new month
+      final validDay = day > daysInMonth ? daysInMonth : day;
+
+      final newDate = DateTime(year, month, validDay);
       _currentDate = newDate;
       _kycCubit.selectedDate = newDate;
 
-      // Ensure day is valid for the selected month/year
-      final daysInMonth = DateTime(year, month + 1, 0).day;
-      if (day > daysInMonth) {
-        _dayController!.jumpToItem(daysInMonth - 1);
-        _updateDate();
-        return;
+      // If the day was adjusted, smoothly animate to the valid day
+      if (day > daysInMonth &&
+          _dayController!.selectedItem != daysInMonth - 1) {
+        _dayController!.animateToItem(
+          daysInMonth - 1,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
       }
 
       if (widget.onDateSelected != null) {
         widget.onDateSelected!(newDate);
       }
 
-      // Update the days list if month or year changed
-      final newDaysInMonth = DateTime(year, month + 1, 0).day;
-      if (newDaysInMonth != (_dayController!.selectedItem + 1)) {
-        // Keep the same day if possible, otherwise use the last day
-        final newDay = day <= newDaysInMonth ? day : newDaysInMonth;
+      // Update the UI if the number of days in the month changed
+      if (daysInMonth != _previousDaysInMonth) {
+        _previousDaysInMonth = daysInMonth;
         if (mounted) {
-          setState(() {
-            _dayController!.jumpToItem(newDay - 1);
-          });
+          setState(() {});
         }
       }
     } catch (e) {
@@ -243,43 +252,59 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
 
   Widget _buildPickerColumn<T>({
     required FixedExtentScrollController controller,
-    required List<T> items,
-    required String Function(T) formatter,
+    List<T>? items,
+    int? maxItems,
+    required String Function(dynamic) formatter,
     required VoidCallback onChanged,
   }) {
-    return ListWheelScrollView.useDelegate(
-      controller: controller,
-      itemExtent: 55,
-      physics: const FixedExtentScrollPhysics(),
-      onSelectedItemChanged: (_) => onChanged(),
-      perspective: 0.002,
-      diameterRatio: 1.2,
-      squeeze: 0.85,
-      useMagnifier: false,
-      magnification: 1.0,
-      childDelegate: ListWheelChildBuilderDelegate(
-        builder: (context, index) {
-          final item = items[index % items.length];
-          final isSelected = index == controller.selectedItem;
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, _) {
+        return ListWheelScrollView.useDelegate(
+          controller: controller,
+          itemExtent: 55,
+          physics: const FixedExtentScrollPhysics(),
+          onSelectedItemChanged: (_) => onChanged(),
+          perspective: 0.002,
+          diameterRatio: 1.2,
+          squeeze: 0.85,
+          useMagnifier: false,
+          magnification: 1.0,
+          childDelegate: ListWheelChildBuilderDelegate(
+            builder: (context, index) {
+              final dynamic item;
 
-          final distance = (index - controller.selectedItem).abs();
-          final opacity = isSelected ? 1.0 : (distance == 1 ? 0.4 : 0.2);
+              if (items != null) {
+                item = items[index % items.length];
+              } else if (maxItems != null) {
+                final actualIndex = index % maxItems;
+                item = actualIndex + 1;
+              } else {
+                return const SizedBox.shrink();
+              }
 
-          return Center(
-            child: Text(
-              formatter(item),
-              style: AppTextStyles.h2(context).copyWith(
-                color: Colors.white.withValues(alpha: opacity),
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.0,
-                height: 1.0,
-              ),
-            ),
-          );
-        },
-        childCount: 10000,
-      ),
+              // Simple distance calculation that works for all columns
+              final selectedItem = controller.selectedItem;
+              final distance = (index - selectedItem).abs();
+              final opacity = distance == 0 ? 1.0 : (distance == 1 ? 0.4 : 0.2);
+
+              return Center(
+                child: Text(
+                  formatter(item),
+                  style: AppTextStyles.h2(context).copyWith(
+                    color: Colors.white.withValues(alpha: opacity),
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.0,
+                    height: 1.0,
+                  ),
+                ),
+              );
+            },
+            childCount: 10000,
+          ),
+        );
+      },
     );
   }
 }

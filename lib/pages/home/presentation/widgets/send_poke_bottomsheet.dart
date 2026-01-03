@@ -6,7 +6,6 @@ import 'package:fennac_app/app/theme/app_emojis.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
-import 'package:fennac_app/helpers/gradient_toast.dart';
 import 'package:fennac_app/pages/home/presentation/bloc/cubit/home_cubit.dart';
 import 'package:fennac_app/pages/kyc/presentation/widgets/prompt_audio_row.dart';
 import 'package:fennac_app/reusable_widgets/animated_background_container.dart';
@@ -46,6 +45,7 @@ class SendPokeBottomSheet extends StatefulWidget {
 class _SendPokeBottomSheetState extends State<SendPokeBottomSheet> {
   late final TextEditingController _messageController;
   final _homeCubit = Di().sl<HomeCubit>();
+  final _formKey = GlobalKey<FormState>();
   final ValueNotifier<bool> _blurNotifier = ValueNotifier(false);
 
   @override
@@ -61,26 +61,21 @@ class _SendPokeBottomSheetState extends State<SendPokeBottomSheet> {
   }
 
   Future<void> _sendPoke() async {
-    if (_messageController.text.trim().isNotEmpty) {
-      Navigator.pop(context);
-      await CustomBottomSheet.show(
-        blurNotifier: _blurNotifier,
-        context: context,
-        title: 'Poke Sent!',
-        description: "Let's see if they poke back.",
-        buttonText: 'Done',
-        onButtonPressed: () {
-          AutoRouter.of(context).pop();
-        },
-        icon: AnimatedBackgroundContainer(
-          icon: Assets.icons.checkGreen.path,
-          isPng: true,
-        ),
-      );
-    } else {
-      VxToast.show(message: 'Please enter a message to send a poke.');
-      Navigator.pop(context);
-    }
+    final isValid = _formKey.currentState?.validate() ?? false;
+    if (!isValid) return;
+
+    Navigator.pop(context);
+    await CustomBottomSheet.show(
+      blurNotifier: _blurNotifier,
+      context: context,
+      title: 'Poke Sent!',
+      description: "Let's see if they poke back.",
+      buttonText: 'Done',
+      icon: AnimatedBackgroundContainer(
+        icon: Assets.icons.checkGreen.path,
+        isPng: true,
+      ),
+    );
   }
 
   @override
@@ -102,58 +97,67 @@ class _SendPokeBottomSheetState extends State<SendPokeBottomSheet> {
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              BlocBuilder(
-                bloc: _homeCubit,
-                builder: (context, state) {
-                  final profile = _homeCubit.selectedProfile;
-                  return _buildPokeContent(context, profile);
-                },
-              ),
-              const CustomSizedBox(height: 32),
-              CustomLabelTextField(
-                label: 'Add a short message',
-                controller: _messageController,
-                hintText: 'Type here...',
-                filled: false,
-                maxLines: 2,
-                labelStyle: AppTextStyles.inputLabel(context),
-              ),
-              const CustomSizedBox(height: 24),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: ColorPalette.primary.withValues(alpha: 0.4),
-                  borderRadius: BorderRadius.circular(16),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                BlocBuilder(
+                  bloc: _homeCubit,
+                  builder: (context, state) {
+                    final profile = _homeCubit.selectedProfile;
+                    return _buildPokeContent(context, profile);
+                  },
                 ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: AppText(
-                        text:
-                            'Pokes let you stand out! Send one to show interest and invite someone to chat privately.',
-                        style: AppTextStyles.label(context),
-                        maxLines: 3,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: SvgPicture.asset(
-                        Assets.icons.cancel.path,
-                        width: 24,
-                        height: 24,
-                      ),
-                    ),
-                  ],
+                const CustomSizedBox(height: 32),
+                CustomLabelTextField(
+                  label: 'Add a short message',
+                  controller: _messageController,
+                  hintText: 'Type here...',
+                  filled: false,
+                  maxLines: 2,
+                  labelStyle: AppTextStyles.inputLabel(context),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Please enter a message to send a poke.';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-              const CustomSizedBox(height: 24),
-              CustomElevatedButton(onTap: _sendPoke, text: 'Send Poke'),
-            ],
+                const CustomSizedBox(height: 24),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: ColorPalette.primary.withValues(alpha: 0.4),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: AppText(
+                          text:
+                              'Pokes let you stand out! Send one to show interest and invite someone to chat privately.',
+                          style: AppTextStyles.label(context),
+                          maxLines: 3,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: SvgPicture.asset(
+                          Assets.icons.cancel.path,
+                          width: 24,
+                          height: 24,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const CustomSizedBox(height: 24),
+                CustomElevatedButton(onTap: _sendPoke, text: 'Send Poke'),
+              ],
+            ),
           ),
         ),
       ),
