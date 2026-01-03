@@ -81,6 +81,23 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
     }
   }
 
+  String _formatPhoneNumber(String input) {
+    final cleaned = input.replaceAll(' ', '');
+
+    // If empty, return as is
+    if (cleaned.isEmpty) return '';
+
+    final buffer = StringBuffer();
+    for (int i = 0; i < cleaned.length; i++) {
+      if (i > 0 && i % 3 == 0) {
+        buffer.write(' ');
+      }
+      buffer.write(cleaned[i]);
+    }
+
+    return buffer.toString();
+  }
+
   void _notifyChange() {
     if (_selected != null && _phoneController.text.isNotEmpty) {
       final completeNumber = '${_selected!.phoneCode}${_phoneController.text}';
@@ -200,6 +217,12 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
                                 context,
                               ).copyWith(color: Colors.white),
                               decoration: InputDecoration(
+                                prefixText: _selected?.phoneCode != null
+                                    ? '(${_selected!.phoneCode}) '
+                                    : null,
+                                prefixStyle: AppTextStyles.bodyLarge(
+                                  context,
+                                ).copyWith(color: Colors.white),
                                 hintText:
                                     widget.hintText ?? 'Enter phone number',
                                 hintStyle: AppTextStyles.inputLabel(
@@ -212,8 +235,18 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly,
                               ],
-                              onChanged: (_) {
-                                field.didChange(_phoneController.text);
+                              onChanged: (value) {
+                                // Format the phone number with spaces every 3 digits
+                                final formatted = _formatPhoneNumber(value);
+                                if (formatted != value) {
+                                  _phoneController.value = TextEditingValue(
+                                    text: formatted,
+                                    selection: TextSelection.collapsed(
+                                      offset: formatted.length,
+                                    ),
+                                  );
+                                }
+                                field.didChange(formatted);
                               },
                             ),
                           ),
@@ -243,7 +276,7 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
 
   Widget _flagBox() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
@@ -251,13 +284,13 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(_selected?.flag ?? '🇺🇸', style: const TextStyle(fontSize: 16)),
-          const SizedBox(width: 4),
-          Text(
-            _selected?.phoneCode != null ? '${_selected!.phoneCode}' : '+1',
-            style: const TextStyle(color: Colors.white, fontSize: 14),
-          ),
-          const SizedBox(width: 4),
+          Text(_selected?.flag ?? '🇺🇸', style: AppTextStyles.body(context)),
+          const CustomSizedBox(width: 4),
+          // Text(
+          //   _selected?.phoneCode != null ? '${_selected!.phoneCode}' : '+1',
+          //   style: AppTextStyles.inputLabel(context),
+          // ),
+          // const CustomSizedBox(width: 4),
           const Icon(
             Icons.keyboard_arrow_down,
             size: 18,

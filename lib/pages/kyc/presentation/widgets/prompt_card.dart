@@ -4,7 +4,7 @@ import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/cubit/kyc_prompt_cubit.dart';
 import 'package:fennac_app/pages/kyc/presentation/widgets/create_prompt_bottom_sheet.dart';
-import 'package:fennac_app/pages/kyc/presentation/widgets/prompt_audio_row.dart';
+import 'package:fennac_app/widgets/prompt_audio_row.dart';
 import 'package:fennac_app/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

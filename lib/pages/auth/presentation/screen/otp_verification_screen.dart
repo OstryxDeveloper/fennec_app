@@ -1,7 +1,10 @@
 import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
+import 'package:fennac_app/pages/auth/presentation/bloc/cubit/auth_cubit.dart';
+import 'package:fennac_app/pages/auth/presentation/bloc/state/auth_state.dart';
 import 'package:fennac_app/reusable_widgets/animated_background_container.dart';
 import 'package:fennac_app/routes/routes_imports.gr.dart';
 import 'package:fennac_app/widgets/custom_back_button.dart';
@@ -13,8 +16,7 @@ import 'package:fennac_app/widgets/custom_text.dart';
 import 'package:fennac_app/widgets/movable_background.dart';
 import 'package:flutter/material.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:lottie/lottie.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
 class OtpVerificationScreen extends StatefulWidget {
@@ -26,11 +28,18 @@ class OtpVerificationScreen extends StatefulWidget {
 
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final _otpController = TextEditingController();
-  bool _isBackgroundBlurred = false;
+  final AuthCubit _authCubit = Di().sl<AuthCubit>();
+
+  @override
+  void initState() {
+    super.initState();
+    _authCubit.startOtpTimer();
+  }
 
   @override
   void dispose() {
     _otpController.dispose();
+    _authCubit.disposeOtpTimer();
     super.dispose();
   }
 
@@ -56,7 +65,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       AnimatedBackgroundContainer(
                         icon: Assets.icons.vector4.path,
                       ),
-
                       CustomSizedBox(height: 40),
                       AppText(
                         text: 'Verify your code',
@@ -69,7 +77,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       CustomSizedBox(height: 12),
                       AppText(
                         text:
-                            "We’ve sent you a 6-digit code, enter it below to verify your account.",
+                            "We've sent you a 6-digit code, enter it below to verify your account.",
                         style: AppTextStyles.bodyLarge(context).copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
@@ -77,78 +85,126 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         textAlign: TextAlign.center,
                       ),
                       CustomSizedBox(height: 40),
-                      CustomOtpField(
-                        controller: _otpController,
-                        length: 6,
-                        onCompleted: (otp) {
-                          debugPrint("OTP Completed: $otp");
+                      BlocBuilder<AuthCubit, AuthState>(
+                        bloc: _authCubit,
+                        builder: (context, state) {
+                          return Column(
+                            children: [
+                              CustomOtpField(
+                                controller: _otpController,
+                                length: 6,
+                                color: _authCubit.otpErrorMessage != null
+                                    ? Colors.red
+                                    : null,
+                                onCompleted: (otp) {},
+                              ),
+                              if (_authCubit.otpErrorMessage != null) ...[
+                                CustomSizedBox(height: 12),
+                                AppText(
+                                  text: _authCubit.otpErrorMessage!,
+                                  style: AppTextStyles.bodyRegular(context)
+                                      .copyWith(
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                ),
+                              ],
+                            ],
+                          );
                         },
                       ),
                       CustomSizedBox(height: 40),
-                      CustomElevatedButton(
-                        onTap: () async {
-                          setState(() {
-                            _isBackgroundBlurred = true;
-                          });
-                          await CustomBottomSheet.show(
-                            icon: AnimatedBackgroundContainer(
-                              icon: Assets.icons.checkGreen.path,
-                              isPng: true,
-                            ),
-                            context: context,
-                            title: 'Account Verified',
-                            description:
-                                'Your account has been verified. Continue to set new password for your account.',
-                            buttonText: 'Continue',
-                            onButtonPressed: () {
-                              Navigator.pop(context);
-                              AutoRouter.of(
-                                context,
-                              ).push(const SetNewPasswordRoute());
+                      BlocBuilder<AuthCubit, AuthState>(
+                        bloc: _authCubit,
+                        builder: (context, state) {
+                          return CustomElevatedButton(
+                            onTap: () async {
+                              final isValid = await _authCubit.verifyOtpCode(
+                                _otpController.text,
+                                '123456',
+                              );
+                              if (isValid && mounted) {
+                                await CustomBottomSheet.show(
+                                  icon: AnimatedBackgroundContainer(
+                                    icon: Assets.icons.checkGreen.path,
+                                    isPng: true,
+                                  ),
+                                  context: context,
+                                  title: 'Account Verified',
+                                  description:
+                                      'Your account has been verified. Continue to set new password for your account.',
+                                  buttonText: 'Continue',
+                                  onButtonPressed: () {
+                                    _authCubit.resetOtpBlur();
+                                    Navigator.pop(context);
+                                    AutoRouter.of(
+                                      context,
+                                    ).push(const SetNewPasswordRoute());
+                                  },
+                                );
+                                if (mounted) {
+                                  _authCubit.resetOtpBlur();
+                                }
+                              }
                             },
+                            text: _authCubit.otpErrorMessage == null
+                                ? 'Verify'
+                                : 'Try Again',
+                            width: double.infinity,
                           );
-                          if (mounted) {
-                            setState(() {
-                              _isBackgroundBlurred = false;
-                            });
-                          }
                         },
-                        text: 'Verify',
-                        width: double.infinity,
                       ),
                       CustomSizedBox(height: 24),
-                      Container(
-                        height: 50,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Colors.black26,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            AppText(
-                              text: 'Didn’t get the code?',
-                              style: AppTextStyles.bodyLarge(
-                                context,
-                              ).copyWith(color: Colors.white),
+                      BlocBuilder<AuthCubit, AuthState>(
+                        bloc: _authCubit,
+                        builder: (context, state) {
+                          return Container(
+                            height: 50,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
                             ),
-                            InkWell(
-                              onTap: () {},
-                              child: AppText(
-                                text: 'Resend',
-                                style: AppTextStyles.bodyLarge(context)
-                                    .copyWith(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                              ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.black26,
                             ),
-                          ],
-                        ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                AppText(
+                                  text: 'Didn\'t get the code?',
+                                  style: AppTextStyles.bodyLarge(
+                                    context,
+                                  ).copyWith(color: Colors.white),
+                                ),
+                                InkWell(
+                                  borderRadius: BorderRadius.circular(32),
+                                  onTap: _authCubit.canResendOtp
+                                      ? () {
+                                          _authCubit.resendOtpCode();
+                                        }
+                                      : null,
+                                  child: AppText(
+                                    text: _authCubit.canResendOtp
+                                        ? 'Resend'
+                                        : _authCubit.formatOtpTime(
+                                            _authCubit.remainingSeconds,
+                                          ),
+                                    style: AppTextStyles.bodyLarge(context)
+                                        .copyWith(
+                                          color: _authCubit.canResendOtp
+                                              ? Colors.white
+                                              : Colors.white.withValues(
+                                                  alpha: 0.5,
+                                                ),
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -156,13 +212,20 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               ),
             ),
           ),
-          if (_isBackgroundBlurred)
-            Positioned.fill(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                child: Container(color: Colors.black.withValues(alpha: 0.1)),
-              ),
-            ),
+          BlocBuilder<AuthCubit, AuthState>(
+            bloc: _authCubit,
+            builder: (context, state) {
+              if (!_authCubit.isOtpBlurred) {
+                return const SizedBox.shrink();
+              }
+              return Positioned.fill(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                  child: Container(color: Colors.black.withValues(alpha: 0.1)),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

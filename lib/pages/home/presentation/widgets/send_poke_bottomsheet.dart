@@ -1,4 +1,3 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:fennac_app/app/constants/app_enums.dart';
 import 'package:fennac_app/app/constants/media_query_constants.dart';
 import 'package:fennac_app/app/theme/app_colors.dart';
@@ -6,9 +5,8 @@ import 'package:fennac_app/app/theme/app_emojis.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
 import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
-import 'package:fennac_app/helpers/gradient_toast.dart';
 import 'package:fennac_app/pages/home/presentation/bloc/cubit/home_cubit.dart';
-import 'package:fennac_app/pages/kyc/presentation/widgets/prompt_audio_row.dart';
+import 'package:fennac_app/widgets/prompt_audio_row.dart';
 import 'package:fennac_app/reusable_widgets/animated_background_container.dart';
 import 'package:fennac_app/widgets/custom_bottom_sheet.dart';
 import 'package:fennac_app/widgets/custom_elevated_button.dart';
@@ -46,6 +44,7 @@ class SendPokeBottomSheet extends StatefulWidget {
 class _SendPokeBottomSheetState extends State<SendPokeBottomSheet> {
   late final TextEditingController _messageController;
   final _homeCubit = Di().sl<HomeCubit>();
+  final _formKey = GlobalKey<FormState>();
   final ValueNotifier<bool> _blurNotifier = ValueNotifier(false);
 
   @override
@@ -61,99 +60,110 @@ class _SendPokeBottomSheetState extends State<SendPokeBottomSheet> {
   }
 
   Future<void> _sendPoke() async {
-    if (_messageController.text.trim().isNotEmpty) {
-      Navigator.pop(context);
-      await CustomBottomSheet.show(
-        blurNotifier: _blurNotifier,
-        context: context,
-        title: 'Poke Sent!',
-        description: "Let's see if they poke back.",
-        buttonText: 'Done',
-        onButtonPressed: () {
-          AutoRouter.of(context).pop();
-        },
-        icon: AnimatedBackgroundContainer(
-          icon: Assets.icons.checkGreen.path,
-          isPng: true,
-        ),
-      );
-    } else {
-      VxToast.show(message: 'Please enter a message to send a poke.');
-      Navigator.pop(context);
-    }
+    final isValid = _formKey.currentState?.validate() ?? false;
+    if (!isValid) return;
+
+    Navigator.pop(context);
+    await CustomBottomSheet.show(
+      blurNotifier: _blurNotifier,
+      context: context,
+      title: 'Poke Sent!',
+      description: "Let's see if they poke back.",
+      buttonText: 'Done',
+      icon: AnimatedBackgroundContainer(
+        icon: Assets.icons.checkGreen.path,
+        isPng: true,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: getWidth(context),
-      height: 583,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [const Color(0xFF16003F), ColorPalette.black],
+    final viewInsets = MediaQuery.of(context).viewInsets;
+
+    return AnimatedPadding(
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeOut,
+      padding: EdgeInsets.only(bottom: viewInsets.bottom),
+      child: Container(
+        width: getWidth(context),
+        height: 583,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [const Color(0xFF16003F), ColorPalette.black],
+          ),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(32),
+            topRight: Radius.circular(32),
+          ),
         ),
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(32),
-          topRight: Radius.circular(32),
-        ),
-      ),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              BlocBuilder(
-                bloc: _homeCubit,
-                builder: (context, state) {
-                  final profile = _homeCubit.selectedProfile;
-                  return _buildPokeContent(context, profile);
-                },
-              ),
-              const CustomSizedBox(height: 32),
-              CustomLabelTextField(
-                label: 'Add a short message',
-                controller: _messageController,
-                hintText: 'Type here...',
-                filled: false,
-                maxLines: 2,
-                labelStyle: AppTextStyles.inputLabel(context),
-              ),
-              const CustomSizedBox(height: 24),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: ColorPalette.primary.withValues(alpha: 0.4),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: AppText(
-                        text:
-                            'Pokes let you stand out! Send one to show interest and invite someone to chat privately.',
-                        style: AppTextStyles.label(context),
-                        maxLines: 3,
-                      ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  BlocBuilder(
+                    bloc: _homeCubit,
+                    builder: (context, state) {
+                      final profile = _homeCubit.selectedProfile;
+                      return _buildPokeContent(context, profile);
+                    },
+                  ),
+                  const CustomSizedBox(height: 32),
+                  CustomLabelTextField(
+                    label: 'Add a short message',
+                    controller: _messageController,
+                    hintText: 'Type here...',
+                    filled: false,
+                    maxLines: 2,
+                    labelStyle: AppTextStyles.inputLabel(context),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Please enter a message to send a poke.';
+                      }
+                      return null;
+                    },
+                  ),
+                  const CustomSizedBox(height: 24),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: ColorPalette.primary.withValues(alpha: 0.4),
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    const SizedBox(width: 12),
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: SvgPicture.asset(
-                        Assets.icons.cancel.path,
-                        width: 24,
-                        height: 24,
-                      ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: AppText(
+                            text:
+                                'Pokes let you stand out! Send one to show interest and invite someone to chat privately.',
+                            style: AppTextStyles.label(context),
+                            maxLines: 3,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: SvgPicture.asset(
+                            Assets.icons.cancel.path,
+                            width: 24,
+                            height: 24,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  const CustomSizedBox(height: 24),
+                  CustomElevatedButton(onTap: _sendPoke, text: 'Send Poke'),
+                ],
               ),
-              const CustomSizedBox(height: 24),
-              CustomElevatedButton(onTap: _sendPoke, text: 'Send Poke'),
-            ],
+            ),
           ),
         ),
       ),
@@ -218,32 +228,61 @@ class _SendPokeBottomSheetState extends State<SendPokeBottomSheet> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.only(
+                  left: 16,
+                  right: 12,
+                  top: 0,
+                  bottom: 12,
+                ),
                 decoration: BoxDecoration(
                   color: ColorPalette.primary.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Stack(
+                  alignment: Alignment.topRight,
                   children: [
-                    AppText(
-                      text: promptTitle,
-                      style: AppTextStyles.subHeading(context),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AppText(
+                          text: promptTitle,
+                          style: AppTextStyles.subHeading(context),
+                        ),
+                        const CustomSizedBox(height: 12),
+                        PromptAudioRow(
+                          audioPath: audioPath,
+                          duration: audioDuration,
+                          waveformData: widget.waveformData,
+                          height: 64,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
+                          backgroundColor: ColorPalette.secondary,
+                          playButtonColor: ColorPalette.primary,
+                          waveformColor: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ],
                     ),
-                    const CustomSizedBox(height: 12),
-                    PromptAudioRow(
-                      audioPath: audioPath,
-                      duration: audioDuration,
-                      waveformData: widget.waveformData,
-                      height: 64,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: Container(
+                        width: 48,
+                        height: 48,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: ColorPalette.primary,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                        child: Text(
+                          AppEmojis.pointingRight,
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.body(context),
+                        ),
                       ),
-                      backgroundColor: ColorPalette.secondary,
-                      playButtonColor: ColorPalette.primary,
-                      waveformColor: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
                     ),
                   ],
                 ),

@@ -1,3 +1,4 @@
+import 'package:fennac_app/pages/chats/presentation/screen/chat_landing_screen.dart';
 import 'package:fennac_app/pages/dashboard/presentation/bloc/state/dashboard_state.dart';
 import 'package:fennac_app/pages/home/presentation/screen/home_screen.dart';
 import 'package:fennac_app/pages/homelanding/presentation/screen/home_landing_screen.dart';
@@ -11,8 +12,8 @@ class DashboardCubit extends Cubit<DashboardState> {
 
   List<Widget> screens = [
     const HomeLandingScreen(),
-    const HomeScreen(),
-    const HomeScreen(),
+    const ChatLandingScreen(),
+    Scaffold(body: Center(child: Text('Coming Soon!'))),
   ];
 
   // change current page

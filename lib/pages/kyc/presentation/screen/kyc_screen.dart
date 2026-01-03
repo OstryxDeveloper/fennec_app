@@ -60,7 +60,6 @@ class _KycScreenState extends State<KycScreen> {
                             style: AppTextStyles.h1(context).copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              fontSize: 32,
                             ),
                           ),
                           CustomSizedBox(height: 16),
@@ -124,7 +123,7 @@ class _KycScreenState extends State<KycScreen> {
 
                           // Pronouns
                           DropdownFieldWidget(
-                            label: 'Your Pronouns',
+                            label: 'Select Pronouns',
                             subtitle: 'Select what feels right for you.',
                             selectedValue: _kycCubit.selectedPronoun,
                             options: DummyConstants.pronouns,

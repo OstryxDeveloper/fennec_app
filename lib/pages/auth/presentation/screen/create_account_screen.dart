@@ -416,10 +416,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                   }
                                 }
                               },
-                              text: 'Sign Up',
+                              text: 'Continue',
                               width: double.infinity,
                             ),
-                            CustomSizedBox(height: 40),
+                            CustomSizedBox(
+                              height: MediaQuery.paddingOf(context).bottom + 20,
+                            ),
                           ],
                         ),
                       );

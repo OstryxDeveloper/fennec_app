@@ -1,8 +1,9 @@
-import 'dart:async';
 import 'dart:ui';
 import 'package:auto_route/auto_route.dart';
+import 'package:fennac_app/core/di_container.dart';
 import 'package:fennac_app/generated/assets.gen.dart';
-import 'package:fennac_app/pages/auth/presentation/widgets/tile_widget.dart';
+import 'package:fennac_app/pages/auth/presentation/bloc/cubit/auth_cubit.dart';
+import 'package:fennac_app/pages/auth/presentation/bloc/state/auth_state.dart';
 import 'package:fennac_app/reusable_widgets/animated_background_container.dart';
 import 'package:fennac_app/routes/routes_imports.gr.dart';
 
@@ -15,9 +16,7 @@ import 'package:fennac_app/widgets/custom_text.dart';
 import 'package:fennac_app/widgets/movable_background.dart';
 import 'package:flutter/material.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
-import 'package:fennac_app/app/theme/app_colors.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:lottie/lottie.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
 class VerifyPhoneNumberScreen extends StatefulWidget {
@@ -30,96 +29,20 @@ class VerifyPhoneNumberScreen extends StatefulWidget {
 
 class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
   final _otpController = TextEditingController();
-
-  final ValueNotifier<bool> _isCodeResentNotifier = ValueNotifier(false);
-  final ValueNotifier<String?> _errorMessageNotifier = ValueNotifier(null);
-  final ValueNotifier<bool> _isBlurNotifier = ValueNotifier(false);
-
-  // Timer related
-  Timer? _timer;
-  final ValueNotifier<int> _remainingSecondsNotifier = ValueNotifier(
-    120,
-  ); // 2 minutes
-  bool _canResend = false;
+  late AuthCubit _authCubit;
 
   @override
   void initState() {
     super.initState();
-    _startTimer();
+    _authCubit = Di().sl<AuthCubit>();
+    _authCubit.startOtpTimer();
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
     _otpController.dispose();
-    _isCodeResentNotifier.dispose();
-    _errorMessageNotifier.dispose();
-    _isBlurNotifier.dispose();
-    _remainingSecondsNotifier.dispose();
+    _authCubit.disposeOtpTimer();
     super.dispose();
-  }
-
-  void _startTimer() {
-    _canResend = false;
-    _remainingSecondsNotifier.value = 120; // Reset to 2 minutes
-
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_remainingSecondsNotifier.value > 0) {
-        _remainingSecondsNotifier.value--;
-      } else {
-        _timer?.cancel();
-        setState(() {
-          _canResend = true;
-        });
-      }
-    });
-  }
-
-  String _formatTime(int seconds) {
-    final minutes = seconds ~/ 60;
-    final secs = seconds % 60;
-    return '${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
-  }
-
-  void _onVerify() async {
-    if (_otpController.text != '123456') {
-      _errorMessageNotifier.value = 'Incorrect OTP code. Please try again.';
-    } else {
-      _errorMessageNotifier.value = null;
-      _isBlurNotifier.value = true;
-      await CustomBottomSheet.show(
-        context: context,
-        barrierColor: Colors.transparent,
-        title: 'Phone Number Verified',
-
-        description:
-            "Your phone number has been verified. Continue to complete your profile.",
-        buttonText: 'Continue',
-        onButtonPressed: () {
-          AutoRouter.of(context).push(KycRoute());
-        },
-
-        icon: AnimatedBackgroundContainer(
-          icon: Assets.icons.checkGreen.path,
-          isPng: true,
-        ),
-      );
-      _isBlurNotifier.value = false;
-    }
-  }
-
-  void _onResend() {
-    if (!_canResend) return;
-
-    _startTimer(); // Restart timer from 2 minutes
-    _isCodeResentNotifier.value = true;
-    _errorMessageNotifier.value = null;
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) {
-        _isCodeResentNotifier.value = false;
-      }
-    });
   }
 
   @override
@@ -166,23 +89,25 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
                         textAlign: TextAlign.center,
                       ),
                       CustomSizedBox(height: 40),
-                      ValueListenableBuilder<String?>(
-                        valueListenable: _errorMessageNotifier,
-                        builder: (context, errorMessage, child) {
+                      BlocBuilder<AuthCubit, AuthState>(
+                        bloc: _authCubit,
+                        builder: (context, state) {
                           return Column(
                             children: [
                               CustomOtpField(
                                 controller: _otpController,
                                 length: 6,
-                                color: errorMessage != null ? Colors.red : null,
+                                color: _authCubit.otpErrorMessage != null
+                                    ? Colors.red
+                                    : null,
                                 onCompleted: (otp) {
-                                  // _onVerify();
+                                  // Auto-verify when completed (optional)
                                 },
                               ),
-                              if (errorMessage != null) ...[
+                              if (_authCubit.otpErrorMessage != null) ...[
                                 CustomSizedBox(height: 12),
                                 AppText(
-                                  text: errorMessage,
+                                  text: _authCubit.otpErrorMessage!,
                                   style: AppTextStyles.bodyRegular(context)
                                       .copyWith(
                                         color: Colors.red,
@@ -195,113 +120,92 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
                         },
                       ),
                       CustomSizedBox(height: 40),
-                      ValueListenableBuilder(
-                        valueListenable: _errorMessageNotifier,
-                        builder: (context, value, child) {
+                      BlocBuilder<AuthCubit, AuthState>(
+                        bloc: _authCubit,
+                        builder: (context, state) {
                           return CustomElevatedButton(
-                            onTap: _onVerify,
-                            text: value == null ? 'Verify' : 'Try Again',
+                            onTap: () async {
+                              final isValid = await _authCubit.verifyOtpCode(
+                                _otpController.text,
+                                '123456',
+                              );
+                              if (isValid && mounted) {
+                                await CustomBottomSheet.show(
+                                  context: context,
+                                  barrierColor: Colors.transparent,
+                                  title: 'Phone Number Verified',
+                                  description:
+                                      "Your phone number has been verified. Continue to complete your profile.",
+                                  buttonText: 'Continue',
+                                  onButtonPressed: () {
+                                    _authCubit.resetOtpBlur();
+                                    AutoRouter.of(context).push(KycRoute());
+                                  },
+                                  icon: AnimatedBackgroundContainer(
+                                    icon: Assets.icons.checkGreen.path,
+                                    isPng: true,
+                                  ),
+                                );
+                                if (mounted) {
+                                  _authCubit.resetOtpBlur();
+                                }
+                              }
+                            },
+                            text: _authCubit.otpErrorMessage == null
+                                ? 'Verify'
+                                : 'Try Again',
                             width: double.infinity,
                           );
                         },
                       ),
                       CustomSizedBox(height: 24),
-
-                      ValueListenableBuilder<bool>(
-                        valueListenable: _isCodeResentNotifier,
-                        builder: (context, isCodeResent, child) {
-                          if (isCodeResent) {
-                            return Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 12,
-                              ),
-                              decoration: BoxDecoration(
-                                color: ColorPalette.greenDark,
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              child: Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    Assets.icons.checkCircle.path,
-                                    height: 24,
-                                    width: 24,
-                                    colorFilter: ColorFilter.mode(
-                                      Colors.white,
-                                      BlendMode.srcIn,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Text(
-                                    'Code Sent Again',
+                      BlocBuilder<AuthCubit, AuthState>(
+                        bloc: _authCubit,
+                        builder: (context, state) {
+                          return Container(
+                            height: 50,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.black26,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                AppText(
+                                  text: "Didn't get the code?",
+                                  style: AppTextStyles.bodyLarge(
+                                    context,
+                                  ).copyWith(color: Colors.white),
+                                ),
+                                InkWell(
+                                  onTap: _authCubit.canResendOtp
+                                      ? () {
+                                          _authCubit.resendOtpCode();
+                                        }
+                                      : null,
+                                  child: AppText(
+                                    text: _authCubit.canResendOtp
+                                        ? 'Resend'
+                                        : _authCubit.formatOtpTime(
+                                            _authCubit.remainingSeconds,
+                                          ),
                                     style: AppTextStyles.bodyLarge(context)
                                         .copyWith(
-                                          color: Colors.white,
+                                          color: _authCubit.canResendOtp
+                                              ? Colors.white
+                                              : Colors.white.withValues(
+                                                  alpha: 0.7,
+                                                ),
                                           fontWeight: FontWeight.w500,
                                         ),
                                   ),
-                                  Spacer(),
-                                  GestureDetector(
-                                    onTap: () {
-                                      _isCodeResentNotifier.value = false;
-                                    },
-                                    child: SvgPicture.asset(
-                                      Assets.icons.cancel.path,
-                                      height: 24,
-                                      width: 24,
-                                      colorFilter: ColorFilter.mode(
-                                        Colors.white,
-                                        BlendMode.srcIn,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-
-                          // Show timer or resend button
-                          return ValueListenableBuilder<int>(
-                            valueListenable: _remainingSecondsNotifier,
-                            builder: (context, remainingSeconds, child) {
-                              if (_canResend || remainingSeconds == 0) {
-                                return TileWidget(onTap: _onResend);
-                              }
-
-                              return Container(
-                                height: 50,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 12,
                                 ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Colors.black26,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    AppText(
-                                      text: "Didn't get the code?",
-                                      style: AppTextStyles.bodyLarge(
-                                        context,
-                                      ).copyWith(color: Colors.white),
-                                    ),
-                                    AppText(
-                                      text: _formatTime(remainingSeconds),
-                                      style: AppTextStyles.bodyLarge(context)
-                                          .copyWith(
-                                            color: Colors.white.withValues(
-                                              alpha: 0.7,
-                                            ),
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
+                              ],
+                            ),
                           );
                         },
                       ),
@@ -311,10 +215,12 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
               ),
             ),
           ),
-          ValueListenableBuilder<bool>(
-            valueListenable: _isBlurNotifier,
-            builder: (context, isBlurred, child) {
-              if (!isBlurred) return const SizedBox.shrink();
+          BlocBuilder<AuthCubit, AuthState>(
+            bloc: _authCubit,
+            builder: (context, state) {
+              if (!_authCubit.isOtpBlurred) {
+                return const SizedBox.shrink();
+              }
               return Positioned.fill(
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),

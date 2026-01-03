@@ -21,6 +21,7 @@ class CreateGroupScreen extends StatelessWidget {
     return BlocProvider.value(
       value: cubit,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: ColorPalette.secondary,
         body: MovableBackground(
           child: Column(
@@ -30,6 +31,7 @@ class CreateGroupScreen extends StatelessWidget {
             ],
           ),
         ),
+
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
