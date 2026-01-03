@@ -174,7 +174,7 @@ class _SplashScreenState extends State<SplashScreen>
                           position: _textSlideAnimation,
                           child: SvgPicture.asset(
                             Assets.icons.fennecLogoText.path,
-                            width: 170,
+                            width: 200,
                           ),
                         ),
                       ),

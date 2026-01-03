@@ -399,7 +399,14 @@ class KycPromptCubit extends Cubit<KycPromptState> {
 
     if (recordedWaveformData.length < 120) {
       final additionalSamples = 120 - recordedWaveformData.length;
-      recordedWaveformData.addAll(List<double>.filled(additionalSamples, 1));
+      final firstValue = recordedWaveformData.isNotEmpty
+          ? recordedWaveformData.first.clamp(1.0, double.infinity)
+          : 1.0;
+
+      recordedWaveformData.insertAll(
+        0,
+        List<double>.filled(additionalSamples, firstValue),
+      );
     }
 
     // Update duration from timer

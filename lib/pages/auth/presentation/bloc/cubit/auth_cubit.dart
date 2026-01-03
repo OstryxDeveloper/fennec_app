@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:fennac_app/pages/auth/presentation/bloc/state/auth_state.dart';
 import 'package:fennac_app/widgets/custom_country_field.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,18 @@ class AuthCubit extends Cubit<AuthState> {
   bool obscureNewPassword = true;
   bool obscureConfirmNewPassword = true;
   bool isEmail = true;
+
+  // OTP states
+  int _remainingSeconds = 120; // 2 minutes
+  Timer? _otpTimer;
+  bool _canResendOtp = false;
+  String? _otpErrorMessage;
+  bool _isOtpBlurred = false;
+
+  int get remainingSeconds => _remainingSeconds;
+  bool get canResendOtp => _canResendOtp;
+  String? get otpErrorMessage => _otpErrorMessage;
+  bool get isOtpBlurred => _isOtpBlurred;
 
   // Controllers
   final firstNameController = TextEditingController();
@@ -279,6 +292,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void loadCountry() {
+    emit(AuthValidationLoading());
     loadCountries().then((countries) {
       selectedCountry = countries.firstWhere(
         (c) => c.iso == 'US',
@@ -289,6 +303,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void submitNewPassword() {
+    emit(AuthValidationLoading());
     _newPasswordTouched = true;
     _confirmNewPasswordTouched = true;
     _validationCounter++;
@@ -299,5 +314,90 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
 
     emit(AuthLoaded());
+  }
+
+  // ============ OTP Verification Methods ============
+
+  /// Start OTP timer (120 seconds / 2 minutes)
+  void startOtpTimer() {
+    emit(AuthValidationLoading());
+    _canResendOtp = false;
+    _remainingSeconds = 120;
+    _otpErrorMessage = null;
+    _isOtpBlurred = false;
+    _validationCounter++; // Increment to trigger initial emit
+    emit(AuthValidation(validationCounter: _validationCounter));
+
+    _otpTimer?.cancel();
+    _otpTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_remainingSeconds > 0) {
+        _remainingSeconds--;
+        _validationCounter++; // Increment counter each tick to trigger rebuild
+        emit(AuthValidation(validationCounter: _validationCounter));
+      } else {
+        _otpTimer?.cancel();
+        _canResendOtp = true;
+        _validationCounter++;
+        emit(AuthValidation(validationCounter: _validationCounter));
+      }
+    });
+  }
+
+  /// Format time for display (MM:SS)
+  String formatOtpTime(int seconds) {
+    final minutes = seconds ~/ 60;
+    final secs = seconds % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
+  }
+
+  /// Verify OTP code
+  Future<bool> verifyOtpCode(String otpCode, String expectedCode) async {
+    try {
+      if (otpCode != expectedCode) {
+        _otpErrorMessage = 'Incorrect OTP code. Please try again.';
+        emit(AuthValidation(validationCounter: _validationCounter));
+        return false;
+      }
+
+      _otpErrorMessage = null;
+      _isOtpBlurred = true;
+      emit(AuthValidation(validationCounter: _validationCounter));
+      return true;
+    } catch (e) {
+      _otpErrorMessage = 'An error occurred. Please try again.';
+      emit(AuthValidation(validationCounter: _validationCounter));
+      return false;
+    }
+  }
+
+  /// Resend OTP code
+  void resendOtpCode() {
+    if (!_canResendOtp) return;
+
+    startOtpTimer();
+    emit(AuthValidation(validationCounter: _validationCounter));
+  }
+
+  /// Clear OTP error message
+  void clearOtpError() {
+    _otpErrorMessage = null;
+    emit(AuthValidation(validationCounter: _validationCounter));
+  }
+
+  /// Reset OTP blur state
+  void resetOtpBlur() {
+    _isOtpBlurred = false;
+    emit(AuthValidation(validationCounter: _validationCounter));
+  }
+
+  /// Cleanup OTP timer
+  void disposeOtpTimer() {
+    _otpTimer?.cancel();
+  }
+
+  @override
+  Future<void> close() {
+    disposeOtpTimer();
+    return super.close();
   }
 }

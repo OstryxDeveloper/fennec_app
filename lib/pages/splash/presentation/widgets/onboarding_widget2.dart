@@ -23,7 +23,7 @@ class OnboardingWidget2 extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 14),
               child: Column(
                 children: [
                   Lottie.asset(
@@ -37,7 +37,7 @@ class OnboardingWidget2 extends StatelessWidget {
                       context,
                     ).copyWith(fontWeight: FontWeight.bold),
                   ),
-                  CustomSizedBox(height: 16),
+                  CustomSizedBox(height: 12),
                   AppText(
                     text:
                         'Dive into a shared chat room,\t\tHave fun with your friends',
@@ -46,6 +46,9 @@ class OnboardingWidget2 extends StatelessWidget {
                       color: ColorPalette.textSecondary,
                       fontWeight: FontWeight.bold,
                     ),
+                  ),
+                  CustomSizedBox(
+                    height: MediaQuery.paddingOf(context).bottom + 14,
                   ),
                 ],
               ),

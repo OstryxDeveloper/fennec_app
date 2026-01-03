@@ -76,7 +76,7 @@ class _KycPromptScreenState extends State<KycPromptScreen> {
                                     CustomSizedBox(height: 32),
 
                                     // Title
-                                    if (widget.title != null) ...[
+                                    if (widget.title == null) ...[
                                       AppText(
                                         text:
                                             widget.title ??
@@ -89,10 +89,6 @@ class _KycPromptScreenState extends State<KycPromptScreen> {
                                             ),
                                       ),
                                       CustomSizedBox(height: 12),
-                                    ],
-
-                                    // Subtitle
-                                    if (widget.subtitle != null) ...[
                                       AppText(
                                         text:
                                             widget.subtitle ??
@@ -106,6 +102,7 @@ class _KycPromptScreenState extends State<KycPromptScreen> {
                                       ),
                                       CustomSizedBox(height: 32),
                                     ],
+
                                     if (_kycPromptCubit
                                         .customPrompts
                                         .isNotEmpty) ...[

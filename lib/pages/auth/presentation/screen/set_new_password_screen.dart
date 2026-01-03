@@ -83,6 +83,7 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
                             // New Password Field
                             CustomLabelTextField(
                               label: 'New Password',
+                              hintText: 'Enter your new password',
                               controller: _authCubit.newPasswordController,
                               validator: (value) {
                                 final error = _authCubit.getNewPasswordError();
@@ -139,6 +140,7 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
                             // Confirm New Password Field
                             CustomLabelTextField(
                               label: 'Confirm New Password',
+                              hintText: 'Re-enter your new password',
                               controller:
                                   _authCubit.confirmNewPasswordController,
                               validator: (value) {

@@ -4,6 +4,9 @@ import 'package:fennac_app/pages/home/presentation/bloc/state/home_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 
+import '../../../data/models/group_model.dart';
+import '../../swipe/swipe_controller.dart';
+
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeInitial());
 
@@ -13,6 +16,8 @@ class HomeCubit extends Cubit<HomeState> {
   final cardSwiperController = CardSwiperController();
 
   double xAxisCardValue = 0;
+
+  bool isEnd = false;
 
   // update values
   void updateCardPosition(double x) {
@@ -61,6 +66,36 @@ class HomeCubit extends Cubit<HomeState> {
     emit(HomeLoaded());
   }
 
+  final List<GroupModel> groups = List.from(DummyConstants.groups);
+  int currentIndex = 0;
+
+  bool get isEndOfList => currentIndex >= groups.length;
+
+  void onSwipeCompleted(SwipeResult result) {
+    if (isEndOfList) return;
+
+    currentIndex++;
+    emit(HomeLoaded());
+  }
+
+  GroupModel? get currentGroup =>
+      currentIndex < groups.length ? groups[currentIndex] : null;
+
+  GroupModel? get nextGroup =>
+      currentIndex + 1 < groups.length ? groups[currentIndex + 1] : null;
+
+  void removeGroupAt(int index) {
+    emit(HomeLoading());
+    if (index >= 0 && index < groups.length) {
+      groups.removeAt(index);
+      // Adjust selectedGroupIndex if necessary
+      if (selectedGroupIndex >= groups.length) {
+        selectedGroupIndex = groups.isEmpty ? 0 : groups.length - 1;
+      }
+    }
+    emit(HomeLoaded());
+  }
+
   void selectGroupIndex(int? index) {
     emit(HomeLoading());
     selectedGroupIndex = index ?? 0;
@@ -90,6 +125,22 @@ class HomeCubit extends Cubit<HomeState> {
   void selectDeclined(int value) {
     emit(HomeLoading());
     isDeclined = value;
+    emit(HomeLoaded());
+  }
+
+  void markEndReached() {
+    emit(HomeLoading());
+    isEnd = true;
+    emit(HomeLoaded());
+  }
+
+  void restartFromBeginning() {
+    emit(HomeLoading());
+    isEnd = false;
+    selectedGroupIndex = 0;
+    selectedProfileIndex = null;
+    selectedProfile = null;
+    cardSwiperController.moveTo(0);
     emit(HomeLoaded());
   }
 

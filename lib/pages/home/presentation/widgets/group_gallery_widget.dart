@@ -9,7 +9,7 @@ import 'package:fennac_app/pages/home/presentation/bloc/cubit/home_cubit.dart';
 import 'package:fennac_app/pages/home/presentation/widgets/report_and_block_bottomsheet.dart';
 import 'package:fennac_app/pages/home/presentation/widgets/send_poke_bottomsheet.dart';
 import 'package:fennac_app/pages/kyc/presentation/bloc/cubit/kyc_prompt_cubit.dart';
-import 'package:fennac_app/pages/kyc/presentation/widgets/prompt_audio_row.dart';
+import 'package:fennac_app/widgets/prompt_audio_row.dart';
 import 'package:fennac_app/widgets/custom_chips.dart';
 import 'package:fennac_app/widgets/custom_sized_box.dart';
 import 'package:fennac_app/widgets/custom_text.dart';
@@ -206,6 +206,8 @@ class GroupGalleryWidget extends StatelessWidget {
                                 context: context,
                                 backgroundColor: Colors.transparent,
                                 isScrollControlled: true,
+                                enableDrag: true,
+
                                 builder: (context) => SendPokeBottomSheet(
                                   pokeType: PokeType.image,
                                   image: images[index],

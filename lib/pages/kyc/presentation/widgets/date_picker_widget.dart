@@ -224,10 +224,11 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
             int steps = 60;
             return Stack(
               children: List.generate(steps, (index) {
-                double fraction = index / (steps - 1);
-                double effectiveFraction = isTop ? fraction : (1 - fraction);
+                double fraction = index / (steps);
+                // Both top and bottom now use the same pattern
+                double effectiveFraction = 1 - fraction;
                 double sigmaY = 0.5 + effectiveFraction * 10;
-                double sigmaX = 0.3 + effectiveFraction * 4;
+                double sigmaX = 0.3 + effectiveFraction * 6;
 
                 return Positioned(
                   top: isTop ? (constraints.maxHeight * fraction) : null,
@@ -266,8 +267,8 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
           physics: const FixedExtentScrollPhysics(),
           onSelectedItemChanged: (_) => onChanged(),
           perspective: 0.002,
-          diameterRatio: 1.2,
-          squeeze: 0.85,
+          diameterRatio: 2,
+          squeeze: 1.25,
           useMagnifier: false,
           magnification: 1.0,
           childDelegate: ListWheelChildBuilderDelegate(
@@ -286,7 +287,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
               // Simple distance calculation that works for all columns
               final selectedItem = controller.selectedItem;
               final distance = (index - selectedItem).abs();
-              final opacity = distance == 0 ? 1.0 : (distance == 1 ? 0.4 : 0.2);
+              final opacity = distance == 0 ? 1.0 : (distance == 1 ? 0.3 : 0.2);
 
               return Center(
                 child: Text(

@@ -1,8 +1,10 @@
 import 'package:fennac_app/app/theme/app_colors.dart';
 import 'package:fennac_app/app/theme/text_styles.dart';
+import 'package:fennac_app/generated/assets.gen.dart';
 import 'package:fennac_app/widgets/custom_sized_box.dart';
 import 'package:fennac_app/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class PrivacyBottomSheet extends StatelessWidget {
   final ValueNotifier<bool>? blurNotifier;
@@ -27,7 +29,10 @@ class PrivacyBottomSheet extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.85,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [ColorPalette.secondary, ColorPalette.black],
+          colors: [
+            ColorPalette.secondary,
+            ColorPalette.black.withValues(alpha: 0.6),
+          ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -37,7 +42,7 @@ class PrivacyBottomSheet extends StatelessWidget {
         children: [
           // Header
           Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -51,12 +56,19 @@ class PrivacyBottomSheet extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.close, color: Colors.white),
+                  icon: SvgPicture.asset(
+                    Assets.icons.cancel.path,
+                    width: 24,
+                    height: 24,
+                    colorFilter: const ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.srcIn,
+                    ),
+                  ),
                 ),
               ],
             ),
           ),
-          const Divider(color: Colors.white10, height: 1),
 
           // Content
           Expanded(
@@ -197,21 +209,12 @@ class PrivacyBottomSheet extends StatelessWidget {
   Widget _buildSectionTitle(BuildContext context, String text) {
     return AppText(
       text: text,
-      style: AppTextStyles.bodyLarge(context).copyWith(
-        color: Colors.white,
-        fontSize: 18,
-        fontWeight: FontWeight.w600,
-      ),
+      style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold),
     );
   }
 
   Widget _buildText(BuildContext context, String text) {
-    return AppText(
-      text: text,
-      style: AppTextStyles.bodyLarge(
-        context,
-      ).copyWith(color: Colors.white70, fontSize: 14, height: 1.5),
-    );
+    return AppText(text: text, style: AppTextStyles.body(context));
   }
 
   Widget _buildBulletPoint(BuildContext context, String text) {

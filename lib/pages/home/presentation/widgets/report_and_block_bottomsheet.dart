@@ -8,8 +8,6 @@ import 'package:fennac_app/widgets/custom_sized_box.dart';
 import 'package:fennac_app/widgets/custom_text.dart';
 import 'package:fennac_app/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:lottie/lottie.dart';
 
 class ReportAndBlockBottomSheet extends StatefulWidget {
   const ReportAndBlockBottomSheet({super.key});
@@ -34,159 +32,166 @@ class _ReportAndBlockBottomSheetState extends State<ReportAndBlockBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: getHeight(context) * 0.8,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [const Color(0xFF16003F), ColorPalette.black],
-        ),
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(32),
-          topRight: Radius.circular(32),
-        ),
-      ),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AnimatedBackgroundContainer(icon: Assets.icons.slash.path),
-              const CustomSizedBox(height: 24),
+    final viewInsets = MediaQuery.of(context).viewInsets;
 
-              AppText(
-                text: 'Report & Block',
-                style: AppTextStyles.h2(
-                  context,
-                ).copyWith(fontWeight: FontWeight.bold, color: Colors.white),
-              ),
-              const CustomSizedBox(height: 16),
-              AppText(
-                textAlign: TextAlign.center,
-                text:
-                    'Select a reason for reporting this user. They won\'t know you\'ve reported or blocked them.',
-                style: AppTextStyles.body(
-                  context,
-                ).copyWith(color: Colors.white70),
-              ),
-              const CustomSizedBox(height: 16),
-              Container(
-                height: 350,
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.3),
-                  border: Border.all(
-                    color: ColorPalette.grey.withValues(alpha: 0.5),
-                    width: 1,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
+    return AnimatedPadding(
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeOut,
+      padding: EdgeInsets.only(bottom: viewInsets.bottom),
+      child: Container(
+        height: getHeight(context) * 0.87,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [const Color(0xFF16003F), ColorPalette.black],
+          ),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(32),
+            topRight: Radius.circular(32),
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AnimatedBackgroundContainer(icon: Assets.icons.slash.path),
+                const CustomSizedBox(height: 24),
+
+                AppText(
+                  text: 'Report & Block',
+                  style: AppTextStyles.h2(
+                    context,
+                  ).copyWith(fontWeight: FontWeight.bold, color: Colors.white),
                 ),
-                child: Column(
-                  children: List.generate(_reportReasons.length, (index) {
-                    final reason = _reportReasons[index];
-                    final isSelected = _selectedReason == reason;
+                const CustomSizedBox(height: 16),
+                AppText(
+                  textAlign: TextAlign.center,
+                  text:
+                      'Select a reason for reporting this user. They won\'t know you\'ve reported or blocked them.',
+                  style: AppTextStyles.body(
+                    context,
+                  ).copyWith(color: Colors.white70),
+                ),
+                const CustomSizedBox(height: 16),
+                Container(
+                  height: 350,
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    border: Border.all(
+                      color: ColorPalette.grey.withValues(alpha: 0.5),
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    children: List.generate(_reportReasons.length, (index) {
+                      final reason = _reportReasons[index];
+                      final isSelected = _selectedReason == reason;
 
-                    return Column(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              _selectedReason = reason;
-                            });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 16,
-                            ),
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: Stack(
-                                    alignment: Alignment.center,
-                                    children: [
-                                      // Outer ring
-                                      Container(
-                                        width: 24,
-                                        height: 24,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                            color: Colors.white,
-                                            width: 2,
+                      return Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                _selectedReason = reason;
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 16,
+                              ),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        // Outer ring
+                                        Container(
+                                          width: 24,
+                                          height: 24,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: Colors.white,
+                                              width: 2,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      // Middle dark ring
-                                      Container(
-                                        width: 22,
-                                        height: 22,
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.black,
+                                        // Middle dark ring
+                                        Container(
+                                          width: 22,
+                                          height: 22,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: ColorPalette.cardBlack,
+                                          ),
                                         ),
-                                      ),
-                                      // Inner fill toggles selected state
-                                      Container(
-                                        width: 18,
-                                        height: 18,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: !isSelected
-                                              ? Colors.black.withValues(
-                                                  alpha: 0.9,
-                                                )
-                                              : Colors.white,
+                                        // Inner fill toggles selected state
+                                        Container(
+                                          width: 18,
+                                          height: 18,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: !isSelected
+                                                ? Colors.black.withValues(
+                                                    alpha: 0.9,
+                                                  )
+                                                : Colors.white,
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: AppText(
-                                    text: reason,
-                                    style: AppTextStyles.body(
-                                      context,
-                                    ).copyWith(color: Colors.white),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: AppText(
+                                      text: reason,
+                                      style: AppTextStyles.body(
+                                        context,
+                                      ).copyWith(color: Colors.white),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        if (index < _reportReasons.length - 1)
-                          Divider(
-                            height: 2,
-                            color: Colors.white.withValues(alpha: 0.2),
-                          ),
-                      ],
-                    );
-                  }),
+                          if (index < _reportReasons.length - 1)
+                            Divider(
+                              height: 2,
+                              color: Colors.white.withValues(alpha: 0.2),
+                            ),
+                        ],
+                      );
+                    }),
+                  ),
                 ),
-              ),
-              const CustomSizedBox(height: 28),
+                const CustomSizedBox(height: 28),
 
-              CustomLabelTextField(
-                label: 'Enter a Reason',
-                controller: _reasonController,
-                fillColor: Colors.transparent,
-                labelColor: Colors.white,
-                scrollController: ScrollController(),
-                hintText: 'Type your reason here...',
-              ),
-              const CustomSizedBox(height: 28),
-              CustomElevatedButton(
-                text: 'Submit Report',
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              const CustomSizedBox(height: 16),
-            ],
+                CustomLabelTextField(
+                  label: 'Enter a Reason',
+                  controller: _reasonController,
+                  fillColor: Colors.transparent,
+                  labelColor: Colors.white,
+                  filled: false,
+                  hintText: 'Type your reason here...',
+                ),
+                const CustomSizedBox(height: 28),
+                CustomElevatedButton(
+                  text: 'Submit Report',
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                const CustomSizedBox(height: 16),
+              ],
+            ),
           ),
         ),
       ),

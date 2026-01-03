@@ -109,7 +109,7 @@ class KycGalleryScreen extends StatelessWidget {
             Expanded(
               child: CustomOutlinedButton(
                 onPressed: () {
-                  AutoRouter.of(context).push(KycPromptRoute(showSkipButton: true));
+                  AutoRouter.of(context).push(const KycMatchRoute());
                 },
                 text: 'Skip',
                 width: double.infinity,

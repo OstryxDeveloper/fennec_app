@@ -6,7 +6,7 @@ class AppRouter extends RootStackRouter {
   List<AutoRoute> get routes => [
     CustomRoute(
       page: SplashRoute.page,
-      // initial: true,
+      initial: true,
       transitionsBuilder: AppTransitions.fade,
       barrierColor: Colors.transparent,
       duration: const Duration(milliseconds: 300),
@@ -34,6 +34,13 @@ class AppRouter extends RootStackRouter {
 
     CustomRoute(
       page: HomeLandingRoute.page,
+      transitionsBuilder: AppTransitions.fade,
+      barrierColor: Colors.transparent,
+      duration: const Duration(milliseconds: 300),
+    ),
+
+    CustomRoute(
+      page: ChatLandingRoute.page,
       transitionsBuilder: AppTransitions.fade,
       barrierColor: Colors.transparent,
       duration: const Duration(milliseconds: 300),
@@ -104,8 +111,6 @@ class AppRouter extends RootStackRouter {
 
     CustomRoute(
       page: KycRoute.page,
-      initial: true,
-
       transitionsBuilder: AppTransitions.slideRight,
       barrierColor: Colors.transparent,
       duration: const Duration(milliseconds: 400),

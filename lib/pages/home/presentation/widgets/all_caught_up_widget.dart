@@ -1,7 +1,5 @@
 import 'package:fennac_app/reusable_widgets/animated_background_container.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:lottie/lottie.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/text_styles.dart';
